@@ -76,6 +76,7 @@ const Header = ({
     { label: 'Environment', path: '/' },
     { label: 'Health', path: '/health' },
     { label: 'Models', path: '/models' },
+    { label: 'Exchange', path: '/exchange' },
     { label: 'Network', path: '/network' },
     { label: 'Verify', path: '/verify' },
     { label: 'Essays', path: '/essays' },
@@ -291,6 +292,32 @@ const Header = ({
                               {currentUser?.email || 'User'}
                             </p>
                           </div>
+                          <button
+                            onClick={() => { navigate('/forge'); setShowUserMenu(false); }}
+                            style={{
+                              width: '100%',
+                              padding: '10px 12px',
+                              background: 'transparent',
+                              border: 'none',
+                              borderRadius: '8px',
+                              color: '#d1d5db',
+                              fontSize: '14px',
+                              textAlign: 'left',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px'
+                            }}
+                            onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
+                            onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                              <path d="M2 17l10 5 10-5"/>
+                              <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                            The Forge
+                          </button>
                           {isAdmin && (
                             <button
                               onClick={() => { navigate('/admin'); setShowUserMenu(false); }}

@@ -958,6 +958,15 @@ console.log(await res.json());`
                   Read the Whitepaper
                 </motion.a>
                 <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  href="/forge/submit?mode=simulation" style={{
+                    padding: '12px 28px', borderRadius: '12px', fontSize: '15px', fontWeight: '700',
+                    background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff',
+                    textDecoration: 'none', boxShadow: '0 4px 16px rgba(245,158,11,0.3)',
+                  }}
+                >
+                  Submit Your Model
+                </motion.a>
+                <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                   href="/network" style={{
                     padding: '12px 28px', borderRadius: '12px', fontSize: '15px', fontWeight: '600',
                     background: 'transparent', color: textSecondary,

@@ -39,6 +39,7 @@ const Footer = () => {
       links: [
         { label: 'HFTP Network', href: '/network' },
         { label: 'Verification Network', href: '/verify' },
+        { label: 'Proof Exchange', href: '/exchange' },
         { label: 'Economic Impact', href: '/economic-impact' },
         { label: 'Ecosystem', href: '/ecosystem' }
       ]
@@ -57,6 +58,8 @@ const Footer = () => {
       links: [
         { label: 'Essays', href: '/essays' },
         { label: 'HFTP Whitepaper', href: '/whitepaper' },
+        { label: 'Proof Pipeline', href: '/proof-pipeline' },
+        { label: 'Submit a Model', href: '/forge/submit?mode=simulation' },
         { label: 'GitHub', href: 'https://github.com/paragon-dao', external: true },
         { label: 'About', href: '/about' },
         { label: 'Community', href: '/community' }

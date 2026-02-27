@@ -14,6 +14,12 @@ import CommunityPage from './pages/CommunityPage'
 import EssaysPage from './pages/EssaysPage'
 import EssayDetailPage from './pages/EssayDetailPage'
 import VerifyPage from './pages/VerifyPage'
+import ExchangePage from './pages/ExchangePage'
+import ExchangeModelPage from './pages/ExchangeModelPage'
+import ProofPipelinePage from './pages/ProofPipelinePage'
+import ForgePage from './pages/ForgePage'
+import ForgeSubmitPage from './pages/ForgeSubmitPage'
+import ForgeModelDetailPage from './pages/ForgeModelDetailPage'
 import AdminPage from './pages/AdminPage'
 import InviteGate from './components/InviteGate'
 import { MagicProvider, useMagic } from './providers/MagicProvider'
@@ -131,6 +137,22 @@ function AppRoutes() {
         <Route path="/essays" element={<EssaysPage />} />
         <Route path="/essays/:slug" element={<EssayDetailPage />} />
         <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/proof-pipeline" element={<ProofPipelinePage />} />
+        <Route path="/exchange" element={<ExchangePage />} />
+        <Route path="/exchange/:modelId" element={<ExchangeModelPage />} />
+
+        {/* Forge — protected, but simulation mode works without auth */}
+        <Route path="/forge" element={
+          <ProtectedRoute>
+            <ForgePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/forge/submit" element={<ForgeSubmitPage />} />
+        <Route path="/forge/model/:modelId" element={
+          <ProtectedRoute>
+            <ForgeModelDetailPage />
+          </ProtectedRoute>
+        } />
 
         {/* Protected Routes — require auth */}
         <Route path="/health" element={
