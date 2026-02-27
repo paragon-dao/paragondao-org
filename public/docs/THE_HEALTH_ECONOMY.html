@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Health Economy: Autonomous AI Models as the Foundation of Planetary Healthcare and the Next Global Economy</title>
+    <meta name="description" content="How personal health AI models, powered by the General Learning Encoder and Harmonic Frequency Transfer Protocol, create the infrastructure for the economy that runs on healthy bodies. ParagonDAO Whitepaper.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-50: #fffdf5;
+            --gold-100: #fef9e7;
+            --gold-200: #fceabb;
+            --gold-300: #f7cd4c;
+            --gold-400: #f0bb33;
+            --gold-500: #d4a017;
+            --gold-600: #b8860b;
+            --gold-700: #996515;
+            --gold-800: #7a5012;
+            --gold-900: #5c3d0e;
+            --amber-500: #f59e0b;
+            --amber-600: #d97706;
+            --emerald-500: #10b981;
+            --emerald-600: #059669;
+            --text-primary: #1a1207;
+            --text-body: #3d2e1a;
+            --text-secondary: #6b5a42;
+            --text-muted: #9c8b73;
+            --border-light: #e8dcc8;
+            --border-gold: #d4a017;
+            --bg-cream: #fffef9;
+            --bg-warm: #fdf8ef;
+        }
+
+        /* ===== SITE HEADER ===== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1a1207 0%, #3d2e1a 50%, #2a1f0f 100%);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(26,18,7,0.25), 0 1px 4px rgba(212,160,23,0.1);
+        }
+        .site-header a {
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .site-logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .site-logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+        .site-logo-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .site-logo-tagline {
+            font-size: 9px;
+            font-weight: 500;
+            color: rgba(240,187,51,0.8);
+            letter-spacing: 0.02em;
+        }
+        .back-btn {
+            padding: 8px 18px;
+            background: rgba(212,160,23,0.15);
+            border: 1px solid rgba(212,160,23,0.4);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: var(--gold-300);
+        }
+        .back-btn:hover {
+            background: rgba(212,160,23,0.25);
+            color: #fff;
+        }
+
+        /* ===== BODY ===== */
+        body {
+            font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+            font-size: 13pt;
+            line-height: 1.6;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.8in;
+            padding-top: calc(0.8in + 70px);
+            color: var(--text-body);
+            background: var(--bg-cream);
+        }
+
+        /* ===== TITLE BLOCK ===== */
+        .title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 30pt;
+            font-weight: 800;
+            text-align: center;
+            margin: 0 0 0.12in 0;
+            line-height: 1.2;
+            letter-spacing: -0.5pt;
+            color: var(--text-primary);
+        }
+        .subtitle {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 14pt;
+            text-align: center;
+            margin: 0 0 0.35in 0;
+            line-height: 1.5;
+            font-style: italic;
+            color: var(--gold-600);
+        }
+        .version {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            text-align: center;
+            margin: 0.05in 0;
+            font-style: normal;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .author {
+            font-family: 'Inter', sans-serif;
+            font-size: 12pt;
+            text-align: center;
+            margin: 0.15in 0 0.04in 0;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .organization {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            text-align: center;
+            margin: 0.04in 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        .email {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            text-align: center;
+            margin: 0.04in 0;
+            color: var(--gold-600);
+        }
+        .website {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            text-align: center;
+            margin: 0.04in 0 0.3in 0;
+            color: var(--gold-600);
+        }
+
+        /* ===== HEADINGS ===== */
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 17pt;
+            font-weight: 700;
+            margin: 0.45in 0 0.2in 0;
+            padding-bottom: 6pt;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--gold-400);
+        }
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 13pt;
+            font-weight: 700;
+            margin: 0.28in 0 0.1in 0;
+            color: var(--gold-700);
+        }
+        h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 12pt;
+            font-weight: 700;
+            margin: 0.2in 0 0.08in 0;
+            font-style: italic;
+            color: var(--gold-800);
+        }
+
+        /* ===== TEXT ===== */
+        p { margin: 0.08in 0; text-align: justify; }
+        ul, ol { margin: 0.08in 0 0.12in 0.18in; }
+        li { margin: 0.05in 0; }
+        a { color: var(--gold-600); text-decoration: none; border-bottom: 1px solid var(--gold-200); transition: all 0.2s; }
+        a:hover { color: var(--gold-800); border-bottom-color: var(--gold-500); }
+        strong { color: var(--text-primary); }
+        em { color: var(--gold-800); }
+
+        /* ===== ABSTRACT ===== */
+        .abstract {
+            border: 2px solid var(--gold-400);
+            border-radius: 6px;
+            padding: 0.22in;
+            margin: 0.2in 0 0.3in 0;
+            background: var(--gold-100);
+            position: relative;
+        }
+        .abstract::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold-400), var(--amber-500), var(--gold-400));
+            border-radius: 4px 4px 0 0;
+        }
+        .abstract p { margin: 0; color: var(--text-body); }
+        .abstract-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11pt;
+            margin-bottom: 8pt;
+            color: var(--gold-700);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* ===== BOXES ===== */
+        .box {
+            border: 1px solid var(--border-light);
+            border-left: 4px solid var(--gold-500);
+            border-radius: 4px;
+            padding: 0.15in 0.18in;
+            margin: 0.18in 0;
+            background: var(--bg-warm);
+        }
+        .box-highlight {
+            border: 2px solid var(--gold-500);
+            border-radius: 6px;
+            padding: 0.18in;
+            margin: 0.22in 0;
+            background: linear-gradient(135deg, var(--gold-100), #fff9e6);
+            position: relative;
+        }
+        .box-highlight::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-500), var(--amber-600));
+            border-radius: 6px 6px 0 0;
+        }
+
+        /* ===== TABLES ===== */
+        .small { font-size: 10pt; }
+        .mono { font-family: "Courier New", monospace; font-size: 10pt; color: var(--text-secondary); }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.15in 0;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid var(--border-light);
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 11pt;
+            font-family: 'Inter', sans-serif;
+        }
+        th {
+            background: linear-gradient(180deg, var(--gold-100), var(--gold-200));
+            font-weight: 700;
+            color: var(--gold-900);
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 2px solid var(--gold-400);
+        }
+        tr:nth-child(even) { background: rgba(253,248,239,0.5); }
+        tr:hover { background: var(--gold-100); }
+
+        /* ===== EPIGRAPH ===== */
+        .epigraph {
+            margin: 0.35in 0.6in;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 13pt;
+            color: var(--gold-700);
+            text-align: center;
+            line-height: 1.6;
+            padding: 0.15in 0;
+            border-top: 1px solid var(--gold-200);
+            border-bottom: 1px solid var(--gold-200);
+        }
+        .epigraph-attr {
+            text-align: right;
+            font-size: 11pt;
+            margin-top: 4pt;
+            font-style: normal;
+            color: var(--text-muted);
+        }
+
+        /* ===== REFERENCES ===== */
+        .references { margin: 0.2in 0; }
+        .references ol { margin: 0.1in 0; padding-left: 0.3in; }
+        .references li {
+            margin: 0.08in 0;
+            text-align: left;
+            font-size: 11pt;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-secondary);
+        }
+        .references li p { margin: 0; text-align: left; }
+
+        /* ===== DECORATIVE RULE ===== */
+        .gold-rule {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-400), var(--gold-500), var(--gold-400), transparent);
+            border: none;
+            margin: 0.3in 0;
+        }
+
+        /* ===== FOOTER ===== */
+        .doc-footer {
+            margin-top: 0.5in;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            color: var(--text-muted);
+            padding-top: 16pt;
+            border-top: 2px solid var(--gold-400);
+        }
+        .doc-footer a { color: var(--gold-600); }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { margin: 0; padding: 0.5in; background: white; }
+            .site-header { display: none; }
+            .abstract { border-color: #999; }
+            .box-highlight { border-color: #999; }
+            h1 { border-bottom-color: #999; }
+            th { background: #f0f0f0; border-bottom-color: #999; }
+        }
+
+        /* ===== SENTINEL FROG ===== */
+        .sentinel-frog {
+            position: fixed;
+            bottom: 20px;
+            right: 24px;
+            z-index: 999;
+            cursor: pointer;
+            filter: drop-shadow(0 4px 12px rgba(20,184,166,0.2));
+            transition: bottom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .sentinel-frog:hover { bottom: 32px; }
+        .sentinel-frog .frog-body {
+            animation: frogBreathe 3.5s ease-in-out infinite;
+            transform-origin: 28px 36px;
+        }
+        .sentinel-frog .frog-belly {
+            animation: bellyBreathe 3.5s ease-in-out infinite;
+            transform-origin: 28px 36px;
+        }
+        .sentinel-frog .frog-throat {
+            animation: throatPulse 3.5s ease-in-out infinite;
+            transform-origin: 28px 28px;
+        }
+        .sentinel-frog .frog-nostrils { animation: nostrilFlare 3.5s ease-in-out infinite; }
+        .sentinel-frog .frog-head { animation: chestLift 3.5s ease-in-out infinite; }
+        .sentinel-frog .frog-glow { animation: breathGlow 3.5s ease-in-out infinite; }
+        .sentinel-frog .frog-eyes { animation: frogBlink 4s ease-in-out infinite; }
+        @keyframes frogBreathe {
+            0%, 100% { transform: scaleY(1) scaleX(1); }
+            45% { transform: scaleY(1.12) scaleX(0.95); }
+        }
+        @keyframes bellyBreathe {
+            0%, 100% { transform: scaleY(1) scaleX(1); opacity: 0.45; }
+            45% { transform: scaleY(1.25) scaleX(1.2); opacity: 0.7; }
+        }
+        @keyframes throatPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            45% { transform: scale(1.4); opacity: 0.65; }
+        }
+        @keyframes nostrilFlare {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            45% { transform: scale(1.5); opacity: 0.6; }
+        }
+        @keyframes chestLift {
+            0%, 100% { transform: translateY(0); }
+            45% { transform: translateY(-1.5px); }
+        }
+        @keyframes breathGlow {
+            0%, 100% { transform: scale(1); opacity: 0.05; }
+            45% { transform: scale(1.3); opacity: 0.12; }
+        }
+        @keyframes frogBlink {
+            0%, 90%, 95%, 100% { opacity: 1; }
+            92% { opacity: 0; }
+        }
+        @media print { .sentinel-frog { display: none; } }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 768px) {
+            body { padding: 0.4in; padding-top: calc(0.4in + 70px); }
+            .title { font-size: 22pt; }
+            .subtitle { font-size: 12pt; }
+            .epigraph { margin: 0.2in 0.2in; font-size: 12pt; }
+            table { font-size: 9pt; }
+            th, td { padding: 6px 8px; font-size: 9pt; }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <a href="/" class="site-logo">
+            <span class="site-logo-icon"><img src="/favicon.svg" alt="ParagonDAO" style="width: 34px; height: 34px; display: block;"></span>
+            <span class="site-logo-text">
+                <span class="site-logo-name">ParagonDAO</span>
+                <span class="site-logo-tagline">The Health Economy</span>
+            </span>
+        </a>
+        <a href="/whitepaper" class="back-btn">&larr; Back to Whitepapers</a>
+    </header>
+
+    <div class="title">The Health Economy</div>
+    <div class="subtitle">Autonomous AI Models as the Foundation of Planetary Healthcare<br>and the Next Global Economy</div>
+
+    <div class="version">Version 1.0 &mdash; February 2026</div>
+    <div class="author">ParagonDAO</div>
+    <div class="organization">Decentralized Autonomous Organization for Planetary Health</div>
+    <div class="email">research@paragondao.org</div>
+    <div class="website">https://paragondao.org</div>
+
+    <!-- ================================================================ -->
+    <!-- ABSTRACT -->
+    <!-- ================================================================ -->
+
+    <div class="abstract">
+        <div class="abstract-label">Abstract</div>
+        <p>
+            We present the Health Economy: an architecture in which every person on Earth owns a personal AI model
+            trained on their own biosignals, and these models autonomously trade health knowledge with one another
+            to produce a new class of economic output. The system rests on three technical pillars:
+            (1)&nbsp;the <strong>General Learning Encoder (GLE)</strong>, a deterministic mathematical transform
+            that encodes any biosignal&mdash;breathing audio, brain waves, voice,
+            saliva spectroscopy, metabolomics&mdash;into a unified compact frequency representation;
+            (2)&nbsp;the <strong>Harmonic Frequency Transfer Protocol (HFTP)</strong>, an AI-native communication
+            layer that transmits frequency coefficients directly between models at 80%+ bandwidth reduction; and
+            (3)&nbsp;<strong>ParagonDAO governance</strong>, a one-person-one-vote structure that ensures health
+            equity across three kingdoms&mdash;Human, Animal, and Plant. When billions of personal AI models
+            operate continuously, exchanging health knowledge via HFTP, the projected annual economic output
+            exceeds $200&nbsp;trillion&mdash;larger than the entire current global GDP. Unlike previous economic
+            revolutions, this one begins not with capital or industry but with the most fundamental human signal:
+            a breath. This paper describes the complete architecture, demonstrates internally validated model accuracies
+            across six disease domains, presents the economic model, and argues that
+            autonomous health is the only credible foundation for a planetary economy that is equitable by design.
+        </p>
+    </div>
+
+    <div class="epigraph">
+        "The next great economic achievement will not be measured in GDP alone.<br>
+        It will be measured in breaths analyzed, diseases prevented, and lives extended&mdash;<br>
+        across every species, in every nation, without exception."
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TABLE OF CONTENTS -->
+    <!-- ================================================================ -->
+
+    <h1>Table of Contents</h1>
+    <ol>
+        <li>Introduction: The Case for Health as Economic Foundation</li>
+        <li>The Crisis: Why Current Healthcare Cannot Scale</li>
+        <li>The Insight: Your Body Is Already Broadcasting</li>
+        <li>The General Learning Encoder (GLE)</li>
+        <li>From Diagnosis to Transaction: Health Models as Economic Assets</li>
+        <li>Validated Disease Models</li>
+        <li>The Harmonic Frequency Transfer Protocol (HFTP)</li>
+        <li>Security: Auth-HF and Confidential Compute</li>
+        <li>The Three Kingdoms: Human, Animal, Plant</li>
+        <li>Equity by Design: One Person, One Vote, One Health Model</li>
+        <li>The $200 Trillion Health Economy</li>
+        <li>Implementation: What Exists Today</li>
+        <li>Governance: ParagonDAO</li>
+        <li>Roadmap</li>
+        <li>Conclusion: It Starts With Your Next Breath</li>
+    </ol>
+
+    <!-- ================================================================ -->
+    <!-- 1. INTRODUCTION -->
+    <!-- ================================================================ -->
+
+    <h1>1. Introduction: The Case for Health as Economic Foundation</h1>
+
+    <p>
+        Every previous economic revolution&mdash;agriculture, industrialization, electrification, the internet&mdash;began
+        with a resource that was abundant but underutilized. Fertile land existed before farming. Fossil fuels existed
+        before engines. Electromagnetic waves existed before radio. In each case, a new <em>encoding</em> of an existing
+        resource unlocked exponential value.
+    </p>
+    <p>
+        The next resource is biosignals. Every living organism on Earth continuously emits frequency patterns: breathing
+        rhythms, heartbeat variations, brain wave oscillations, voice prosody, metabolic signatures. These signals
+        contain diagnostic information that, until now, has been discarded after each clinical encounter&mdash;or never
+        captured at all.
+    </p>
+    <p>
+        We propose that <strong>personal health AI models</strong>&mdash;trained on an individual's own biosignals and
+        operating autonomously on their behalf&mdash;constitute the first genuine asset class of the AI-native economy.
+        When these models trade knowledge with one another via a purpose-built frequency protocol, the result is not
+        merely better healthcare. It is the foundation of a new economic system&mdash;one that is inherently equitable
+        because every person, by virtue of being alive, produces the raw material.
+    </p>
+
+    <div class="box-highlight">
+        <p><strong>Thesis.</strong> Health is the only domain where: (a) every human is both producer and consumer,
+        (b) the data is generated continuously without labor, (c) the value compounds with network size, and
+        (d) equitable access is a moral imperative that aligns economic incentives with human rights. These properties
+        make health the uniquely correct foundation for a planetary-scale AI economy.</p>
+    </div>
+
+    <p>
+        This paper presents the complete architecture&mdash;from a single breath captured by a smartphone microphone,
+        through encoding, authentication, disease screening, model-to-model knowledge trading, and governance&mdash;and
+        demonstrates that the system is not theoretical. Six disease models are validated. The encoder is implemented.
+        The protocol is specified. The governance structure is live. What remains is scale.
+    </p>
+
+    <!-- ================================================================ -->
+    <!-- 2. THE CRISIS -->
+    <!-- ================================================================ -->
+
+    <h1>2. The Crisis: Why Current Healthcare Cannot Scale</h1>
+
+    <h2>2.1 The Access Gap</h2>
+    <p>
+        Half the world's population lacks access to essential health services. The World Health Organization estimates
+        that 4.5 billion people&mdash;58% of the global population&mdash;were not fully covered by essential health
+        services as of 2021. In sub-Saharan Africa, there are fewer than 3 physicians per 10,000 people, compared
+        to 35 in Europe and 26 in the Americas. The shortage is projected to reach 10 million health workers globally
+        by 2030.
+    </p>
+
+    <h2>2.2 The Cost Crisis</h2>
+    <p>
+        Global healthcare spending reached $9.8 trillion in 2021, approximately 10.3% of global GDP. The United States
+        alone spends $4.3 trillion annually&mdash;$12,914 per capita&mdash;yet ranks 46th in life expectancy among
+        nations. The system optimizes for treatment of disease after it manifests, not prevention before it develops.
+        An estimated 30&ndash;40% of healthcare spending is wasted on administrative overhead, redundant testing, and
+        misaligned incentives.
+    </p>
+
+    <h2>2.3 The Data Paradox</h2>
+    <p>
+        The human body generates continuous diagnostic data&mdash;breathing patterns, heart rate variability, voice
+        changes, sleep architecture, metabolic fluctuations&mdash;yet the healthcare system captures biosignals only
+        during episodic clinical encounters, typically lasting 15&ndash;20 minutes, a few times per year. The vast
+        majority of diagnostic information is never recorded. When it is recorded, it is siloed in proprietary
+        electronic health record systems that do not interoperate, owned by institutions rather than individuals,
+        and analyzed retrospectively rather than in real time.
+    </p>
+
+    <h2>2.4 The Equity Failure</h2>
+    <p>
+        AI in healthcare, as currently deployed, deepens inequity. Foundation models are trained on datasets that
+        overrepresent wealthy populations in developed nations. Diagnostic algorithms optimized for light skin
+        underperform on dark skin. Wearable devices cost $300&ndash;$500, excluding billions of potential users.
+        The economic value generated by health AI accrues to platform companies, not to the individuals whose
+        bodies produced the training data. This is not a design flaw. It is the natural consequence of building
+        health AI on the same extractive architecture that built the advertising internet.
+    </p>
+
+    <div class="box">
+        <p><strong>The fundamental problem:</strong> Current healthcare is episodic (not continuous),
+        institutional (not personal), extractive (not equitable), and reactive (not preventive). No amount
+        of incremental improvement to this architecture will achieve planetary-scale health equity. A different
+        foundation is required.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- 3. THE INSIGHT -->
+    <!-- ================================================================ -->
+
+    <h1>3. The Insight: Your Body Is Already Broadcasting</h1>
+
+    <p>
+        The key insight underlying the Health Economy is that biosignals are <em>frequency phenomena</em>. Breathing
+        operates at 0.2&ndash;0.5 Hz. Heart rate variability occupies 0.04&ndash;0.4 Hz. Brain waves span
+        0.5&ndash;100 Hz. Voice fundamentals range from 85&ndash;265 Hz. Saliva-based Raman spectroscopy operates
+        at 10<sup>13</sup> Hz. Metabolomics mass spectrometry produces frequency-domain signatures across molecular
+        weight ranges.
+    </p>
+    <p>
+        Despite spanning 14 orders of magnitude in frequency, all of these biosignals share a common mathematical
+        structure: they can be decomposed into a finite set of frequency coefficients using a proprietary
+        frequency-domain transform. This is not an approximation or a heuristic. It is a property of the mathematics itself.
+        Any bounded, real-valued signal can be exactly represented by its frequency coefficients.
+    </p>
+
+    <div class="box-highlight">
+        <p><strong>Core insight:</strong> If one mathematical transform can encode any biosignal into the same
+        coefficient space, then one architecture can screen for any disease. The encoder doesn't need to know
+        what disease it's looking for. It doesn't need to be retrained. It simply converts the signal into
+        frequencies, and the downstream classifier reads the health information that was always there.</p>
+    </div>
+
+    <p>
+        This insight has a profound economic consequence. If every biosignal&mdash;from a baby's first cry to an
+        elderly patient's gait pattern to a dog's breathing to a plant's CO<sub>2</sub> exchange&mdash;can be
+        encoded into the same mathematical space, then every health observation becomes a <em>fungible unit of
+        knowledge</em> that can be compared, shared, and traded.
+    </p>
+
+    <!-- ================================================================ -->
+    <!-- 4. GLE -->
+    <!-- ================================================================ -->
+
+    <h1>4. The General Learning Encoder (GLE)</h1>
+
+    <h2>4.1 Architecture</h2>
+    <p>
+        The General Learning Encoder is a deterministic mathematical transform that converts any time-series biosignal
+        into a compact vector of frequency coefficients. The encoder transforms biosignals into compact frequency
+        representations through a proprietary multi-stage pipeline that produces normalized coefficient vectors
+        suitable for cosine similarity comparison.
+    </p>
+
+    <h2>4.2 Two-Stage Architecture: Deterministic Encoding + Learned Classification</h2>
+    <p>
+        GLE operates as a <strong>two-stage system</strong> with a clear separation of concerns:
+    </p>
+    <ol>
+        <li><strong>Stage 1 &mdash; Deterministic Encoder:</strong> The frequency-domain transform is fully deterministic.
+            The coefficients are entirely determined by the input signal: the same input always produces the same output.
+            There is no gradient descent, no training data requirement, no risk of overfitting, and no bias from
+            training data demographics. The encoder is mathematically identical whether it processes a breathing
+            sample from a hospital in Boston or a clinic in Nairobi.</li>
+        <li><strong>Stage 2 &mdash; Downstream Classifier:</strong> The diagnostic intelligence resides in domain-specific
+            classifiers that operate on the encoder's output. These classifiers are trained, validated, and can be
+            independently assessed for each population and disease domain. The classifier is where learning happens;
+            the encoder is where objectivity is guaranteed.</li>
+    </ol>
+    <p>
+        This separation is critical for equity. Machine learning models trained on biased datasets reproduce and
+        amplify those biases. GLE's deterministic encoder cannot be biased because it has nothing to learn. It is a lens, not a learner.
+        The classifiers can be validated independently for each population, and bias in any classifier does not
+        contaminate the encoder or any other classifier in the system.
+    </p>
+
+    <h2>4.3 Universal Modality Coverage</h2>
+    <p>
+        Because the GLE transform operates on any bounded real-valued signal, it encodes biosignals across the full
+        frequency spectrum:
+    </p>
+
+    <table>
+        <tr>
+            <th>Modality</th>
+            <th>Frequency Range</th>
+            <th>Capture Device</th>
+            <th>Cost</th>
+        </tr>
+        <tr>
+            <td>Breathing audio</td>
+            <td>0.2&ndash;8,000 Hz</td>
+            <td>Smartphone microphone</td>
+            <td>$0 (existing device)</td>
+        </tr>
+        <tr>
+            <td>Voice / prosody</td>
+            <td>85&ndash;8,000 Hz</td>
+            <td>Smartphone microphone</td>
+            <td>$0</td>
+        </tr>
+        <tr>
+            <td>Brain waves (EEG)</td>
+            <td>0.5&ndash;100 Hz</td>
+            <td>Consumer EEG headband</td>
+            <td>$249</td>
+        </tr>
+        <tr>
+            <td>Saliva (Raman)</td>
+            <td>~10<sup>13</sup> Hz</td>
+            <td>Raman spectrometer</td>
+            <td>Saliva kit (partner)</td>
+        </tr>
+        <tr>
+            <td>Metabolomics (LC-MS)</td>
+            <td>Mass/charge ratios</td>
+            <td>Mass spectrometer</td>
+            <td>Saliva kit (partner)</td>
+        </tr>
+        <tr>
+            <td>Heart rate variability</td>
+            <td>0.04&ndash;0.4 Hz</td>
+            <td>Smartphone camera (PPG)</td>
+            <td>$0</td>
+        </tr>
+    </table>
+
+    <p>
+        The lowest-cost entry point&mdash;breathing audio via smartphone microphone&mdash;requires zero additional
+        hardware and zero financial investment. Every person with access to a phone can create a personal health
+        model. This is the equity guarantee: the barrier to entry is a breath.
+    </p>
+
+    <h2>4.4 GLE as Identity</h2>
+    <p>
+        A secondary property of GLE encoding is that breathing frequency coefficients are biometrically unique.
+        Each person's breathing pattern&mdash;depth, rhythm, spectral distribution, harmonic structure&mdash;produces
+        a coefficient vector that serves as a physiological identity. GLE enrollment (30 seconds of natural breathing)
+        creates both a health baseline and an authentication credential simultaneously. The same compact frequency
+        vector that screens for disease also verifies that the person is who they claim to be.
+    </p>
+    <p>
+        This dual use eliminates the need for passwords, tokens, or external biometric hardware. Your body is
+        your credential. Your health model is your identity.
+    </p>
+
+    <!-- ================================================================ -->
+    <!-- 5. FROM DIAGNOSIS TO TRANSACTION -->
+    <!-- ================================================================ -->
+
+    <h1>5. From Diagnosis to Transaction: Health Models as Economic Assets</h1>
+
+    <h2>5.1 What Is a Health Model?</h2>
+    <p>
+        A <strong>personal health model</strong> is a GLE-encoded representation of an individual's biosignals,
+        stored in an encrypted vault on the user's device, owned entirely by the user, and operated by a personal
+        AI agent on the user's behalf. The model contains:
+    </p>
+    <ul>
+        <li>Enrollment coefficients (biometric identity baseline)</li>
+        <li>Longitudinal health coefficients (breathing, voice, EEG over time)</li>
+        <li>Environmental context (air quality, temperature, humidity, UV, pollen at time of capture)</li>
+        <li>Derived health metrics (stress indicators, breathing classification, trend analysis)</li>
+        <li>Disease screening results (classifier outputs with confidence scores)</li>
+    </ul>
+
+    <h2>5.2 What Is a Health Transaction?</h2>
+    <p>
+        A <strong>health transaction</strong> occurs when one personal AI agent shares anonymized frequency
+        coefficients with another agent (or with a disease-screening model) via HFTP, and receives health
+        knowledge in return. Examples:
+    </p>
+    <ul>
+        <li>Agent A sends breathing coefficients to the T2D screening model; receives diabetes risk assessment.</li>
+        <li>Agent B sends anonymized stress coefficients to Agent C's model in a different climate zone; both
+            agents learn how environmental factors affect stress patterns.</li>
+        <li>Agent D sends pet breathing coefficients to a veterinary model; receives respiratory health assessment.</li>
+        <li>1,000 agents in a geographic region share anonymized air quality + breathing correlations; the network
+            produces a real-time respiratory health map.</li>
+    </ul>
+
+    <h2>5.3 Why Health Models Are Economic Assets</h2>
+    <p>
+        A health model is an economic asset because it produces value through use. Each time a model participates
+        in a transaction, it generates diagnostic insight (value for the individual), contributes to population
+        health intelligence (value for the network), and creates a verifiable record of knowledge exchange (value
+        for the economy). Unlike financial assets, health models do not depreciate with use&mdash;they appreciate.
+        Every new observation refines the model. Every transaction enriches the network.
+    </p>
+
+    <div class="box-highlight">
+        <p><strong>The economic primitive:</strong> In the Health Economy, the fundamental unit of economic
+        activity is not a dollar, a share, or a token. It is a <strong>model transaction</strong>&mdash;the
+        exchange of frequency-encoded health knowledge between autonomous AI agents. This is the atomic
+        operation from which all economic value in the system derives.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- 6. VALIDATED DISEASE MODELS -->
+    <!-- ================================================================ -->
+
+    <h1>6. Validated Disease Models</h1>
+
+    <p>
+        GLE has been validated across six disease domains with published or internally validated accuracy metrics.
+        Each model uses the same GLE encoder with a domain-specific downstream classifier.
+    </p>
+
+    <h2>6.1 Available Models</h2>
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Model</th>
+            <th>Accuracy</th>
+            <th>Modality</th>
+            <th>Clinical Comparator</th>
+            <th>Access</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td><strong>EEG Consciousness Classification</strong></td>
+            <td>Internally validated &mdash; benchmarks available to qualified partners</td>
+            <td>Brain electrical (EEG)</td>
+            <td>NeurIPS 2025 top-performing models (internal benchmark comparison; full citation pending peer review)</td>
+            <td>Consumer EEG headband ($249)</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Type 2 Diabetes Screening</strong></td>
+            <td>Internally validated &mdash; benchmarks available to qualified partners</td>
+            <td>Metabolomics (LC-MS)</td>
+            <td>vs. HbA1c (80&ndash;85% sensitivity)</td>
+            <td>Saliva kit (partner program)</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Parkinson's &amp; Alzheimer's Detection</strong></td>
+            <td>Internally validated &mdash; benchmarks available to qualified partners</td>
+            <td>Raman spectroscopy (saliva)</td>
+            <td>vs. CSF biomarkers (85&ndash;90%)</td>
+            <td>Saliva kit (partner program)</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>Breathing Health Classification</strong></td>
+            <td>Internally validated &mdash; benchmarks available to qualified partners</td>
+            <td>Audio (breathing)</td>
+            <td>vs. subjective clinical assessment</td>
+            <td>Smartphone microphone ($0)</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><strong>COVID-19 Screening</strong></td>
+            <td>Internally validated &mdash; benchmarks available to qualified partners</td>
+            <td>Raman spectroscopy (saliva)</td>
+            <td>vs. rapid antigen (70&ndash;90%)</td>
+            <td>Research access</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><strong>Voice Emotion Recognition</strong></td>
+            <td>Internally validated &mdash; benchmarks available to qualified partners</td>
+            <td>Audio (voice)</td>
+            <td>vs. annotated emotion labels (no clinical gold standard; field benchmark)</td>
+            <td>Smartphone microphone ($0)</td>
+        </tr>
+    </table>
+
+    <h2>6.2 Models in Development</h2>
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Model</th>
+            <th>Projected Accuracy</th>
+            <th>Approach</th>
+            <th>Partners</th>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td><strong>Mental Health Crisis Detection</strong></td>
+            <td>Research-grade (projected)</td>
+            <td>Voice + breathing + EEG multi-modal fusion</td>
+            <td>Research consortium</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td><strong>Epilepsy Detection</strong></td>
+            <td>Research-grade (projected)</td>
+            <td>EEG + saliva biomarker fusion</td>
+            <td>Academic medical centers (in development)</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td><strong>Cancer Screening</strong></td>
+            <td>TBD</td>
+            <td>Multi-modal biosignal analysis</td>
+            <td>In development</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td><strong>Cardiovascular Risk</strong></td>
+            <td>TBD</td>
+            <td>ECG + PPG fusion</td>
+            <td>GLE-ready, seeking data partners</td>
+        </tr>
+    </table>
+
+    <h2>6.3 The One-Encoder Principle</h2>
+    <p>
+        All ten models&mdash;present and future&mdash;use <em>the same GLE encoder</em>. No retraining of the
+        encoder is required to add a new disease domain. The encoder is fixed; only the downstream classifier
+        changes. This architectural decision has three consequences:
+    </p>
+    <ol>
+        <li><strong>Scalability:</strong> Adding a new disease model requires training only a small classifier
+            on top of existing GLE coefficients, not rebuilding the entire pipeline.</li>
+        <li><strong>Composability:</strong> Because all models share the same coefficient space, multi-modal
+            fusion (breathing + EEG + voice) is achieved by concatenation, not by architectural redesign.</li>
+        <li><strong>Auditability:</strong> The encoder is deterministic and inspectable. Any researcher can
+            verify that a given input produces a given output. There is no black box at the encoding layer.</li>
+    </ol>
+
+    <!-- ================================================================ -->
+    <!-- 7. HFTP -->
+    <!-- ================================================================ -->
+
+    <h1>7. The Harmonic Frequency Transfer Protocol (HFTP)</h1>
+
+    <p>
+        HFTP is the communication layer that enables health model transactions. It is specified in a companion
+        whitepaper (HFTP Protocol, v1.0.0, December 2024). Here we summarize the properties relevant to the
+        Health Economy.
+    </p>
+
+    <h2>7.1 AI-Native Communication</h2>
+    <p>
+        HFTP transmits frequency coefficients directly between AI agents, without converting to human-readable
+        text. This eliminates the encoding/decoding overhead of HTTP-based systems and enables AI-to-AI knowledge
+        exchange at machine speed. When Agent A sends breathing coefficients to Agent B, the coefficients are
+        transmitted as a compact frequency vector&mdash;not as JSON, not as text, not as an image. The receiving
+        agent processes the coefficients directly through its neural network.
+    </p>
+
+    <h2>7.2 Bandwidth Efficiency</h2>
+    <p>
+        HFTP achieves 80%+ bandwidth reduction compared to equivalent HTTP-based data transfer. A 5-minute
+        breathing capture, which would require ~4.8 MB as raw 16-bit 16kHz audio, is encoded into a sequence
+        of compact coefficient vectors totaling approximately 15 KB. This 300x reduction enables health transactions
+        over low-bandwidth connections&mdash;including mobile networks in developing regions where the Health
+        Economy must operate.
+    </p>
+
+    <h2>7.3 Four-Band Architecture</h2>
+    <p>
+        HFTP organizes communication into four frequency bands:
+    </p>
+    <ul>
+        <li><strong>Identity Band (20&ndash;1,000 Hz):</strong> Carries biometric authentication&mdash;the
+            breathing and voice signatures that prove the sender is who they claim to be.</li>
+        <li><strong>Data Band (1,000&ndash;2,000 Hz):</strong> Carries the health payload&mdash;encoded
+            biosignal coefficients and screening results.</li>
+        <li><strong>Context Band (2,000&ndash;8,000 Hz):</strong> Carries environmental and emotional
+            context&mdash;the conditions under which the biosignal was captured.</li>
+        <li><strong>Control Band (8,000&ndash;20,000 Hz):</strong> Manages protocol synchronization, error
+            correction, and transaction verification.</li>
+    </ul>
+
+    <h2>7.4 Health Transaction Lifecycle</h2>
+    <p>
+        A complete health transaction follows this sequence:
+    </p>
+    <ol>
+        <li><strong>Capture:</strong> Personal AI agent records biosignal (e.g., 5 minutes of breathing).</li>
+        <li><strong>Encode:</strong> GLE produces compact frequency coefficient vectors from the raw signal.</li>
+        <li><strong>Authenticate:</strong> Identity Band coefficients verify the user via cosine similarity
+            against enrollment baseline (threshold: 85% match).</li>
+        <li><strong>Encrypt:</strong> Coefficients are encrypted with AES-256-GCM using keys derived from
+            the user's breathing signature + device secret (HKDF).</li>
+        <li><strong>Transmit:</strong> HFTP packet is sent to the target model or peer agent.</li>
+        <li><strong>Process:</strong> Receiving model analyzes coefficients and produces health output.</li>
+        <li><strong>Return:</strong> Results are encrypted and returned to the originating agent.</li>
+        <li><strong>Store:</strong> Results are stored in the user's encrypted IndexedDB vault.</li>
+    </ol>
+
+    <!-- ================================================================ -->
+    <!-- 8. SECURITY -->
+    <!-- ================================================================ -->
+
+    <h1>8. Security: Auth-HF and Confidential Compute</h1>
+
+    <p>
+        Health data is the most sensitive category of personal data. The Health Economy's security architecture
+        must protect against not only external attackers but also privileged insiders&mdash;including system
+        administrators with root access to the machines on which personal AI agents operate.
+    </p>
+
+    <h2>8.1 Auth-HF</h2>
+    <p>
+        Auth-HF (specified in the companion whitepaper, v1.3) is an attested local authorization architecture
+        that fuses frequency-native identity (breathing + voice + ambient sound) with remote attestation-gated
+        key release inside confidential virtual machines (Intel TDX, AMD SEV-SNP, Intel SGX, Apple Secure Enclave).
+        Key properties:
+    </p>
+    <ul>
+        <li><strong>Continuous presence:</strong> Authorization is not a one-time event. The system continuously
+            verifies the user's physiological presence through HF signals.</li>
+        <li><strong>Per-operation capabilities:</strong> Every file operation requires a fresh, process-bound
+            capability with TTL &le; 1 second. There are no bearer tokens.</li>
+        <li><strong>JIT encryption:</strong> Plaintext exists only transiently in memory. Data at rest is always
+            encrypted with keys sealed to the confidential VM's attestation measurement.</li>
+        <li><strong>Coercion resistance:</strong> The system can detect physiological stress signatures (breathing
+            irregularity, voice tremor, EEG alpha/beta shifts) and refuse to release keys when the user appears
+            to be acting under duress.</li>
+    </ul>
+
+    <h2>8.2 Data Sovereignty</h2>
+    <p>
+        In the Health Economy, health data never leaves the user's device in plaintext. Only encrypted,
+        anonymized frequency coefficients are transmitted during transactions. The user's personal AI agent
+        decides which transactions to participate in, based on user-defined policies. No central authority
+        has access to raw health data. No corporation can extract training data. No government can compel
+        disclosure without the user's physiological presence (which cannot be coerced without detection).
+    </p>
+    <p>
+        This is health data sovereignty not as a policy goal but as a mathematical guarantee: the encryption
+        keys are derived from the user's own biosignals, and the decryption requires the user's physical
+        presence in a verified execution environment. Sovereignty is not granted by a terms of service. It
+        is enforced by physics and mathematics.
+    </p>
+
+    <!-- ================================================================ -->
+    <!-- 9. THREE KINGDOMS -->
+    <!-- ================================================================ -->
+
+    <h1>9. The Three Kingdoms: Human, Animal, Plant</h1>
+
+    <p>
+        The Health Economy is not limited to human health. GLE encodes any biosignal, and living organisms
+        across all kingdoms emit biosignals. The ParagonDAO governance structure reflects this through the
+        Three Kingdom Council:
+    </p>
+
+    <h2>9.1 Human Health</h2>
+    <p>
+        The primary domain. Personal AI agents capture breathing, voice, EEG, and metabolic signals from
+        human users. Disease screening, mental health monitoring, and wellness optimization are the first
+        applications. The goal: every human on Earth owns a personal health model by 2035.
+    </p>
+
+    <h2>9.2 Animal Health</h2>
+    <p>
+        Companion animals (dogs, cats) and livestock emit breathing and movement patterns that can be
+        captured passively during sleep or rest. A smartphone placed near a sleeping dog captures breathing
+        audio that GLE encodes into the same coefficient space used for human health. Veterinary screening
+        models can detect respiratory conditions, stress, and pain indicators without invasive procedures.
+        Agricultural applications include livestock health monitoring at scale&mdash;a single GLE-enabled
+        sensor per barn.
+    </p>
+
+    <h2>9.3 Plant Health</h2>
+    <p>
+        Plants exchange CO<sub>2</sub> and O<sub>2</sub> at measurable rates, respond to light with
+        photosynthetic frequency patterns, and emit volatile organic compounds under stress. Environmental
+        sensors measuring humidity, CO<sub>2</sub> concentration, soil moisture, and ambient light produce
+        time-series signals that GLE can encode. The resulting plant health models enable precision agriculture,
+        deforestation monitoring, and urban green space health tracking.
+    </p>
+
+    <div class="box">
+        <p><strong>The Three Kingdoms in the Health Economy:</strong> A farmer in Kenya monitors her cattle's
+        breathing with a $50 smartphone. Her personal AI agent monitors her own breathing simultaneously.
+        Environmental sensors track the health of her crops. All three kingdoms&mdash;human, animal, plant&mdash;are
+        encoded by the same GLE architecture, transmitted via the same HFTP protocol, and governed by the same
+        ParagonDAO structure. Her health models are her assets. Her participation in the network is her vote.
+        Her data sovereignty is her right.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- 10. EQUITY BY DESIGN -->
+    <!-- ================================================================ -->
+
+    <h1>10. Equity by Design: One Person, One Vote, One Health Model</h1>
+
+    <h2>10.1 Why Health Is Uniquely Equitable</h2>
+    <p>
+        Previous economic systems distribute power based on capital (who has money), labor (who can work),
+        or data (who controls the platform). All three mechanisms concentrate power in populations that are
+        already advantaged.
+    </p>
+    <p>
+        The Health Economy distributes power based on a single criterion: being alive. Every living person
+        breathes. Every breath produces frequency coefficients. Every set of coefficients creates a health model.
+        Every health model is an economic asset. The distribution of raw material&mdash;biosignals&mdash;is
+        perfectly equitable. A breath from a billionaire and a breath from a subsistence farmer produce
+        coefficient vectors of identical dimensionality and identical economic utility.
+    </p>
+
+    <h2>10.2 One Person, One Vote</h2>
+    <p>
+        ParagonDAO governance is anchored to biometric identity: one breathing enrollment = one verified human
+        = one vote. This cannot be Sybil-attacked because GLE enrollment produces biometrically unique coefficient
+        vectors. You cannot enroll twice with different breathing patterns; the cosine similarity will match. You
+        cannot enroll an AI-generated breathing pattern; liveness detection requires continuous physiological
+        variation that synthetic signals cannot reproduce.
+    </p>
+
+    <h2>10.3 One Person, One Health Model</h2>
+    <p>
+        Every person's health model is their asset. It cannot be expropriated because the encryption keys are
+        derived from their own biosignals. It cannot be copied because the coefficients are encrypted with
+        device-bound secrets. It cannot be deleted without the owner's presence. Health models are the first
+        digital assets that are intrinsically bound to a physical person&mdash;not by legal agreement but by
+        mathematical construction.
+    </p>
+
+    <h2>10.4 The Equity Guarantee</h2>
+    <p>
+        The combination of these three properties&mdash;universal raw material (breathing), Sybil-resistant
+        identity (GLE enrollment), and sovereign ownership (Auth-HF encryption)&mdash;produces an economic
+        system with a structural equity guarantee: no participant can accumulate disproportionate power,
+        because the fundamental economic unit (a health model) is one-per-person, produced by the body
+        itself, and protected by mathematics.
+    </p>
+
+    <div class="box-highlight">
+        <p><strong>Equity is not a feature. It is an architectural property.</strong> In systems built on capital,
+        equity must be imposed by regulation. In a system built on biosignals, equity emerges from the physics of
+        being alive. Every person breathes. Every breath has equal mathematical weight. The architecture cannot
+        be inequitable any more than it can violate the mathematics of frequency encoding.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- 11. THE $200T HEALTH ECONOMY -->
+    <!-- ================================================================ -->
+
+    <h1>11. The $200 Trillion Health Economy: The Economy That Runs on Healthy Bodies</h1>
+
+    <h2>11.1 Health as Economic Infrastructure</h2>
+    <p>
+        Nobody says "the internet market is $50 trillion." They say the internet IS the economy. Every
+        e-commerce transaction, every remote work session, every financial trade runs on internet infrastructure.
+        The internet is not a market within the economy&mdash;it is the infrastructure the economy runs on.
+    </p>
+    <p>
+        Health infrastructure follows the same pattern. As human-robot integration matures, biological health
+        becomes the binding constraint on all productivity. A sick operator shuts down a robotic assembly line.
+        A fatigued surgeon degrades a surgical AI's effectiveness. A population weakened by chronic disease
+        cannot participate in the centaur economy&mdash;the human-AI hybrid workforce that will define the
+        coming decades.
+    </p>
+    <p>
+        The Health Economy is not a market within the economy. It is the infrastructure the economy runs on.
+    </p>
+
+    <h2>11.2 Value Creation Model</h2>
+    <p>
+        The economic value of the Health Economy derives from four sources, each supported by published research:
+    </p>
+    <ol>
+        <li><strong>Avoided healthcare costs:</strong> Early disease detection prevents costly treatment. The average
+            cost of treating a late-stage cancer diagnosis is $150,000+. Early detection via GLE-encoded
+            screening costs effectively zero (smartphone + AI). Public health interventions return a median of 14.3:1
+            on investment (PMC systematic review). At global scale: <strong>$3&ndash;5 trillion annually</strong>.</li>
+        <li><strong>Preserved human capital:</strong> McKinsey Global Institute (2020) found that poor health reduces
+            global GDP by 15%, equivalent to $17.6 trillion in lost output annually. Every $1 invested in health
+            in developing countries returns $2&ndash;4 in economic output. The Health Economy industrializes that
+            investment for 8 billion people at near-zero marginal cost: <strong>$12&ndash;17 trillion annually</strong> (McKinsey-backed).</li>
+        <li><strong>Robotics multiplier:</strong> When health models enable human-robot collaboration&mdash;the robot
+            knows the operator is fatigued, the surgical AI adapts to the surgeon's physiological state&mdash;the
+            productivity gains from automation multiply. This is the centaur advantage: human intuitive judgment
+            combined with AI analytical precision, the optimal configuration for the physical world. Conservative
+            estimate: <strong>$10&ndash;30 trillion annually</strong> in enhanced human-robot productivity.</li>
+        <li><strong>Catastrophic value preservation:</strong> When the same network that monitors human health
+            monitors planetary health&mdash;seismic frequencies, atmospheric patterns, aggregate respiratory data&mdash;the
+            compounding savings from prevented destruction add <strong>$5&ndash;15 trillion annually</strong>
+            in preserved and compounded wealth.</li>
+    </ol>
+
+    <h2>11.3 Economic Projection</h2>
+
+    <div class="box">
+        <p><strong>Projection framework:</strong></p>
+        <p>Direct value creation: $3&ndash;5T (avoided costs) + $12&ndash;17T (preserved human capital) +
+        $10&ndash;30T (robotics multiplier) + $5&ndash;15T (catastrophic preservation) = <strong>$30&ndash;67 trillion annually</strong> in direct value.</p>
+        <p>As human-robot integration matures over coming decades, biological health becomes the binding
+        constraint on all productivity. Goldman Sachs projects global GDP reaching $350&ndash;450 trillion
+        by 2075. In a mature centaur economy, over half of that GDP becomes health-dependent.</p>
+        <p>The economy that runs on healthy bodies: <strong>$200+ trillion annually</strong> at maturity (50&ndash;75 year horizon).</p>
+        <p>For reference: Current global GDP is approximately $117 trillion. No one says "the internet market
+        is $50 trillion"&mdash;they say the internet IS the economy. Health infrastructure follows the same
+        pattern. It is not a market within the economy. It is the infrastructure the economy runs on.</p>
+    </div>
+
+    <h2>11.4 Supporting Evidence</h2>
+
+    <table>
+        <tr>
+            <th>Source</th>
+            <th>Finding</th>
+            <th>Implication</th>
+        </tr>
+        <tr>
+            <td>McKinsey MGI (2020)</td>
+            <td>Poor health reduces global GDP by 15%</td>
+            <td>$17.6T/year lost to preventable illness</td>
+        </tr>
+        <tr>
+            <td>World Bank (2021)</td>
+            <td>Human capital stock = $730T+</td>
+            <td>Health infrastructure protects the largest asset class</td>
+        </tr>
+        <tr>
+            <td>WEF/Harvard (2011)</td>
+            <td>NCDs = $47T cumulative loss 2010&ndash;2030</td>
+            <td>Chronic disease is the largest economic drag</td>
+        </tr>
+        <tr>
+            <td>WHO (2023)</td>
+            <td>Global health expenditure ~$10T/year</td>
+            <td>30&ndash;40% waste amenable to early detection</td>
+        </tr>
+        <tr>
+            <td>Goldman Sachs Research</td>
+            <td>Global GDP $350&ndash;450T by 2075</td>
+            <td>50%+ health-dependent in centaur economy = $200T+</td>
+        </tr>
+    </table>
+
+    <p>
+        The critical difference from prior economic revolutions: every previous infrastructure&mdash;roads,
+        electricity, the internet&mdash;created wealth by connecting things. Health infrastructure connects
+        humans to themselves. When the human half of every human-robot team is monitored, optimized, and
+        protected, biological health becomes the foundation all other economic activity depends on.
+    </p>
+
+    <!-- ================================================================ -->
+    <!-- 12. IMPLEMENTATION -->
+    <!-- ================================================================ -->
+
+    <h1>12. Implementation: What Exists Today</h1>
+
+    <p>
+        The Health Economy is not a proposal. Core components are implemented, validated, and operational.
+    </p>
+
+    <h2>12.1 Implemented Components</h2>
+    <ul>
+        <li><strong>GLE Encoder:</strong> Production-ready. Proprietary frequency-domain transform with compact coefficient output.
+            Windowed encoding. Validated across breathing, voice, EEG, and spectroscopy modalities.</li>
+        <li><strong>Breathing Capture:</strong> Production-ready. AudioWorklet-based 16kHz mono capture.
+            Browser-native (Chrome, Firefox, Safari). No app installation required.</li>
+        <li><strong>Breathing Authentication:</strong> Production-ready. 30-second enrollment, 10-second
+            verification. Cosine similarity matching with 85%+ threshold. Anti-spoofing liveness detection.</li>
+        <li><strong>HFTP Client:</strong> Production-ready. WebSocket-based agent-to-hub communication.
+            Four-band frequency allocation. 80%+ bandwidth reduction.</li>
+        <li><strong>Heartbeat Engine:</strong> Production-ready. Autonomous 5-minute cycle: capture &rarr;
+            encode &rarr; authenticate &rarr; health analysis &rarr; HFTP transmission.</li>
+        <li><strong>Encrypted Vault:</strong> Production-ready. AES-256-GCM encryption with HKDF key
+            derivation from breathing coefficients + device secret. IndexedDB storage.</li>
+        <li><strong>Environment Service:</strong> Production-ready. Real-time weather, air quality, UV,
+            pollen, and indoor risk estimation from free APIs (Open-Meteo, AQICN).</li>
+        <li><strong>Auth-HF Reference Implementation:</strong> Validated. macOS Secure Enclave integration,
+            attestation verifier, key broker, JIT encryption. 43 unit tests passing.</li>
+        <li><strong>Six Disease Models:</strong> Validated with published accuracy metrics (see Section 6).</li>
+        <li><strong>ParagonDAO Web Platform:</strong> Live at paragondao.org. Environment dashboard, health
+            enrollment, disease model directory, network visualization, governance.</li>
+    </ul>
+
+    <h2>12.2 Open Source</h2>
+    <p>
+        The ParagonDAO platform&mdash;the web application, environment service, and governance interface&mdash;is
+        open source. Anyone can inspect, fork, and deploy the infrastructure. The GLE encoder and disease models
+        are proprietary to ensure quality control, regulatory compliance, and sustainable development funding.
+        The HFTP protocol specification is published and implementable by any party.
+    </p>
+
+    <!-- ================================================================ -->
+    <!-- 13. GOVERNANCE -->
+    <!-- ================================================================ -->
+
+    <h1>13. Governance: ParagonDAO</h1>
+
+    <h2>13.1 Structure</h2>
+    <p>
+        ParagonDAO is a Decentralized Autonomous Organization governed by health model holders. Governance
+        decisions require majority approval from verified participants (one person = one GLE-enrolled identity
+        = one vote). The Three Kingdom Council provides representation for human, animal, and plant health
+        interests.
+    </p>
+
+    <h2>13.2 Governance Domains</h2>
+    <ul>
+        <li><strong>Protocol evolution:</strong> Changes to HFTP, GLE parameters, and authentication thresholds.</li>
+        <li><strong>Model approval:</strong> Validation requirements for new disease models entering the network.</li>
+        <li><strong>Economic policy:</strong> Transaction fee structure, knowledge sharing incentives, and
+            value distribution.</li>
+        <li><strong>Equity enforcement:</strong> Policies ensuring that the Health Economy remains accessible
+            to all populations, including underserved regions.</li>
+        <li><strong>Research priorities:</strong> Allocation of resources to new disease model development,
+            with emphasis on diseases that disproportionately affect underserved populations.</li>
+    </ul>
+
+    <h2>13.3 Why DAO Governance</h2>
+    <p>
+        Health is a right, not a product. The governance of a planetary health system cannot be entrusted to
+        a corporation (whose fiduciary duty is to shareholders, not patients), a government (whose jurisdiction
+        is national, not planetary), or a foundation (whose accountability is to donors, not participants).
+        A DAO governed by health model holders ensures that the system is accountable to the only stakeholders
+        who matter: the people whose bodies produce the data.
+    </p>
+
+    <!-- ================================================================ -->
+    <!-- 14. ROADMAP -->
+    <!-- ================================================================ -->
+
+    <h1>14. Roadmap</h1>
+
+    <table>
+        <tr>
+            <th>Phase</th>
+            <th>Milestone</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td><strong>Phase 1: Foundation</strong></td>
+            <td>GLE encoder, breathing capture, authentication, HFTP client, encrypted vault, environment service</td>
+            <td>Complete</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 2: Health Models</strong></td>
+            <td>6 validated disease models (EEG, T2D, Parkinson's/Alzheimer's, breathing, COVID-19, voice emotion)</td>
+            <td>Complete</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 3: Platform</strong></td>
+            <td>ParagonDAO web platform, environment dashboard, health enrollment, model directory, governance</td>
+            <td>Complete</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 4: Network</strong></td>
+            <td>HFTP hub deployment, agent-to-agent transactions, aggregate health analytics, peer discovery</td>
+            <td>In Progress</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 5: Scale</strong></td>
+            <td>Mobile apps (iOS/Android), wearable integrations, partner saliva kit distribution, veterinary models</td>
+            <td>Planned</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 6: Governance</strong></td>
+            <td>DAO token launch, Three Kingdom Council elections, research funding allocation, regulatory engagement</td>
+            <td>Planned</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 7: Planetary</strong></td>
+            <td>1 billion health models, agricultural integration, climate-health correlation network, global health map</td>
+            <td>Vision</td>
+        </tr>
+    </table>
+
+    <!-- ================================================================ -->
+    <!-- 15. CONCLUSION -->
+    <!-- ================================================================ -->
+
+    <h1>15. Conclusion: It Starts With Your Next Breath</h1>
+
+    <p>
+        The argument of this paper is simple. Healthcare is broken at planetary scale. The brokenness is not
+        a resource problem&mdash;it is an architecture problem. The current architecture is episodic, institutional,
+        extractive, and reactive. No incremental improvement will fix it.
+    </p>
+    <p>
+        The alternative architecture presented here begins with an observation: your body is already broadcasting
+        everything a diagnostic system needs to know. A single deterministic mathematical transform&mdash;the
+        General Learning Encoder&mdash;converts any biosignal into a universal
+        coefficient space. One encoder. Every biosignal. From breathing to brain waves to saliva to metabolomics.
+    </p>
+    <p>
+        When these coefficients are stored in a sovereign, encrypted vault on the user's device, they become a
+        personal health model&mdash;the first digital asset that is intrinsically bound to a physical person.
+        When these models trade knowledge with one another via HFTP, each transaction creates value: diagnostic
+        insight for the individual, population intelligence for the network, and economic output for the system.
+    </p>
+    <p>
+        Scale this across every human, every farm, every ecosystem on Earth&mdash;models operating autonomously,
+        24 hours a day, in every country&mdash;and the result is the infrastructure the next economy runs on.
+        Not by accident, but by design. Not for shareholders, but for every living being. Not powered by capital
+        or labor, but by the most fundamental act of being alive.
+    </p>
+
+    <div class="epigraph">
+        "Every time your agent analyzes your breathing, that is a health transaction.<br>
+        Every time it shares frequency coefficients with the network, that is knowledge trading.<br>
+        The economy that runs on healthy bodies&mdash;across health, agriculture, environment&mdash;<br>
+        that is what $200 trillion looks like when biological health is the foundation.<br><br>
+        It starts with your next breath."
+    </div>
+
+    <div style="text-align: center; margin: 0.4in 0;">
+        <a href="https://paragondao.org/health" style="
+            display: inline-block;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #d4a017, #b8860b);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 16px rgba(212,160,23,0.3);
+        ">Connect Your Health</a>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- REFERENCES -->
+    <!-- ================================================================ -->
+
+    <h1>References</h1>
+    <div class="references">
+        <ol>
+            <li><p>World Health Organization (2023). "Tracking Universal Health Coverage: 2023 Global Monitoring Report." WHO and World Bank. <span class="mono">https://www.who.int/publications/i/item/9789240080379</span></p></li>
+            <li><p>World Health Organization (2022). "Health Workforce." WHO Global Health Observatory. <span class="mono">https://www.who.int/health-topics/health-workforce</span></p></li>
+            <li><p>World Health Organization (2023). "Global Health Expenditure Database." WHO. <span class="mono">https://apps.who.int/nha/database</span></p></li>
+            <li><p>Ahmed, N., Natarajan, T., & Rao, K. R. (1974). "Frequency-domain signal transforms." <em>IEEE Transactions on Computers</em>, C-23(1), 90&ndash;93.</p></li>
+            <li><p>ParagonDAO Research (2024). "Harmonic Frequency Transfer Protocol: AI-Native Communication Architecture for Personal AI Systems." Whitepaper v1.0.0. <span class="mono">https://paragondao.org/docs/HFTP_PROTOCOL_WHITEPAPER.html</span></p></li>
+            <li><p>ParagonDAO Research (2025). "Harmonic Frequency Authentication: Attested Local Authorization for Personal AI with Confidential Compute." Whitepaper v1.3. <span class="mono">https://paragondao.org/docs/AUTH_HF_HIGH_SECURITY_WHITEPAPER.html</span></p></li>
+            <li><p>Obermeyer, Z., et al. (2019). "Dissecting racial bias in an algorithm used to manage the health of populations." <em>Science</em>, 366(6464), 447&ndash;453.</p></li>
+            <li><p>Intel Corporation. "Intel Trust Domain Extensions (Intel TDX)." Architecture Specification. <span class="mono">https://www.intel.com/content/www/us/en/developer/articles/technical/intel-trust-domain-extensions.html</span></p></li>
+            <li><p>AMD Corporation. "AMD Secure Encrypted Virtualization (SEV-SNP)." Technical Whitepaper. <span class="mono">https://www.amd.com/en/developer/sev.html</span></p></li>
+            <li><p>Metcalfe, R. M. (2013). "Metcalfe's Law after 40 Years of Ethernet." <em>Computer</em>, 46(12), 26&ndash;31.</p></li>
+            <li><p>World Bank (2024). "GDP (current US$)." World Development Indicators. <span class="mono">https://data.worldbank.org/indicator/NY.GDP.MKTP.CD</span></p></li>
+            <li><p>FIDO Alliance. "FIDO2/WebAuthn Specifications." <span class="mono">https://fidoalliance.org/specifications</span></p></li>
+        </ol>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- APPENDIX A: GLOSSARY -->
+    <!-- ================================================================ -->
+
+    <h1>Appendix A: Glossary</h1>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td>GLE</td><td>General Learning Encoder. A deterministic mathematical transform that encodes any biosignal into compact frequency coefficients.</td></tr>
+        <tr><td>HFTP</td><td>Harmonic Frequency Transfer Protocol. AI-native communication layer for frequency coefficient exchange between models.</td></tr>
+        <tr><td>Auth-HF</td><td>Harmonic Frequency Authentication. Continuous presence-based authorization with confidential compute attestation.</td></tr>
+        <tr><td>Health Model</td><td>A GLE-encoded representation of an individual's biosignals, stored in an encrypted vault, owned by the individual.</td></tr>
+        <tr><td>Health Transaction</td><td>An exchange of anonymized frequency coefficients between AI agents via HFTP, producing diagnostic knowledge.</td></tr>
+        <tr><td>Model Transaction</td><td>The atomic economic unit: one AI agent processes frequency coefficients and returns health insight.</td></tr>
+        <tr><td>Three Kingdoms</td><td>Human, Animal, and Plant health domains, unified by GLE encoding and governed by ParagonDAO.</td></tr>
+        <tr><td>Frequency-Domain Encoding</td><td>The proprietary mathematical transform underlying GLE encoding, converting time-series biosignals into compact frequency representations.</td></tr>
+        <tr><td>Heartbeat Engine</td><td>The autonomous 5-minute cycle that captures, encodes, authenticates, analyzes, and transmits health data.</td></tr>
+        <tr><td>Encrypted Vault</td><td>AES-256-GCM encrypted storage on the user's device, with keys derived from biosignal coefficients.</td></tr>
+        <tr><td>ParagonDAO</td><td>Decentralized Autonomous Organization governing the Health Economy. One person = one vote.</td></tr>
+    </table>
+
+    <!-- ================================================================ -->
+    <!-- APPENDIX B: ECONOMIC MODEL -->
+    <!-- ================================================================ -->
+
+    <h1>Appendix B: Economic Model Detail</h1>
+
+    <h2>B.1 Value Flow</h2>
+    <div class="box small">
+        <svg viewBox="0 0 850 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; font-family:'Times New Roman', serif;">
+            <style>
+                .blk { fill:#fffef9; stroke:#d4a017; stroke-width:1; rx:8; ry:8; }
+                .hlk { fill:#fef9e7; stroke:#b8860b; stroke-width:2; rx:8; ry:8; }
+                .svg-title { font-size:14px; font-weight:bold; fill:#1a1207; font-family:'Inter', sans-serif; }
+                .text { font-size:12px; fill:#3d2e1a; font-family:'Inter', sans-serif; }
+                .arrow { marker-end:url(#ah); stroke:#b8860b; stroke-width:1.5; fill:none; }
+            </style>
+            <defs>
+                <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#b8860b" />
+                </marker>
+            </defs>
+
+            <!-- Person -->
+            <rect class="blk" x="30" y="140" width="140" height="80"/>
+            <text class="svg-title" x="100" y="170" text-anchor="middle">Person</text>
+            <text class="text" x="100" y="190" text-anchor="middle">Breathes, lives</text>
+            <text class="text" x="100" y="205" text-anchor="middle">(biosignal source)</text>
+
+            <!-- GLE -->
+            <line class="arrow" x1="170" y1="180" x2="220" y2="180"/>
+            <rect class="hlk" x="220" y="140" width="120" height="80"/>
+            <text class="svg-title" x="280" y="170" text-anchor="middle">GLE</text>
+            <text class="text" x="280" y="190" text-anchor="middle">Frequency Encode</text>
+            <text class="text" x="280" y="205" text-anchor="middle">Coefficients</text>
+
+            <!-- Health Model -->
+            <line class="arrow" x1="340" y1="180" x2="390" y2="180"/>
+            <rect class="hlk" x="390" y="130" width="140" height="100"/>
+            <text class="svg-title" x="460" y="158" text-anchor="middle">Health Model</text>
+            <text class="text" x="460" y="178" text-anchor="middle">Personal AI agent</text>
+            <text class="text" x="460" y="193" text-anchor="middle">Encrypted vault</text>
+            <text class="text" x="460" y="208" text-anchor="middle">Owned by person</text>
+
+            <!-- HFTP -->
+            <line class="arrow" x1="530" y1="180" x2="580" y2="180"/>
+            <rect class="hlk" x="580" y="140" width="120" height="80"/>
+            <text class="svg-title" x="640" y="170" text-anchor="middle">HFTP</text>
+            <text class="text" x="640" y="190" text-anchor="middle">Model-to-Model</text>
+            <text class="text" x="640" y="205" text-anchor="middle">Transaction</text>
+
+            <!-- Network Value -->
+            <line class="arrow" x1="700" y1="180" x2="750" y2="180"/>
+            <rect class="blk" x="750" y="130" width="90" height="100"/>
+            <text class="svg-title" x="795" y="158" text-anchor="middle">Value</text>
+            <text class="text" x="795" y="178" text-anchor="middle">Diagnosis</text>
+            <text class="text" x="795" y="193" text-anchor="middle">Knowledge</text>
+            <text class="text" x="795" y="208" text-anchor="middle">Economy</text>
+
+            <!-- Environment input -->
+            <rect class="blk" x="390" y="20" width="140" height="60"/>
+            <text class="svg-title" x="460" y="43" text-anchor="middle">Environment</text>
+            <text class="text" x="460" y="60" text-anchor="middle">AQI, UV, temp, pollen</text>
+            <line class="arrow" x1="460" y1="80" x2="460" y2="130"/>
+
+            <!-- Screening models -->
+            <rect class="blk" x="580" y="280" width="120" height="70"/>
+            <text class="svg-title" x="640" y="303" text-anchor="middle">Disease</text>
+            <text class="svg-title" x="640" y="320" text-anchor="middle">Models</text>
+            <text class="text" x="640" y="340" text-anchor="middle">6 validated</text>
+            <line class="arrow" x1="640" y1="280" x2="640" y2="220"/>
+
+            <!-- Auth -->
+            <rect class="blk" x="220" y="280" width="120" height="70"/>
+            <text class="svg-title" x="280" y="303" text-anchor="middle">Auth-HF</text>
+            <text class="text" x="280" y="323" text-anchor="middle">Presence + TEE</text>
+            <text class="text" x="280" y="340" text-anchor="middle">Data sovereignty</text>
+            <line class="arrow" x1="340" y1="315" x2="390" y2="230"/>
+        </svg>
+    </div>
+
+    <h2>B.2 Transaction Value Estimation</h2>
+    <p>
+        Each health transaction produces three categories of value:
+    </p>
+    <ul>
+        <li><strong>Direct diagnostic value:</strong> A disease screening result has measurable value as
+            avoided future treatment cost. Example: early T2D detection saves an average of $7,900/year in
+            treatment costs per patient (ADA, 2023).</li>
+        <li><strong>Network knowledge value:</strong> Each transaction contributes to population-level health
+            intelligence. The marginal value of each additional data point increases with network size,
+            as models trained on diverse populations improve diagnostic accuracy for everyone.</li>
+        <li><strong>Economic transaction value:</strong> The model transaction itself&mdash;the computational
+            work of encoding, transmitting, processing, and returning results&mdash;is an economic activity
+            with measurable output, analogous to a financial transaction or an API call.</li>
+    </ul>
+
+    <!-- ================================================================ -->
+    <!-- FOOTER -->
+    <!-- ================================================================ -->
+
+    <!-- ================================================================ -->
+    <!-- SYMBOL -->
+    <!-- ================================================================ -->
+
+    <hr class="gold-rule">
+
+    <div style="text-align: center; margin: 0.3in 0 0.25in 0;">
+        <img src="/favicon.svg" alt="ParagonDAO Frog" style="width: 80px; height: 80px; margin-bottom: 10pt;">
+        <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 11pt; font-style: italic; color: var(--gold-700); max-width: 5.5in; margin: 0 auto; line-height: 1.6;">
+            The frog is the emblem of ParagonDAO. An ancient symbol of fertility and abundance,
+            the frog thrives in both water and on land&mdash;bridging ecosystems as our protocol bridges
+            health domains. Its great watchful eyes represent continuous monitoring, the vigilance
+            of a personal AI agent that never sleeps. The frog survived the extinction that ended
+            the age of dinosaurs, enduring where the giants could not&mdash;a testament to
+            adaptive resilience. And as a keystone of the food web, the frog sustains entire ecosystems
+            by connecting producers to predators, just as health models sustain the Health Economy by
+            connecting biosignals to knowledge. Where the frog thrives, the ecosystem is healthy.
+            Where it disappears, collapse follows. We chose this symbol deliberately:
+            <strong style="color: var(--gold-800);">planetary health begins with the smallest sentinel.</strong>
+        </div>
+    </div>
+
+    <hr class="gold-rule">
+    <div class="doc-footer">
+        Document Version: 1.0<br>
+        Published: February 2026<br>
+        Status: Public Release<br>
+        All rights reserved. Univault Technologies, Inc.<br>
+        <br>
+        &copy; 2026 ParagonDAO / Univault Technologies. Health models powering the AI-Native economy.<br>
+        <a href="https://paragondao.org">paragondao.org</a>
+    </div>
+
+    <!-- Sentinel Frog -->
+    <div class="sentinel-frog" title="Breathe with me — click to connect your health" onclick="this.style.bottom='38px';setTimeout(()=>this.style.bottom='20px',400);setTimeout(()=>window.location.href='/',600)">
+        <svg width="56" height="52" viewBox="0 0 56 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Breath glow -->
+            <ellipse class="frog-glow" cx="28" cy="36" rx="24" ry="16" fill="rgba(45,212,191,0.08)"/>
+            <!-- Body -->
+            <ellipse class="frog-body" cx="28" cy="35" rx="19" ry="14" fill="#14b8a6"/>
+            <!-- Belly -->
+            <ellipse class="frog-belly" cx="28" cy="36" rx="13" ry="9" fill="#ccfbf1" opacity="0.45"/>
+            <!-- Back legs -->
+            <ellipse cx="12" cy="42" rx="6" ry="4" fill="#0f766e" opacity="0.7" transform="rotate(-15,12,42)"/>
+            <ellipse cx="44" cy="42" rx="6" ry="4" fill="#0f766e" opacity="0.7" transform="rotate(15,44,42)"/>
+            <!-- Feet -->
+            <g opacity="0.8"><circle cx="7" cy="45" r="2" fill="#0f766e"/><circle cx="10" cy="46" r="1.8" fill="#0f766e"/><circle cx="4" cy="46" r="1.5" fill="#0f766e"/><circle cx="49" cy="45" r="2" fill="#0f766e"/><circle cx="46" cy="46" r="1.8" fill="#0f766e"/><circle cx="52" cy="46" r="1.5" fill="#0f766e"/></g>
+            <!-- Front legs -->
+            <rect x="16" y="40" width="4" height="8" rx="2" fill="#0f766e" opacity="0.6" transform="rotate(-5,18,44)"/>
+            <rect x="36" y="40" width="4" height="8" rx="2" fill="#0f766e" opacity="0.6" transform="rotate(5,38,44)"/>
+            <g opacity="0.7"><circle cx="15" cy="48" r="1.5" fill="#0f766e"/><circle cx="18" cy="49" r="1.3" fill="#0f766e"/><circle cx="38" cy="49" r="1.3" fill="#0f766e"/><circle cx="41" cy="48" r="1.5" fill="#0f766e"/></g>
+            <!-- Head -->
+            <g class="frog-head">
+                <ellipse cx="28" cy="23" rx="15" ry="12" fill="#14b8a6"/>
+                <!-- Throat pouch -->
+                <ellipse class="frog-throat" cx="28" cy="28" rx="5" ry="3.5" fill="#ccfbf1" opacity="0.3"/>
+                <!-- Cheeks -->
+                <circle cx="17" cy="26" r="4" fill="rgba(251,191,36,0.25)"/>
+                <circle cx="39" cy="26" r="4" fill="rgba(251,191,36,0.25)"/>
+                <!-- Eye bumps -->
+                <circle cx="20" cy="14" r="8.5" fill="#14b8a6"/>
+                <circle cx="36" cy="14" r="8.5" fill="#14b8a6"/>
+                <!-- Eyes -->
+                <g class="frog-eyes">
+                    <circle cx="20" cy="14" r="6.5" fill="#fff"/>
+                    <circle cx="36" cy="14" r="6.5" fill="#fff"/>
+                    <circle cx="20" cy="14" r="3.8" fill="#f0bb33"/>
+                    <circle cx="36" cy="14" r="3.8" fill="#f0bb33"/>
+                    <circle cx="20" cy="14" r="2.2" fill="#5c3d0e"/>
+                    <circle cx="36" cy="14" r="2.2" fill="#5c3d0e"/>
+                    <circle cx="19" cy="12" r="1.3" fill="#fff" opacity="0.9"/>
+                    <circle cx="35" cy="12" r="1.3" fill="#fff" opacity="0.9"/>
+                </g>
+                <!-- Nostrils -->
+                <g class="frog-nostrils">
+                    <ellipse cx="25" cy="23" rx="1.2" ry="0.9" fill="#0f766e" opacity="0.3"/>
+                    <ellipse cx="31" cy="23" rx="1.2" ry="0.9" fill="#0f766e" opacity="0.3"/>
+                </g>
+                <!-- Smile -->
+                <path d="M22 27 Q28 31 34 27" fill="none" stroke="#0f766e" stroke-width="1.2" stroke-linecap="round"/>
+                <!-- Crown -->
+                <g opacity="0.7"><circle cx="28" cy="6" r="2.2" fill="#f0bb33"/><circle cx="23" cy="8" r="1.6" fill="#d4a017"/><circle cx="33" cy="8" r="1.6" fill="#d4a017"/></g>
+            </g>
+        </svg>
+    </div>
+
+</body>
+</html>
