@@ -100,6 +100,25 @@ function makeOnChainRecord(modelId, certTier, timestamp) {
   }
 }
 
+// Impact data factory
+function makeImpact({ apiTotal, apiMonth, trend, apps, appNames, peopleTotal, peopleMonth, screenings, countries, topRegions, revTotal, revMonth }) {
+  return {
+    apiCalls: { total: apiTotal, thisMonth: apiMonth, trend },
+    activeApps: apps,
+    appNames,
+    peopleReached: { total: peopleTotal, thisMonth: peopleMonth, screeningsCompleted: screenings },
+    geography: { countries, topRegions },
+    revenue: { totalEarned: revTotal, thisMonth: revMonth, currency: 'USD', perCallRate: 0.005 },
+    timeline: [
+      { month: 'Oct 2026', apiCalls: Math.round(apiMonth * 0.09), people: Math.round(peopleMonth * 0.13), apps: Math.max(1, Math.round(apps * 0.17)) },
+      { month: 'Nov 2026', apiCalls: Math.round(apiMonth * 0.24), people: Math.round(peopleMonth * 0.36), apps: Math.max(2, Math.round(apps * 0.33)) },
+      { month: 'Dec 2026', apiCalls: Math.round(apiMonth * 0.55), people: Math.round(peopleMonth * 0.65), apps: Math.max(3, Math.round(apps * 0.58)) },
+      { month: 'Jan 2027', apiCalls: Math.round(apiMonth * 0.79), people: Math.round(peopleMonth * 0.82), apps: Math.max(4, Math.round(apps * 0.75)) },
+      { month: 'Feb 2027', apiCalls: apiMonth, people: peopleMonth, apps },
+    ],
+  }
+}
+
 // 3 models for the Forge (builder's own dashboard)
 export const forgeModels = [
   {
@@ -125,9 +144,17 @@ export const forgeModels = [
       description: 'State-of-the-art sleep staging with subject-invariant GLE encoding. Achieves Platinum certification with 96.7% accuracy across 4,112 subjects.',
       license: 'ParagonDAO Open Research License',
       tags: ['sleep', 'eeg', 'polysomnography', 'clinical-grade'],
-      downloads: 1847,
-      citations: 12,
     },
+    impact: makeImpact({
+      apiTotal: 847_293, apiMonth: 142_800, trend: 0.23, apps: 12,
+      appNames: ['SleepWise', 'NeuroScreen Pro', 'CampusSleep@Utah', 'SleepCheck Mobile'],
+      peopleTotal: 89_400, peopleMonth: 14_200, screenings: 71_520, countries: 23,
+      topRegions: [
+        { name: 'United States', percentage: 41 }, { name: 'United Kingdom', percentage: 18 },
+        { name: 'Germany', percentage: 12 }, { name: 'India', percentage: 9 }, { name: 'Brazil', percentage: 7 },
+      ],
+      revTotal: 4267.50, revMonth: 712.80,
+    }),
   },
   {
     id: 'forge-002',
@@ -145,6 +172,7 @@ export const forgeModels = [
       'neurips-eeg': { accuracy: 0.841, f1_score: 0.823, auc_roc: 0.912, subject_invariance: 0.801 },
     },
     onChain: makeOnChainRecord('forge002epilepsy', 'silver', new Date('2026-02-20T11:08:00Z')),
+    impact: null, // Not published yet
   },
   {
     id: 'forge-003',
@@ -160,6 +188,7 @@ export const forgeModels = [
     verificationProgress: 0.62,
     benchmarkResults: null,
     onChain: null,
+    impact: null, // Still verifying
   },
 ]
 
@@ -182,9 +211,17 @@ export const exchangeModels = [
       description: 'The reference implementation. ParagonDAO\'s own sleep staging model achieving 13.5x improvement over NeurIPS 2024 competition baseline.',
       license: 'ParagonDAO Open Research License',
       tags: ['sleep', 'eeg', 'reference-implementation', 'gle'],
-      downloads: 3241,
-      citations: 28,
     },
+    impact: makeImpact({
+      apiTotal: 847_293, apiMonth: 142_800, trend: 0.23, apps: 12,
+      appNames: ['SleepWise', 'NeuroScreen Pro', 'CampusSleep@Utah', 'SleepCheck Mobile'],
+      peopleTotal: 89_400, peopleMonth: 14_200, screenings: 71_520, countries: 23,
+      topRegions: [
+        { name: 'United States', percentage: 41 }, { name: 'United Kingdom', percentage: 18 },
+        { name: 'Germany', percentage: 12 }, { name: 'India', percentage: 9 }, { name: 'Brazil', percentage: 7 },
+      ],
+      revTotal: 4267.50, revMonth: 712.80,
+    }),
   },
   {
     id: 'ex-002',
@@ -203,9 +240,17 @@ export const exchangeModels = [
       description: 'Pre-seizure detection with 12-minute warning window. Graph neural network captures inter-channel dependencies for robust prediction.',
       license: 'Commercial License',
       tags: ['epilepsy', 'seizure-prediction', 'eeg', 'clinical'],
-      downloads: 892,
-      citations: 7,
     },
+    impact: makeImpact({
+      apiTotal: 312_400, apiMonth: 67_400, trend: 0.31, apps: 6,
+      appNames: ['SeizureGuard', 'EpiAlert Mobile', 'NeuroWatch'],
+      peopleTotal: 24_800, peopleMonth: 4_800, screenings: 19_840, countries: 14,
+      topRegions: [
+        { name: 'United States', percentage: 38 }, { name: 'Canada', percentage: 15 },
+        { name: 'United Kingdom', percentage: 14 }, { name: 'Australia', percentage: 11 }, { name: 'Germany', percentage: 8 },
+      ],
+      revTotal: 1562.00, revMonth: 337.00,
+    }),
   },
   {
     id: 'ex-003',
@@ -224,9 +269,17 @@ export const exchangeModels = [
       description: 'Combines EEG alpha asymmetry with vocal biomarkers for depression screening. Multimodal fusion achieves Gold certification.',
       license: 'Research Only',
       tags: ['depression', 'mental-health', 'multimodal', 'screening'],
-      downloads: 1456,
-      citations: 15,
     },
+    impact: makeImpact({
+      apiTotal: 478_200, apiMonth: 89_200, trend: 0.18, apps: 8,
+      appNames: ['MoodLens', 'WellCheck Campus', 'MindScan', 'TherapyPrep'],
+      peopleTotal: 52_100, peopleMonth: 11_100, screenings: 41_680, countries: 19,
+      topRegions: [
+        { name: 'United States', percentage: 35 }, { name: 'India', percentage: 16 },
+        { name: 'United Kingdom', percentage: 13 }, { name: 'Brazil', percentage: 10 }, { name: 'Nigeria', percentage: 8 },
+      ],
+      revTotal: 2391.00, revMonth: 446.00,
+    }),
   },
   {
     id: 'ex-004',
@@ -245,9 +298,17 @@ export const exchangeModels = [
       description: 'Real-time arrhythmia classification from single-lead ECG. Optimized for wearable device deployment.',
       license: 'ParagonDAO Open Research License',
       tags: ['cardiac', 'ecg', 'arrhythmia', 'wearable'],
-      downloads: 634,
-      citations: 3,
     },
+    impact: makeImpact({
+      apiTotal: 156_400, apiMonth: 34_100, trend: 0.27, apps: 4,
+      appNames: ['HeartGuard Wearable', 'CardioCheck', 'PulseMonitor Pro'],
+      peopleTotal: 38_200, peopleMonth: 8_200, screenings: 30_560, countries: 11,
+      topRegions: [
+        { name: 'United States', percentage: 44 }, { name: 'Japan', percentage: 14 },
+        { name: 'South Korea', percentage: 11 }, { name: 'Germany', percentage: 9 }, { name: 'United Kingdom', percentage: 7 },
+      ],
+      revTotal: 782.00, revMonth: 170.50,
+    }),
   },
   {
     id: 'ex-005',
@@ -266,9 +327,17 @@ export const exchangeModels = [
       description: 'Lung auscultation analysis detecting crackles, wheezes, and stridor. Trained on 10,000+ clinical recordings.',
       license: 'Commercial License',
       tags: ['respiratory', 'lung-sounds', 'audio', 'auscultation'],
-      downloads: 2103,
-      citations: 19,
     },
+    impact: makeImpact({
+      apiTotal: 624_400, apiMonth: 112_400, trend: 0.34, apps: 9,
+      appNames: ['LungCheck', 'RespiScan', 'BreathEasy', 'CommunityHealth App', 'RuralClinic AI'],
+      peopleTotal: 134_600, peopleMonth: 22_600, screenings: 107_680, countries: 27,
+      topRegions: [
+        { name: 'India', percentage: 28 }, { name: 'Nigeria', percentage: 16 },
+        { name: 'Brazil', percentage: 14 }, { name: 'Indonesia', percentage: 11 }, { name: 'United States', percentage: 9 },
+      ],
+      revTotal: 3122.00, revMonth: 562.00,
+    }),
   },
   {
     id: 'ex-006',
@@ -287,9 +356,17 @@ export const exchangeModels = [
       description: "Early Parkinson's tremor detection using wrist-worn IMU and surface EMG. Silver certified for cross-population generalization.",
       license: 'Research Only',
       tags: ['parkinsons', 'tremor', 'imu', 'wearable'],
-      downloads: 478,
-      citations: 5,
     },
+    impact: makeImpact({
+      apiTotal: 78_700, apiMonth: 18_700, trend: 0.19, apps: 3,
+      appNames: ['TremorTrack App', 'PD Monitor', 'NeuroCare'],
+      peopleTotal: 9_100, peopleMonth: 2_100, screenings: 7_280, countries: 8,
+      topRegions: [
+        { name: 'United States', percentage: 42 }, { name: 'United Kingdom', percentage: 19 },
+        { name: 'Canada', percentage: 13 }, { name: 'Australia', percentage: 10 }, { name: 'Netherlands', percentage: 6 },
+      ],
+      revTotal: 393.50, revMonth: 93.50,
+    }),
   },
   {
     id: 'ex-007',
@@ -308,9 +385,17 @@ export const exchangeModels = [
       description: 'Non-invasive glucose trend prediction from photoplethysmography. Bronze certified — suitable for wellness tracking only.',
       license: 'ParagonDAO Open Research License',
       tags: ['diabetes', 'glucose', 'ppg', 'non-invasive'],
-      downloads: 312,
-      citations: 1,
     },
+    impact: makeImpact({
+      apiTotal: 32_400, apiMonth: 8_400, trend: 0.12, apps: 2,
+      appNames: ['GlucoTrack Lite', 'DiabetesWatch'],
+      peopleTotal: 14_200, peopleMonth: 3_400, screenings: 11_360, countries: 5,
+      topRegions: [
+        { name: 'India', percentage: 38 }, { name: 'United States', percentage: 24 },
+        { name: 'Mexico', percentage: 15 }, { name: 'Brazil', percentage: 12 }, { name: 'Philippines', percentage: 6 },
+      ],
+      revTotal: 162.00, revMonth: 42.00,
+    }),
   },
   {
     id: 'ex-008',
@@ -329,9 +414,17 @@ export const exchangeModels = [
       description: 'Continuous stress level estimation using heart rate variability and electrodermal activity. Validated against salivary cortisol.',
       license: 'Commercial License',
       tags: ['stress', 'mental-health', 'hrv', 'eda'],
-      downloads: 891,
-      citations: 8,
     },
+    impact: makeImpact({
+      apiTotal: 218_600, apiMonth: 45_600, trend: 0.21, apps: 5,
+      appNames: ['CalmSpace', 'WorkWell HR', 'StressLess', 'MindfulMetrics'],
+      peopleTotal: 47_800, peopleMonth: 9_800, screenings: 38_240, countries: 15,
+      topRegions: [
+        { name: 'United States', percentage: 36 }, { name: 'Japan', percentage: 14 },
+        { name: 'United Kingdom', percentage: 12 }, { name: 'South Korea', percentage: 10 }, { name: 'Germany', percentage: 8 },
+      ],
+      revTotal: 1093.00, revMonth: 228.00,
+    }),
   },
 ]
 
@@ -354,6 +447,14 @@ export const simulationResults = {
   'mesa-sleep': { accuracy: 0.952, cohen_kappa: 0.934, per_stage_f1: [0.97, 0.95, 0.92, 0.96, 0.94] },
   'stress-test': { worst_subject_accuracy: 0.921, variance: 0.0021, generalization_gap: 0.019 },
 }
+
+// Projected impact for simulation Step 7 success screen
+export const simulationProjectedImpact = [
+  { month: 'Month 1', apps: 3, people: 2_400, revenue: 62.40 },
+  { month: 'Month 3', apps: 7, people: 12_300, revenue: 312.40 },
+  { month: 'Month 6', apps: 12, people: 89_400, revenue: 4_267.50 },
+  { month: 'Month 12', apps: 18, people: 312_000, revenue: 15_600.00 },
+]
 
 export function getCertificationTier(accuracy) {
   if (accuracy >= 0.95) return 'platinum'

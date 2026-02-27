@@ -98,6 +98,16 @@ export default function OnChainRecord({ record, compact = false }) {
         }}>
           Immutable
         </span>
+        <span style={{
+          fontSize: '11px',
+          padding: '2px 8px',
+          borderRadius: '999px',
+          background: 'rgba(16,185,129,0.12)',
+          color: '#10b981',
+          fontWeight: '600',
+        }}>
+          🛡️ Weights Private
+        </span>
       </div>
 
       <Row label="Tx Hash" value={record.txHash} mono copyable />

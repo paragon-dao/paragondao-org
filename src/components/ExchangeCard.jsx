@@ -4,10 +4,17 @@ import { useTheme } from '../providers/ThemeProvider'
 import { CERTIFICATION_TIERS } from '../data/mockBuilderData'
 import CertificationBadge from './CertificationBadge'
 
+function formatNum(n) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M'
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K'
+  return n.toLocaleString()
+}
+
 export default function ExchangeCard({ model, index = 0 }) {
   const { isDark } = useTheme()
   const navigate = useNavigate()
   const tier = CERTIFICATION_TIERS[model.certificationTier]
+  const impact = model.impact
 
   const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.85)'
   const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'
@@ -34,13 +41,7 @@ export default function ExchangeCard({ model, index = 0 }) {
     >
       {/* Certification tier color strip */}
       {tier && (
-        <div
-          style={{
-            height: '3px',
-            background: tier.gradient || tier.color,
-            width: '100%',
-          }}
-        />
+        <div style={{ height: '3px', background: tier.gradient || tier.color, width: '100%' }} />
       )}
 
       <div style={{ padding: '20px' }}>
@@ -94,17 +95,43 @@ export default function ExchangeCard({ model, index = 0 }) {
               {(model.subjectInvariance * 100).toFixed(1)}%
             </div>
           </div>
-          {model.listing?.downloads != null && (
+          {impact && (
             <div>
               <div style={{ fontSize: '11px', color: textSecondary, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Downloads
+                People Reached
               </div>
-              <div style={{ fontSize: '18px', fontWeight: '700', color: textPrimary }}>
-                {model.listing.downloads.toLocaleString()}
+              <div style={{ fontSize: '18px', fontWeight: '700', color: '#f59e0b' }}>
+                {formatNum(impact.peopleReached.total)}
               </div>
             </div>
           )}
         </div>
+
+        {/* Impact summary line */}
+        {impact && (
+          <div style={{
+            padding: '8px 12px',
+            borderRadius: '8px',
+            background: isDark ? 'rgba(245,158,11,0.06)' : 'rgba(245,158,11,0.04)',
+            border: `1px solid ${isDark ? 'rgba(245,158,11,0.12)' : 'rgba(245,158,11,0.1)'}`,
+            marginBottom: '12px',
+            fontSize: '12px',
+            color: isDark ? 'rgba(255,255,255,0.7)' : '#64748b',
+            lineHeight: '1.4',
+          }}>
+            <span style={{ fontWeight: '700', color: '#f59e0b' }}>
+              {formatNum(impact.peopleReached.thisMonth)}
+            </span>
+            {' people screened this month across '}
+            <span style={{ fontWeight: '700', color: textPrimary }}>
+              {impact.activeApps} apps
+            </span>
+            {' in '}
+            <span style={{ fontWeight: '700', color: textPrimary }}>
+              {impact.geography.countries} countries
+            </span>
+          </div>
+        )}
 
         {/* Tags */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
@@ -130,18 +157,23 @@ export default function ExchangeCard({ model, index = 0 }) {
           </span>
         </div>
 
-        {/* On-chain hash */}
+        {/* On-chain + trust indicator */}
         {model.onChain && (
           <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
             fontSize: '11px',
             color: textSecondary,
-            fontFamily: 'monospace',
-            opacity: 0.6,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
+            opacity: 0.7,
           }}>
-            {model.onChain.txHash}
+            <span>Verified on-chain</span>
+            <span style={{ color: '#10b981' }}>🛡️</span>
+            <span>Weights private</span>
+            <span style={{ flex: 1 }} />
+            <span style={{ fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100px' }}>
+              {model.onChain.txHash}
+            </span>
           </div>
         )}
       </div>

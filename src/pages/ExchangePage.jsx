@@ -112,8 +112,8 @@ const ExchangePage = () => {
               margin: '0 auto 24px',
               lineHeight: '1.6',
             }}>
-              Browse independently verified health AI models. Every model's accuracy is tested,
-              certified, and permanently recorded on-chain.
+              Every model here has been independently tested by five validators, certified for accuracy,
+              and recorded on Ethereum. Browse by disease, modality, or certification tier.
             </p>
             <ModeToggle mode={mode} onToggle={setMode} />
           </motion.div>
@@ -232,7 +232,7 @@ const ExchangePage = () => {
               color: textPrimary,
               margin: '0 0 12px',
             }}>
-              Built a health AI model?
+              Your Model Belongs Here
             </h2>
             <p style={{
               fontSize: '15px',
@@ -241,8 +241,8 @@ const ExchangePage = () => {
               margin: '0 auto 24px',
               lineHeight: '1.6',
             }}>
-              Submit it to The Forge for independent verification. Get certified,
-              published, and discoverable by the research community.
+              If you've trained a health AI model and want the world to trust it, submit it to The Forge.
+              Independent verification takes minutes. The certification lasts forever.
             </p>
             <motion.button
               whileHover={{ scale: 1.04 }}
@@ -260,7 +260,7 @@ const ExchangePage = () => {
                 boxShadow: '0 4px 16px rgba(99,102,241,0.3)',
               }}
             >
-              Submit Your Model
+              Start Verification
             </motion.button>
           </motion.div>
         </div>

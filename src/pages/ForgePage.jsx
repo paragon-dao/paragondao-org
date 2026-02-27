@@ -56,6 +56,7 @@ const ForgePage = () => {
       const bestVal = tierOrder[best] || 0
       return current > bestVal ? m.certificationTier : best
     }, null),
+    peopleReached: models.reduce((sum, m) => sum + (m.impact?.peopleReached?.thisMonth || 0), 0),
   }
 
   return (
@@ -78,7 +79,7 @@ const ForgePage = () => {
               The Forge
             </h1>
             <p style={{ fontSize: '15px', color: textSecondary, maxWidth: '520px', margin: '0 auto 20px' }}>
-              Your model verification dashboard. Submit, track, and manage your health AI models.
+              Where health AI models prove they work. Submit yours for independent verification.
             </p>
             <ModeToggle mode={mode} onToggle={setMode} />
           </motion.div>
@@ -126,22 +127,7 @@ const ForgePage = () => {
                 <StatCard label="Models Submitted" value={stats.submitted} color={textPrimary} isDark={isDark} />
                 <StatCard label="Verified" value={stats.verified} color={green} isDark={isDark} />
                 <StatCard label="Pending" value={stats.pending} color="#f59e0b" isDark={isDark} />
-                <div style={cardStyle({ textAlign: 'center' })}>
-                  <div style={{
-                    fontSize: '11px',
-                    color: textSecondary,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    marginBottom: '8px',
-                  }}>
-                    Highest Certification
-                  </div>
-                  {stats.highestTier ? (
-                    <CertificationBadge tier={stats.highestTier} size="sm" />
-                  ) : (
-                    <span style={{ fontSize: '14px', color: textSecondary }}>—</span>
-                  )}
-                </div>
+                <StatCard label="People Reached / mo" value={stats.peopleReached > 0 ? (stats.peopleReached >= 1000 ? (stats.peopleReached / 1000).toFixed(1) + 'K' : stats.peopleReached) : '—'} color="#f59e0b" isDark={isDark} />
               </motion.div>
 
               {/* Submit button */}
@@ -166,7 +152,7 @@ const ForgePage = () => {
                     gap: '8px',
                   }}
                 >
-                  + Submit New Model
+                  + Submit a Model for Verification
                 </motion.button>
               </motion.div>
 

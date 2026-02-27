@@ -26,7 +26,7 @@ const PIPELINE_STEPS = [
   {
     num: 2,
     title: 'Upload Model Artifact',
-    desc: 'Upload your model weights securely. A cryptographic hash is computed and stored — your model can never be altered after submission.',
+    desc: 'Upload your model weights to an encrypted staging area. A SHA-256 hash is computed and stored on-chain — your model can never be altered after submission, and validators access it only inside isolated sandboxes.',
     icon: '📤',
     color: '#8b5cf6',
   },
@@ -40,7 +40,7 @@ const PIPELINE_STEPS = [
   {
     num: 4,
     title: 'Independent Verification',
-    desc: '5 validators independently run your model against standardized datasets. No builder code executes — only the model artifact is evaluated in isolated environments.',
+    desc: 'Five staked validators independently run your model against standardized datasets in isolated environments. No builder code executes. Validators cannot retain, copy, or inspect your model weights.',
     icon: '🔍',
     color: '#6366f1',
   },
@@ -61,7 +61,7 @@ const PIPELINE_STEPS = [
   {
     num: 7,
     title: 'List on The Exchange',
-    desc: 'Your verified model appears on The Proof Exchange — discoverable by researchers, clinicians, and builders worldwide. Downloads, citations, and reputation grow.',
+    desc: 'Your verified model appears on The Proof Exchange. Researchers discover your model. App developers build on it. People get screened. Impact grows.',
     icon: '🚀',
     color: '#ec4899',
   },
@@ -268,8 +268,44 @@ const ProofPipelinePage = () => {
               margin: '0 0 32px',
               textAlign: 'center',
             }}>
-              Trust Architecture
+              Your Model Is Protected at Every Step
             </h2>
+
+            {/* Direct answer to the fear */}
+            <div style={cardStyle({ marginBottom: '20px', borderLeft: '4px solid #10b981' })}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: textPrimary, margin: '0 0 8px' }}>
+                Validators Cannot Keep Your Weights
+              </h3>
+              <p style={{ fontSize: '13px', color: textSecondary, lineHeight: '1.7', margin: 0 }}>
+                Validators run your model inside an isolated execution environment. They receive your artifact, execute benchmark inference, and return scores. The artifact is purged after verification completes. Validators stake 28,000-50,000 PGON tokens — if a validator is caught retaining, sharing, or replicating model weights, their entire stake is slashed and distributed to the builder.
+              </p>
+            </div>
+
+            {/* Trust roadmap */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: '12px',
+              marginBottom: '20px',
+            }}>
+              {[
+                { period: 'Today', items: ['Staked validators (28K-50K PGON)', 'Legal binding agreement', 'Isolated execution environments'] },
+                { period: 'Q3 2026', items: ['Encrypted artifact transfer', 'Model weights encrypted in transit', 'Decrypted only inside sandbox'] },
+                { period: 'Q4 2026', items: ['TEE-based verification (Intel SGX)', 'Validators physically cannot access weights', 'Zero-knowledge performance proofs'] },
+              ].map((col, i) => (
+                <div key={i} style={cardStyle({ padding: '16px' })}>
+                  <div style={{ fontSize: '12px', fontWeight: '700', color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
+                    {col.period}
+                  </div>
+                  <ul style={{ margin: 0, padding: '0 0 0 16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {col.items.map((item, j) => (
+                      <li key={j} style={{ fontSize: '12px', color: textSecondary, lineHeight: '1.4' }}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
             <div style={{
               display: 'grid',
               gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
@@ -278,8 +314,11 @@ const ProofPipelinePage = () => {
               {/* What stays private */}
               <div style={cardStyle({ borderTop: '3px solid #10b981' })}>
                 <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#10b981', margin: '0 0 16px' }}>
-                  What Stays Private
+                  What's Yours Stays Yours
                 </h3>
+                <p style={{ fontSize: '12px', color: textSecondary, margin: '0 0 12px', fontStyle: 'italic' }}>
+                  Your trained weights never leave the verification sandbox.
+                </p>
                 <ul style={{ margin: 0, padding: '0 0 0 20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {[
                     'Your model training data',
@@ -309,6 +348,9 @@ const ProofPipelinePage = () => {
                     <li key={i} style={{ fontSize: '13px', color: textSecondary, lineHeight: '1.5' }}>{item}</li>
                   ))}
                 </ul>
+                <p style={{ fontSize: '12px', color: textSecondary, margin: '12px 0 0', fontStyle: 'italic' }}>
+                  Only proofs go on-chain. Never weights. Never training data.
+                </p>
               </div>
             </div>
           </motion.div>
@@ -324,11 +366,11 @@ const ProofPipelinePage = () => {
             backdropFilter: 'blur(12px)',
           }}>
             <h2 style={{ fontSize: '28px', fontWeight: '800', color: textPrimary, margin: '0 0 12px' }}>
-              Ready to verify your model?
+              See It for Yourself
             </h2>
             <p style={{ fontSize: '15px', color: textSecondary, maxWidth: '480px', margin: '0 auto 24px', lineHeight: '1.6' }}>
-              Try the full pipeline in simulation mode — no account required.
-              See exactly how your model would be verified, certified, and published.
+              The simulation runs the full 7-step pipeline with sample data. No account needed.
+              Every step works exactly as it will in production.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <motion.button
@@ -347,7 +389,7 @@ const ProofPipelinePage = () => {
                   boxShadow: '0 4px 16px rgba(99,102,241,0.3)',
                 }}
               >
-                Try Simulation
+                Run the Simulation
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.04 }}

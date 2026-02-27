@@ -7,6 +7,7 @@ import Background from '../components/Background'
 import Footer from '../components/Footer'
 import CertificationBadge from '../components/CertificationBadge'
 import OnChainRecord from '../components/OnChainRecord'
+import ImpactDashboard from '../components/ImpactDashboard'
 import { forgeModels, MODEL_STATUSES, BENCHMARKS, CERTIFICATION_TIERS } from '../data/mockBuilderData'
 
 const sectionAnim = {
@@ -16,7 +17,7 @@ const sectionAnim = {
   transition: { duration: 0.5 },
 }
 
-const TABS = ['Overview', 'Benchmark Details', 'On-Chain Record', 'Version History']
+const TABS = ['Overview', 'Impact', 'Benchmark Details', 'On-Chain Record', 'Version History']
 
 const ForgeModelDetailPage = () => {
   const { modelId } = useParams()
@@ -228,6 +229,15 @@ const ForgeModelDetailPage = () => {
                 </div>
               )}
 
+              {activeTab === 'Impact' && (
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
+                    Your Model's Impact
+                  </h3>
+                  <ImpactDashboard impact={model.impact} showRevenue isMobile={isMobile} />
+                </div>
+              )}
+
               {activeTab === 'Benchmark Details' && (
                 <div>
                   <h3 style={{ fontSize: '18px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
@@ -320,7 +330,7 @@ const ForgeModelDetailPage = () => {
                       fontSize: '13px',
                       color: textSecondary,
                     }}>
-                      Version tracking will be available in a future update.
+                      When you retrain your model and achieve better scores, submit a new version here. Each version is independently verified and recorded on-chain. Your certification tier can upgrade as your model improves.
                     </div>
                   </div>
                 </div>

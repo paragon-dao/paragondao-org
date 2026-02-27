@@ -8,7 +8,14 @@ import Footer from '../components/Footer'
 import CertificationBadge from '../components/CertificationBadge'
 import OnChainRecord from '../components/OnChainRecord'
 import ExchangeCard from '../components/ExchangeCard'
+import ImpactDashboard from '../components/ImpactDashboard'
 import { exchangeModels, CERTIFICATION_TIERS, BENCHMARKS } from '../data/mockBuilderData'
+
+function formatNum(n) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M'
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K'
+  return n?.toLocaleString() || '0'
+}
 
 const sectionAnim = {
   initial: { opacity: 0, y: 24 },
@@ -17,7 +24,7 @@ const sectionAnim = {
   transition: { duration: 0.5 },
 }
 
-const TABS = ['Performance', 'Methodology', 'Usage & Access', 'Verification Proof']
+const TABS = ['Performance', 'Impact', 'Methodology', 'Usage & Access', 'Verification Proof']
 
 const ExchangeModelPage = () => {
   const { modelId } = useParams()
@@ -209,8 +216,8 @@ const ExchangeModelPage = () => {
           }}>
             <StatBox label="Accuracy" value={`${(model.accuracy * 100).toFixed(1)}%`} color={green} />
             <StatBox label="Subject Invariance" value={`${(model.subjectInvariance * 100).toFixed(1)}%`} color={indigo} />
-            <StatBox label="Downloads" value={model.listing?.downloads?.toLocaleString() || '—'} />
-            <StatBox label="Citations" value={model.listing?.citations || '—'} />
+            <StatBox label="People Reached" value={model.impact ? formatNum(model.impact.peopleReached.thisMonth) + '/mo' : '—'} color="#f59e0b" />
+            <StatBox label="Active Apps" value={model.impact?.activeApps || '—'} />
           </motion.div>
 
           {/* On-chain verification widget */}
@@ -278,6 +285,15 @@ const ExchangeModelPage = () => {
                 </div>
               )}
 
+              {activeTab === 'Impact' && (
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
+                    Real-World Impact
+                  </h3>
+                  <ImpactDashboard impact={model.impact} isMobile={isMobile} />
+                </div>
+              )}
+
               {activeTab === 'Methodology' && (
                 <div>
                   <h3 style={{ fontSize: '18px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
@@ -289,6 +305,7 @@ const ExchangeModelPage = () => {
                       { title: 'Multi-Validator Consensus', desc: '5 independent validators run the same benchmark suite. Results must converge within 0.1% to pass. Any validator can flag anomalies.' },
                       { title: 'Subject-Invariant Testing', desc: 'Leave-one-subject-out cross-validation ensures the model generalizes across individuals, not just memorizes training data.' },
                       { title: 'On-Chain Attestation', desc: 'Results, validator signatures, and the model hash are permanently recorded on Ethereum. Tamper-proof, publicly auditable.' },
+                      { title: 'Model Weight Privacy', desc: 'Builder model weights are never exposed to the public, never stored on-chain, and never retained by validators after verification. Only the model hash, benchmark scores, and validator signatures are recorded. The weights remain under the builder\'s sole control.' },
                     ].map((item, i) => (
                       <div key={i} style={{
                         padding: '16px',
@@ -350,10 +367,11 @@ const ExchangeModelPage = () => {
                       textAlign: 'center',
                     }}>
                       <div style={{ fontSize: '14px', fontWeight: '600', color: textPrimary, marginBottom: '4px' }}>
-                        API Access Coming Soon
+                        Build With This Model
                       </div>
-                      <div style={{ fontSize: '13px', color: textSecondary }}>
-                        Models will be accessible via the BAGLE API once the network launches.
+                      <div style={{ fontSize: '13px', color: textSecondary, lineHeight: '1.5' }}>
+                        When the BAGLE API launches, any app developer can call this model via API.
+                        One endpoint, one API key, verified accuracy guaranteed by on-chain certification.
                       </div>
                     </div>
                   </div>

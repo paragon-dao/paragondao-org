@@ -62,6 +62,16 @@ export default function ValidationProgress({ validators, overallProgress }) {
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{
+                  fontSize: '10px',
+                  padding: '1px 6px',
+                  borderRadius: '4px',
+                  background: 'rgba(245,158,11,0.1)',
+                  color: '#f59e0b',
+                  fontWeight: '600',
+                }}>
+                  {v.stake}
+                </span>
                 <span style={{ fontSize: '11px', color: textSecondary }}>
                   {v.location}
                 </span>

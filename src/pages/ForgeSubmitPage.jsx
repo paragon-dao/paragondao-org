@@ -12,7 +12,7 @@ import CertificationBadge from '../components/CertificationBadge'
 import OnChainRecord from '../components/OnChainRecord'
 import ExchangeCard from '../components/ExchangeCard'
 import useForgeSimulation from '../hooks/useForgeSimulation'
-import { BENCHMARKS, CERTIFICATION_TIERS, VALIDATORS, getCertificationTier } from '../data/mockBuilderData'
+import { BENCHMARKS, CERTIFICATION_TIERS, VALIDATORS, getCertificationTier, simulationProjectedImpact } from '../data/mockBuilderData'
 
 const sectionAnim = {
   initial: { opacity: 0, y: 24 },
@@ -289,8 +289,8 @@ const ForgeSubmitPage = () => {
             }}>
               The Forge
             </h1>
-            <p style={{ fontSize: '15px', color: textSecondary, maxWidth: '520px', margin: '0 auto 20px' }}>
-              Submit your model for independent verification and certification.
+            <p style={{ fontSize: '15px', color: textSecondary, maxWidth: '560px', margin: '0 auto 20px' }}>
+              Seven steps from submission to independently verified, on-chain certified, and published to the world.
             </p>
             <ModeToggle mode={mode} onToggle={(m) => { setMode(m); if (m === 'simulation') sim.reset() }} />
           </motion.div>
@@ -411,10 +411,10 @@ function StepRegister({ draft, onUpdate, inputStyle, labelStyle, cardStyle, text
   return (
     <div style={cardStyle()}>
       <h2 style={{ fontSize: '20px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
-        Register Your Model
+        Tell Us About Your Model
       </h2>
       <p style={{ fontSize: '13px', color: textSecondary, margin: '0 0 24px', lineHeight: '1.5' }}>
-        Define your model's metadata. In simulation mode, fields are pre-filled with sample data.
+        This metadata becomes your model's permanent identity on the network. In simulation mode, fields are pre-filled so you can experience the full pipeline.
       </p>
       <div style={{
         display: 'grid',
@@ -444,10 +444,10 @@ function StepUpload({ uploadProgress, uploadHash, onSimulateUpload, cardStyle, t
   return (
     <div style={cardStyle()}>
       <h2 style={{ fontSize: '20px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
-        Upload Model Artifact
+        Upload Your Model Artifact
       </h2>
       <p style={{ fontSize: '13px', color: textSecondary, margin: '0 0 24px', lineHeight: '1.5' }}>
-        Upload your model weights. A cryptographic hash is computed to ensure integrity throughout verification.
+        Your model artifact is uploaded to an encrypted staging area. A SHA-256 hash locks your submission — if anyone alters your model, the hash breaks and verification fails. Validators access your artifact only inside isolated sandboxes, and the artifact is purged after scoring.
       </p>
 
       {/* Drop zone */}
@@ -513,7 +513,34 @@ function StepUpload({ uploadProgress, uploadHash, onSimulateUpload, cardStyle, t
         )}
       </div>
 
-      <div style={{ fontSize: '12px', color: textSecondary, lineHeight: '1.5' }}>
+      {/* Trust callout */}
+      <div style={{
+        padding: '14px 18px',
+        borderRadius: '12px',
+        background: isDark ? 'rgba(16,185,129,0.04)' : 'rgba(16,185,129,0.03)',
+        border: '1px solid rgba(16,185,129,0.2)',
+        marginBottom: '12px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '14px' }}>🛡️</span>
+          <span style={{ fontSize: '13px', fontWeight: '700', color: textPrimary }}>Your Weights Are Protected</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          {[
+            'Artifact encrypted in transit (TLS 1.3)',
+            'Validators access weights only in isolated sandboxes',
+            'Artifact purged after verification completes',
+            'Validators stake 28K-50K PGON — slashed if they retain your model',
+          ].map((line, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: textSecondary }}>
+              <span style={{ color: '#10b981', fontSize: '10px' }}>✓</span>
+              {line}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ fontSize: '11px', color: textSecondary, lineHeight: '1.5', opacity: 0.7 }}>
         In simulation mode, no actual file is uploaded. The hash is generated to demonstrate the verification flow.
       </div>
     </div>
@@ -525,11 +552,10 @@ function StepBenchmarks({ selected, onToggle, cardStyle, textPrimary, textSecond
   return (
     <div style={cardStyle()}>
       <h2 style={{ fontSize: '20px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
-        Select Benchmarks
+        Choose Your Benchmarks
       </h2>
       <p style={{ fontSize: '13px', color: textSecondary, margin: '0 0 24px', lineHeight: '1.5' }}>
-        Choose which verification benchmarks your model will be tested against.
-        More benchmarks passed = higher potential certification tier.
+        Each benchmark your model passes strengthens its certification. Builders who run all three benchmarks are eligible for Platinum certification — the highest tier on the network.
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {BENCHMARKS.map(b => {
@@ -625,9 +651,8 @@ function StepVerification({
       {!isRunning && !verificationComplete ? (
         <div style={{ textAlign: 'center', padding: '32px 0' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔍</div>
-          <p style={{ fontSize: '14px', color: textSecondary, maxWidth: '400px', margin: '0 auto 24px', lineHeight: '1.5' }}>
-            5 independent validators will run your model against the selected benchmarks.
-            This typically takes 2-4 minutes. In simulation, it completes in ~8 seconds.
+          <p style={{ fontSize: '14px', color: textSecondary, maxWidth: '440px', margin: '0 auto 24px', lineHeight: '1.5' }}>
+            Five validators, each staking tens of thousands of PGON tokens, will independently evaluate your model in isolated environments. No validator sees another's results. Consensus across all five is required. In simulation, this completes in ~8 seconds.
           </p>
           <button onClick={onStart} style={primaryBtnStyle}>
             Start Verification
@@ -657,6 +682,7 @@ function StepVerification({
               <StatusLine done={overallProgress > 50} isDark={isDark} text="Cross-validation in progress" />
               <StatusLine done={overallProgress > 80} isDark={isDark} text="Subject invariance testing" />
               <StatusLine done={verificationComplete} isDark={isDark} text="Consensus reached — results finalized" />
+              <StatusLine done={verificationComplete} isDark={isDark} text="Model artifacts purged from all validator environments" />
             </div>
           </div>
 
@@ -735,7 +761,7 @@ function StepResults({ results, certificationTier, onChain, cardStyle, textPrima
   return (
     <div style={cardStyle()}>
       <h2 style={{ fontSize: '20px', fontWeight: '700', color: textPrimary, margin: '0 0 20px' }}>
-        Verification Results
+        Your Results Are In
       </h2>
 
       {/* Certification award */}
@@ -762,6 +788,9 @@ function StepResults({ results, certificationTier, onChain, cardStyle, textPrima
         </div>
         <div style={{ fontSize: '13px', color: textSecondary, marginTop: '4px' }}>
           {tierInfo?.requirement}
+        </div>
+        <div style={{ fontSize: '12px', color: textSecondary, marginTop: '12px', maxWidth: '400px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.5' }}>
+          This certification is permanent. Recorded on Ethereum, signed by all five validators, and publicly verifiable by anyone — forever.
         </div>
       </motion.div>
 
@@ -818,7 +847,7 @@ function StepPublish({ draft, onUpdate, previewModel, inputStyle, labelStyle, ca
           Publish to The Exchange
         </h2>
         <p style={{ fontSize: '13px', color: textSecondary, margin: '0 0 24px', lineHeight: '1.5' }}>
-          Create your Exchange listing. Your model will be discoverable by researchers and builders worldwide.
+          This is where your model meets the world. Researchers, builders, and app developers will discover it here. Write a description that explains what your model does and why it matters.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
@@ -874,61 +903,111 @@ function StepPublish({ draft, onUpdate, previewModel, inputStyle, labelStyle, ca
 // ─── Step 7: Success ──────────────────────────────────────────────────────────
 function StepSuccess({ modelDraft, certificationTier, onReset, navigate, cardStyle, textPrimary, textSecondary, isDark, indigo, primaryBtnStyle, secondaryBtnStyle }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 150, damping: 15 }}
-      style={cardStyle({ textAlign: 'center', padding: '48px 32px' })}
-    >
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
-        style={{ fontSize: '64px', marginBottom: '20px' }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 150, damping: 15 }}
+        style={cardStyle({ textAlign: 'center', padding: '48px 32px' })}
       >
-        ✅
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
+          style={{ fontSize: '64px', marginBottom: '20px' }}
+        >
+          ✅
+        </motion.div>
+
+        <h2 style={{ fontSize: '28px', fontWeight: '800', color: textPrimary, margin: '0 0 8px' }}>
+          Your Model Is Live
+        </h2>
+        <p style={{ fontSize: '15px', color: textSecondary, maxWidth: '480px', margin: '0 auto 24px', lineHeight: '1.6' }}>
+          <strong>{modelDraft.name}</strong> is now independently verified, on-chain certified, and published to the Exchange. Researchers and builders worldwide can find it, evaluate it, and build on it.
+        </p>
+
+        {certificationTier && (
+          <div style={{ marginBottom: '24px' }}>
+            <CertificationBadge tier={certificationTier} size="lg" animate />
+          </div>
+        )}
+
+        <div style={{
+          padding: '16px',
+          borderRadius: '12px',
+          background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+          maxWidth: '400px',
+          margin: '0 auto',
+        }}>
+          <div style={{ fontSize: '12px', color: textSecondary, marginBottom: '4px' }}>Exchange URL</div>
+          <div style={{ fontSize: '14px', color: indigo, fontFamily: 'monospace' }}>
+            paragondao.org/exchange/preview
+          </div>
+        </div>
       </motion.div>
 
-      <h2 style={{ fontSize: '28px', fontWeight: '800', color: textPrimary, margin: '0 0 8px' }}>
-        Model Published!
-      </h2>
-      <p style={{ fontSize: '15px', color: textSecondary, maxWidth: '440px', margin: '0 auto 24px', lineHeight: '1.6' }}>
-        <strong>{modelDraft.name}</strong> has been verified, certified, and published
-        to The Proof Exchange.
-      </p>
-
-      {certificationTier && (
-        <div style={{ marginBottom: '24px' }}>
-          <CertificationBadge tier={certificationTier} size="lg" animate />
+      {/* Projected impact */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        style={cardStyle({ padding: '24px 28px' })}
+      >
+        <div style={{ fontSize: '14px', fontWeight: '700', color: textPrimary, marginBottom: '4px' }}>
+          What Happens Next
         </div>
-      )}
-
-      <div style={{
-        padding: '16px',
-        borderRadius: '12px',
-        background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
-        marginBottom: '32px',
-        maxWidth: '400px',
-        margin: '0 auto 32px',
-      }}>
-        <div style={{ fontSize: '12px', color: textSecondary, marginBottom: '4px' }}>Exchange URL</div>
-        <div style={{ fontSize: '14px', color: indigo, fontFamily: 'monospace' }}>
-          paragondao.org/exchange/preview
+        <div style={{ fontSize: '12px', color: textSecondary, marginBottom: '16px' }}>
+          Projected impact based on average growth of certified models on the Exchange
         </div>
-      </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '8px',
+        }}>
+          {simulationProjectedImpact.map((row, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 + i * 0.15 }}
+              style={{
+                padding: '12px',
+                borderRadius: '10px',
+                background: isDark ? 'rgba(245,158,11,0.04)' : 'rgba(245,158,11,0.03)',
+                border: `1px solid ${isDark ? 'rgba(245,158,11,0.1)' : 'rgba(245,158,11,0.08)'}`,
+                textAlign: 'center',
+              }}
+            >
+              <div style={{ fontSize: '11px', fontWeight: '700', color: '#f59e0b', marginBottom: '8px' }}>
+                {row.month}
+              </div>
+              <div style={{ fontSize: '16px', fontWeight: '800', color: textPrimary }}>
+                {row.people >= 1000 ? (row.people / 1000).toFixed(0) + 'K' : row.people.toLocaleString()}
+              </div>
+              <div style={{ fontSize: '10px', color: textSecondary }}>people screened</div>
+              <div style={{ fontSize: '12px', fontWeight: '600', color: textSecondary, marginTop: '4px' }}>
+                {row.apps} apps · ${row.revenue >= 1000 ? (row.revenue / 1000).toFixed(1) + 'K' : row.revenue.toFixed(0)}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <div style={{ fontSize: '11px', color: textSecondary, marginTop: '12px', textAlign: 'center', opacity: 0.7 }}>
+          Projections based on average growth of Gold-certified sleep staging models. Actual results depend on model quality and market demand.
+        </div>
+      </motion.div>
 
       <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
         <button onClick={() => navigate('/exchange')} style={primaryBtnStyle}>
-          View on Exchange
+          See Your Listing
         </button>
         <button onClick={() => navigate('/proof-pipeline')} style={secondaryBtnStyle}>
-          Learn More
+          How Verification Works
         </button>
         <button onClick={onReset} style={secondaryBtnStyle}>
           Submit Another Model
         </button>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
