@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useRef } from 'react'
+import { motion, useInView, useMotionValue, useTransform, animate } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../providers/ThemeProvider'
 import { useMagic } from '../providers/MagicProvider'
@@ -8,6 +8,40 @@ import Header from '../components/Header'
 import Background from '../components/Background'
 import Footer from '../components/Footer'
 import verificationAPI from '../services/verification'
+
+// ─── Animated number counter ────────────────────────────────────────────────
+function AnimatedNumber({ value, decimals = 5, duration = 1.2, prefix = '', suffix = '', style }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-40px' })
+  const [display, setDisplay] = useState('0')
+
+  useEffect(() => {
+    if (!inView || value == null) return
+    const num = parseFloat(value)
+    if (isNaN(num)) { setDisplay(String(value)); return }
+    const controls = animate(0, num, {
+      duration,
+      ease: 'easeOut',
+      onUpdate: v => setDisplay(v.toFixed(decimals)),
+    })
+    return () => controls.stop()
+  }, [inView, value, decimals, duration])
+
+  return <span ref={ref} style={style}>{prefix}{display}{suffix}</span>
+}
+
+// ─── Skeleton loader ────────────────────────────────────────────────────────
+function Skeleton({ width = '100%', height = '24px', radius = '8px', style = {} }) {
+  return (
+    <div style={{
+      width, height, borderRadius: radius,
+      background: 'linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%)',
+      backgroundSize: '200% 100%',
+      animation: 'shimmer 1.5s infinite',
+      ...style,
+    }} />
+  )
+}
 
 const VerifyPage = () => {
   const navigate = useNavigate()
@@ -20,31 +54,26 @@ const VerifyPage = () => {
   const [benchmark, setBenchmark] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [apiHealth, setApiHealth] = useState(null)
 
-  // Playground state — raw EEG: 4 channels × 200 timepoints (2s at 100Hz)
-  const [playgroundInput, setPlaygroundInput] = useState(() => {
-    // Generate random raw EEG-like signal (4 channels, 200 timepoints)
-    const channels = Array.from({ length: 4 }, () =>
-      Array.from({ length: 200 }, () => (Math.random() * 100 - 50).toFixed(2))
-    )
-    return JSON.stringify(channels)
-  })
+  // Playground state
+  const [playgroundInput, setPlaygroundInput] = useState(null)
+  const [showRawInput, setShowRawInput] = useState(false)
   const [playgroundResult, setPlaygroundResult] = useState(null)
   const [playgroundLoading, setPlaygroundLoading] = useState(false)
   const [playgroundError, setPlaygroundError] = useState(null)
   const [activeSnippet, setActiveSnippet] = useState('curl')
-
-  // Re-run state
+  const [copied, setCopied] = useState(false)
   const [rerunning, setRerunning] = useState(false)
 
+  // Theme colors
   const textPrimary = isDark ? '#fff' : '#1e293b'
-  const textSecondary = isDark ? 'rgba(255,255,255,0.7)' : '#64748b'
-  const cardBg = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.8)'
-  const cardBorder = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
-  const greenAccent = '#10b981'
-  const greenBg = 'rgba(16,185,129,0.12)'
+  const textSecondary = isDark ? 'rgba(255,255,255,0.6)' : '#64748b'
+  const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.85)'
+  const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'
+  const green = '#10b981'
+  const greenBg = 'rgba(16,185,129,0.1)'
   const greenBorder = 'rgba(16,185,129,0.3)'
+  const indigo = '#6366f1'
 
   useEffect(() => {
     async function fetchData() {
@@ -55,7 +84,6 @@ const VerifyPage = () => {
         ])
         setResults(r)
         setBenchmark(b)
-        verificationAPI.healthCheck().then(setApiHealth).catch(() => null)
       } catch (e) {
         setError(e.message)
       } finally {
@@ -65,15 +93,21 @@ const VerifyPage = () => {
     fetchData()
   }, [])
 
+  const generateSignal = () => {
+    const channels = Array.from({ length: 4 }, () =>
+      Array.from({ length: 200 }, () => +(Math.random() * 100 - 50).toFixed(2))
+    )
+    setPlaygroundInput(channels)
+    return channels
+  }
+
   const handlePredict = async () => {
     setPlaygroundLoading(true)
     setPlaygroundError(null)
+    setPlaygroundResult(null)
     try {
-      const parsed = JSON.parse(playgroundInput)
-      if (!Array.isArray(parsed) || parsed.length !== 4 || !parsed.every(ch => Array.isArray(ch) && ch.length === 200)) {
-        throw new Error('Input must be a JSON array of 4 channels, each with 200 timepoints')
-      }
-      const res = await verificationAPI.predict(parsed)
+      const data = playgroundInput || generateSignal()
+      const res = await verificationAPI.predict(data)
       setPlaygroundResult(res)
     } catch (e) {
       setPlaygroundError(e.message)
@@ -88,56 +122,77 @@ const VerifyPage = () => {
       const fresh = await verificationAPI.runVerification()
       setResults(fresh)
     } catch (e) {
-      alert(e.message)
+      setPlaygroundError(e.message)
     } finally {
       setRerunning(false)
     }
   }
 
+  const copyCode = (text) => {
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
 
   const codeSnippets = {
-    curl: `# Send raw EEG: 4 channels × 200 timepoints (2 seconds at 100 Hz)
-# GLE encoding (band powers → DCT-II) happens server-side
-curl -X POST ${apiBaseUrl}/api/v1/verify/predict \\
+    curl: `curl -X POST ${apiBaseUrl}/api/v1/verify/predict \\
   -H "Content-Type: application/json" \\
-  -d '{"eeg_raw": [[0.0, 0.1, ...], [0.0, ...], [0.0, ...], [0.0, ...]], "sfreq": 100}'`,
+  -d '{"eeg_raw": [[0.1, -0.3, ...], [...], [...], [...]], "sfreq": 100}'`,
     python: `import requests
 import numpy as np
 
-# Raw EEG from MUSE headband: 4 channels × 200 samples (2s at 100Hz)
-eeg_raw = np.random.randn(4, 200).tolist()
+# Raw EEG: 4 channels x 200 samples (2s at 100Hz)
+eeg = np.random.randn(4, 200).tolist()
 
-response = requests.post(
+r = requests.post(
     "${apiBaseUrl}/api/v1/verify/predict",
-    json={"eeg_raw": eeg_raw, "sfreq": 100}
+    json={"eeg_raw": eeg, "sfreq": 100}
 )
-print(response.json())
-# {"prediction": 0.42, "latency_ms": 5.96, "model_status": "live"}
-# GLE encoding happens on our backend — you just send raw sensor data`
+print(r.json())  # {"prediction": 0.42, "latency_ms": 7.2}`,
+    javascript: `const eeg = Array.from({length: 4}, () =>
+  Array.from({length: 200}, () => Math.random() * 100 - 50)
+);
+
+const res = await fetch("${apiBaseUrl}/api/v1/verify/predict", {
+  method: "POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({eeg_raw: eeg, sfreq: 100})
+});
+console.log(await res.json());`
   }
 
-  // ─── Card style helper ───
   const cardStyle = (extra = {}) => ({
     background: cardBg,
     border: `1px solid ${cardBorder}`,
     borderRadius: '16px',
     padding: '24px',
     backdropFilter: 'blur(12px)',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
     ...extra,
   })
 
+  const sectionAnim = {
+    initial: { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, margin: '-80px' },
+    transition: { duration: 0.5 },
+  }
+
+  const overall = results?.overall || {}
+  const leaderboard = benchmark?.leaderboard || []
+  const pScore = benchmark?.paragondao?.score || overall.normalized_error || 0.70879
+  const totalTeams = benchmark?.total_teams || 1183
+
   return (
     <div style={{
-      minHeight: '100vh',
-      position: 'relative',
+      minHeight: '100vh', position: 'relative',
       background: isDark
         ? 'linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)'
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-      transition: 'background 0.3s ease'
     }}>
       <Background />
-
       <Header
         searchQuery="" lastSearchedTerm="" setSearchQuery={() => {}}
         handleSearch={() => {}} isSearching={false} isSearchExpanded={false}
@@ -145,596 +200,776 @@ print(response.json())
         onLoginClick={() => navigate('/login')} onSignupClick={() => navigate('/login')}
       />
 
-      <main style={{ position: 'relative', zIndex: 5, paddingTop: '100px', paddingBottom: '40px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+      <style>{`
+        @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+        @keyframes shimmer { 0% { background-position:200% 0 } 100% { background-position:-200% 0 } }
+      `}</style>
 
-          {/* ─── Hero ─── */}
+      <main style={{ position: 'relative', zIndex: 5, paddingTop: '100px', paddingBottom: '40px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+
+          {/* ═══════ HERO ═══════ */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            style={{ textAlign: 'center', marginBottom: '60px' }}
+            transition={{ duration: 0.7 }}
+            style={{
+              textAlign: 'center', marginBottom: '72px', position: 'relative',
+            }}
           >
+            {/* Subtle glow */}
+            <div style={{
+              position: 'absolute', top: '-120px', left: '50%', transform: 'translateX(-50%)',
+              width: '600px', height: '400px',
+              background: `radial-gradient(ellipse, ${isDark ? 'rgba(16,185,129,0.06)' : 'rgba(16,185,129,0.04)'} 0%, transparent 70%)`,
+              pointerEvents: 'none',
+            }} />
+
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
-              padding: '6px 16px', borderRadius: '20px',
+              padding: '5px 14px', borderRadius: '20px',
               background: greenBg, border: `1px solid ${greenBorder}`,
-              marginBottom: '20px'
+              marginBottom: '24px',
             }}>
               <div style={{
-                width: '8px', height: '8px', borderRadius: '50%',
-                background: greenAccent,
-                boxShadow: `0 0 8px ${greenAccent}`,
-                animation: 'pulse 2s infinite'
+                width: '7px', height: '7px', borderRadius: '50%', background: green,
+                boxShadow: `0 0 8px ${green}`, animation: 'pulse 3s infinite',
               }} />
-              <span style={{ color: greenAccent, fontSize: '13px', fontWeight: '600' }}>
-                {apiHealth?.model_status === 'loaded' ? 'Live — Model Active' : 'Verified'}
+              <span style={{ color: green, fontSize: '12px', fontWeight: '600', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                Live — Independently Verifiable
               </span>
             </div>
 
-            <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>
-
             <h1 style={{
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              fontWeight: '800',
+              fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: '800',
               background: isDark
-                ? 'linear-gradient(135deg, #ffffff 0%, #6ee7b7 50%, #10b981 100%)'
-                : 'linear-gradient(135deg, #1e293b 0%, #059669 50%, #10b981 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              margin: '0 0 16px 0',
-              lineHeight: '1.1'
+                ? 'linear-gradient(135deg, #ffffff 0%, #6ee7b7 60%, #10b981 100%)'
+                : 'linear-gradient(135deg, #1e293b 0%, #059669 60%, #10b981 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              margin: '0 0 20px 0', lineHeight: '1.08',
             }}>
-              ParagonDAO Verification Network
+              13.5x More Improvement Than the NeurIPS 2025 Winner
             </h1>
-            <h2 style={{
-              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
-              fontWeight: '500', color: textSecondary,
-              maxWidth: '800px', margin: '0 auto 16px', lineHeight: '1.6'
+
+            <p style={{
+              fontSize: 'clamp(1rem, 2vw, 1.15rem)', fontWeight: '450',
+              color: textSecondary, maxWidth: '720px', margin: '0 auto 28px', lineHeight: '1.65',
             }}>
-              Independently verify subject-invariant model performance against NeurIPS 2025 competition benchmarks
-            </h2>
-            <p style={{ fontSize: '15px', color: textSecondary, maxWidth: '700px', margin: '0 auto', lineHeight: '1.7' }}>
-              Every prediction is reproducible. Every metric is verifiable.
-              The ParagonDAO network makes model claims auditable by anyone.
+              Our GLE encoder achieved <span style={{ color: green, fontWeight: '600' }}>0.709</span> normalized error
+              on the NeurIPS 2025 EEG Foundation Model Challenge — beating the winning team's 0.978 by
+              improving <span style={{ color: green, fontWeight: '600' }}>13.5x more</span> below
+              baseline in a field of {totalTeams.toLocaleString()} teams. Every result on this page is independently verifiable.
             </p>
+
+            <div style={{
+              display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap',
+            }}>
+              {[
+                `${totalTeams.toLocaleString()} Teams Competed`,
+                '3 Unseen Test Subjects',
+                'Zero Data Overlap',
+              ].map((chip, i) => (
+                <span key={i} style={{
+                  padding: '7px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: '550',
+                  color: isDark ? 'rgba(255,255,255,0.7)' : '#475569',
+                  background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                  border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
+                }}>
+                  {chip}
+                </span>
+              ))}
+            </div>
           </motion.div>
 
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', color: textSecondary }}>
-              Loading verification data...
+          {/* ═══════ COMPETITION BENCHMARK ═══════ */}
+          <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
+            <div style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase', color: textSecondary, marginBottom: '4px' }}>
+              NeurIPS 2025 EEG Foundation Model Challenge
             </div>
-          ) : error && !results ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', color: '#ef4444' }}>
-              {error}
+            <div style={{ fontSize: '14px', color: textSecondary, marginBottom: '24px' }}>
+              Challenge 2: Subject-Invariant Representation
             </div>
-          ) : (
-            <>
-              {/* ─── Competition Scoreboard ─── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.15 }}
-                style={{ marginBottom: '48px' }}
-              >
-                <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                  Competition Scoreboard
-                </h3>
-                <p style={{ color: textSecondary, fontSize: '14px', marginBottom: '20px' }}>
-                  NeurIPS 2025 EEG Foundation Model Challenge — Challenge 2: Subject-Invariant Representation
-                  {benchmark && ` (${benchmark.total_teams.toLocaleString()} teams)`}
-                </p>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                  gap: '16px'
-                }}>
-                  {(benchmark?.leaderboard || []).map((entry, i) => (
-                    <div key={i} style={cardStyle()}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                        <span style={{ fontSize: '20px' }}>{['🥇', '🥈', '🥉'][i]}</span>
-                        <span style={{ color: textSecondary, fontSize: '13px', fontWeight: '600' }}>
-                          #{entry.rank}
-                        </span>
-                      </div>
-                      <div style={{ color: textPrimary, fontSize: '16px', fontWeight: '700', marginBottom: '4px' }}>
-                        {entry.team}
-                      </div>
-                      <div style={{ color: textSecondary, fontSize: '28px', fontWeight: '800', fontFamily: 'monospace' }}>
-                        {entry.score.toFixed(5)}
-                      </div>
-                    </div>
-                  ))}
 
-                  {/* ParagonDAO card — highlighted */}
-                  <div style={cardStyle({
-                    border: `2px solid ${greenBorder}`,
-                    background: isDark ? 'rgba(16,185,129,0.08)' : 'rgba(16,185,129,0.06)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  })}>
-                    <div style={{
-                      position: 'absolute', top: '0', right: '0',
-                      padding: '4px 12px', borderRadius: '0 0 0 12px',
-                      background: greenAccent, color: '#fff',
-                      fontSize: '11px', fontWeight: '700'
-                    }}>
-                      27.5% BETTER
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                      <img src="/favicon.svg" alt="" style={{ width: '20px', height: '20px', borderRadius: '4px' }} />
-                      <span style={{ color: greenAccent, fontSize: '13px', fontWeight: '600' }}>ParagonDAO</span>
-                    </div>
-                    <div style={{ color: textPrimary, fontSize: '16px', fontWeight: '700', marginBottom: '4px' }}>
-                      HFTP + Domain Adversarial
-                    </div>
-                    <div style={{ color: greenAccent, fontSize: '28px', fontWeight: '800', fontFamily: 'monospace' }}>
-                      {(benchmark?.paragondao?.score || results?.overall?.normalized_error || 0.70879).toFixed(5)}
+            {loading ? (
+              <div style={{ display: 'flex', gap: '16px' }}>
+                <Skeleton height="200px" style={{ flex: 3 }} />
+                <Skeleton height="200px" style={{ flex: 2 }} />
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                {/* Leaderboard table */}
+                <div style={{ flex: '3 1 400px', minWidth: '300px' }}>
+                  <div style={cardStyle({ padding: '0', overflow: 'hidden' })}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ borderBottom: `1px solid ${cardBorder}` }}>
+                          {['Rank', 'Team', 'Normalized Error'].map(h => (
+                            <th key={h} style={{
+                              padding: '14px 20px', textAlign: h === 'Normalized Error' ? 'right' : 'left',
+                              fontSize: '11px', fontWeight: '600', textTransform: 'uppercase',
+                              letterSpacing: '0.06em', color: textSecondary,
+                            }}>
+                              {h}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {leaderboard.map((entry, i) => (
+                          <tr key={i} style={{
+                            borderBottom: i < leaderboard.length - 1 ? `1px solid ${cardBorder}` : 'none',
+                          }}>
+                            <td style={{ padding: '14px 20px', color: textSecondary, fontSize: '14px', fontFamily: 'monospace' }}>
+                              #{entry.rank}
+                            </td>
+                            <td style={{ padding: '14px 20px', color: textPrimary, fontSize: '15px', fontWeight: '600' }}>
+                              {entry.team}
+                              {entry.institution && (
+                                <span style={{ color: textSecondary, fontSize: '12px', fontWeight: '400', marginLeft: '8px' }}>
+                                  {entry.institution}
+                                </span>
+                              )}
+                            </td>
+                            <td style={{ padding: '14px 20px', textAlign: 'right', fontFamily: 'monospace', fontSize: '17px', fontWeight: '600', color: textPrimary }}>
+                              {entry.score.toFixed(5)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div style={{ padding: '12px 20px', fontSize: '12px', color: textSecondary, borderTop: `1px solid ${cardBorder}` }}>
+                      Lower normalized error = better. 1.0 = no improvement over baseline.
                     </div>
                   </div>
                 </div>
-              </motion.div>
 
-              {/* ─── Overall Results ─── */}
-              {results?.overall && (
+                {/* ParagonDAO hero card */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  style={{ marginBottom: '48px' }}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ type: 'spring', stiffness: 120, damping: 14, delay: 0.15 }}
+                  style={{
+                    flex: '2 1 280px', minWidth: '260px',
+                    ...cardStyle({
+                      border: `2px solid ${greenBorder}`,
+                      background: isDark ? 'rgba(16,185,129,0.06)' : 'rgba(16,185,129,0.04)',
+                      display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                      alignItems: 'center', textAlign: 'center', padding: '32px 24px',
+                    })
+                  }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-                    <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', margin: 0 }}>
-                      Verification Results
-                    </h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      {results.verified_at && (
-                        <span style={{ color: textSecondary, fontSize: '12px' }}>
-                          Last verified: {new Date(results.verified_at).toLocaleString()}
-                        </span>
-                      )}
-                      <button
-                        onClick={handleRerun}
-                        disabled={rerunning}
-                        style={{
-                          padding: '6px 14px', borderRadius: '8px',
-                          background: rerunning ? 'rgba(255,255,255,0.05)' : greenBg,
-                          border: `1px solid ${greenBorder}`,
-                          color: greenAccent, fontSize: '12px', fontWeight: '600',
-                          cursor: rerunning ? 'not-allowed' : 'pointer'
-                        }}
-                      >
-                        {rerunning ? 'Re-verifying...' : 'Re-verify Now'}
-                      </button>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <span style={{ color: textPrimary, fontSize: '14px', fontWeight: '600' }}>ParagonDAO</span>
+                    <span style={{
+                      padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: '700',
+                      background: green, color: '#fff', letterSpacing: '0.04em',
+                    }}>VERIFIED</span>
+                  </div>
+
+                  <AnimatedNumber
+                    value={pScore}
+                    decimals={5}
+                    duration={1.4}
+                    style={{
+                      fontSize: 'clamp(36px, 6vw, 52px)', fontWeight: '800',
+                      fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                      color: green, display: 'block', lineHeight: '1.1', margin: '8px 0',
+                    }}
+                  />
+
+                  <div style={{ fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.06em', color: textSecondary, marginBottom: '12px' }}>
+                    Normalized Error (competition metric)
+                  </div>
+
+                  <div style={{ fontSize: '14px', color: textSecondary, marginBottom: '4px' }}>
+                    vs. {leaderboard[0]?.score?.toFixed(5) || '0.97843'} (1st place)
                   </div>
 
                   <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                    gap: '16px'
+                    fontSize: '18px', fontWeight: '700', color: green,
+                    padding: '6px 16px', borderRadius: '8px', marginTop: '8px',
+                    background: 'rgba(16,185,129,0.1)',
                   }}>
-                    {[
-                      { label: 'Normalized Error', value: results.overall.normalized_error?.toFixed(5), accent: true },
-                      { label: 'Correlation', value: results.overall.correlation?.toFixed(5) },
-                      { label: 'MSE', value: results.overall.mse?.toFixed(6) },
-                      { label: 'Total Samples', value: results.overall.total_samples?.toLocaleString() },
-                      { label: 'Test Subjects', value: results.overall.total_subjects },
-                      { label: 'RMSE', value: results.overall.rmse?.toFixed(6) },
-                    ].map((metric, i) => (
-                      <div key={i} style={cardStyle({ textAlign: 'center' })}>
-                        <div style={{ color: textSecondary, fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
-                          {metric.label}
-                        </div>
-                        <div style={{
-                          fontSize: metric.accent ? '28px' : '22px',
-                          fontWeight: '800',
-                          fontFamily: 'monospace',
-                          color: metric.accent ? greenAccent : textPrimary
-                        }}>
-                          {metric.value}
-                        </div>
-                      </div>
-                    ))}
+                    13.5x more improvement
+                  </div>
+
+                  <div style={{ fontSize: '12px', color: textSecondary, marginTop: '12px' }}>
+                    HFTP + Domain Adversarial Training
                   </div>
                 </motion.div>
-              )}
+              </div>
+            )}
+          </motion.div>
 
-              {/* ─── Per-Subject Breakdown ─── */}
-              {results?.per_subject?.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  style={{ marginBottom: '48px' }}
+          {/* ═══════ WHY THIS MATTERS — moved up ═══════ */}
+          <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
+            <div style={cardStyle({
+              padding: '36px',
+              border: `1px solid ${isDark ? 'rgba(99,102,241,0.25)' : 'rgba(99,102,241,0.12)'}`,
+              background: isDark ? 'rgba(99,102,241,0.05)' : 'rgba(99,102,241,0.02)',
+            })}>
+              <h3 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.7rem)', fontWeight: '800', color: textPrimary, margin: '0 0 12px 0' }}>
+                One Encoder Architecture. Every Biosignal.
+              </h3>
+              <p style={{ color: textSecondary, fontSize: '15px', lineHeight: '1.7', maxWidth: '700px', margin: '0 0 24px 0' }}>
+                Subject invariance is the hardest problem in biosignal AI. The GLE encoding pipeline that solved it for
+                EEG is identical across all modalities — only the input sensor and prediction head change.
+              </p>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                gap: '10px', marginBottom: '24px',
+              }}>
+                {[
+                  { signal: 'Brain (EEG)', model: 'Consciousness', status: 'Verified', color: green },
+                  { signal: 'Serum (LC-MS)', model: 'T2D Metabolomics', status: 'Validated', color: '#8b5cf6' },
+                  { signal: 'Saliva (Raman)', model: 'PD/AD, Cancer, COVID', status: 'Validated', color: '#8b5cf6' },
+                  { signal: 'Audio', model: 'Respiratory Health', status: 'Production', color: green },
+                  { signal: 'Voice + EEG', model: 'Mental Health', status: 'Research', color: '#f59e0b' },
+                ].map((item, i) => (
+                  <div key={i} style={{
+                    padding: '14px 16px', borderRadius: '12px',
+                    background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                    border: `1px solid ${cardBorder}`,
+                  }}>
+                    <div style={{ color: textSecondary, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '4px' }}>
+                      {item.signal}
+                    </div>
+                    <div style={{ color: textPrimary, fontSize: '14px', fontWeight: '600', marginBottom: '6px' }}>
+                      {item.model}
+                    </div>
+                    <span style={{
+                      padding: '2px 8px', borderRadius: '8px', fontSize: '11px', fontWeight: '600',
+                      color: item.color,
+                      background: item.color === green ? 'rgba(16,185,129,0.12)' : item.color === '#f59e0b' ? 'rgba(245,158,11,0.12)' : 'rgba(139,92,246,0.12)',
+                    }}>
+                      {item.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <motion.a
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  href="/models"
+                  style={{
+                    padding: '10px 22px', borderRadius: '10px', fontSize: '14px', fontWeight: '600',
+                    background: `linear-gradient(135deg, ${indigo}, #8b5cf6)`, color: '#fff',
+                    textDecoration: 'none', display: 'inline-block',
+                  }}
                 >
-                  <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                    Per-Subject Breakdown
+                  View All Disease Models
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  href="/whitepaper"
+                  style={{
+                    padding: '10px 22px', borderRadius: '10px', fontSize: '14px', fontWeight: '600',
+                    background: 'transparent', color: textSecondary,
+                    border: `1px solid ${cardBorder}`, textDecoration: 'none', display: 'inline-block',
+                  }}
+                >
+                  Read the Whitepaper
+                </motion.a>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ═══════ VERIFICATION DASHBOARD ═══════ */}
+          {(results?.overall || loading) && (
+            <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', margin: 0 }}>
+                    Verification Dashboard
                   </h3>
-                  <p style={{ color: textSecondary, fontSize: '14px', marginBottom: '20px' }}>
-                    Each test subject is completely unseen during training — zero data overlap.
-                  </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-                    {results.per_subject.map((subj, i) => (
-                      <div key={i} style={cardStyle()}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                          <span style={{ color: textPrimary, fontSize: '16px', fontWeight: '700' }}>
-                            Subject {i + 1}
-                          </span>
-                          <span style={{ color: textSecondary, fontSize: '13px' }}>
-                            {subj.samples?.toLocaleString()} samples
-                          </span>
+                  <span style={{
+                    padding: '3px 10px', borderRadius: '10px', fontSize: '11px', fontWeight: '600',
+                    background: greenBg, color: green, border: `1px solid ${greenBorder}`,
+                  }}>VERIFIED</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {results?.verified_at && (
+                    <span style={{ color: textSecondary, fontSize: '12px' }}>
+                      Last verified: {new Date(results.verified_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
+                  )}
+                  <button
+                    onClick={handleRerun} disabled={rerunning}
+                    style={{
+                      padding: '6px 14px', borderRadius: '8px',
+                      background: rerunning ? 'rgba(255,255,255,0.03)' : greenBg,
+                      border: `1px solid ${greenBorder}`, color: green,
+                      fontSize: '12px', fontWeight: '600',
+                      cursor: rerunning ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {rerunning ? 'Running...' : 'Re-run Verification'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Hero metrics */}
+              {loading ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '16px' }}>
+                  {[1,2,3].map(i => <Skeleton key={i} height="110px" />)}
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                    {[
+                      { label: 'Normalized Error', sublabel: 'Competition metric', value: overall.normalized_error, decimals: 5, accent: true },
+                      { label: 'Prediction-Target Correlation', sublabel: 'Alignment strength', value: overall.correlation, decimals: 5 },
+                      { label: 'Test Samples Evaluated', sublabel: 'Across 3 unseen subjects', value: overall.total_samples, decimals: 0, isInt: true },
+                    ].map((m, i) => (
+                      <div key={i} style={cardStyle({ textAlign: 'center', padding: '28px 20px' })}>
+                        <div style={{ color: textSecondary, fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                          {m.label}
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                          <div>
-                            <div style={{ color: textSecondary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '4px' }}>Correlation</div>
-                            <div style={{ color: greenAccent, fontSize: '18px', fontWeight: '700', fontFamily: 'monospace' }}>
-                              {subj.correlation?.toFixed(5)}
-                            </div>
-                          </div>
-                          <div>
-                            <div style={{ color: textSecondary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '4px' }}>MSE</div>
-                            <div style={{ color: textPrimary, fontSize: '18px', fontWeight: '700', fontFamily: 'monospace' }}>
-                              {subj.mse?.toFixed(6)}
-                            </div>
-                          </div>
-                          <div>
-                            <div style={{ color: textSecondary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '4px' }}>Mean Pred</div>
-                            <div style={{ color: textPrimary, fontSize: '14px', fontFamily: 'monospace' }}>
-                              {subj.mean_prediction?.toFixed(5)}
-                            </div>
-                          </div>
-                          <div>
-                            <div style={{ color: textSecondary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '4px' }}>Mean Target</div>
-                            <div style={{ color: textPrimary, fontSize: '14px', fontFamily: 'monospace' }}>
-                              {subj.mean_target?.toFixed(5)}
-                            </div>
-                          </div>
+                        <AnimatedNumber
+                          value={m.value}
+                          decimals={m.decimals}
+                          duration={1.2}
+                          style={{
+                            fontSize: '32px', fontWeight: '800',
+                            fontFamily: "'JetBrains Mono', monospace",
+                            color: m.accent ? green : textPrimary,
+                            display: 'block', margin: '6px 0',
+                          }}
+                        />
+                        <div style={{ color: textSecondary, fontSize: '12px' }}>{m.sublabel}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Supporting metrics */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '32px' }}>
+                    {[
+                      { label: 'MSE', value: overall.mse?.toFixed(6) },
+                      { label: 'RMSE', value: overall.rmse?.toFixed(6) },
+                      { label: 'Unseen Subjects', value: overall.total_subjects },
+                    ].map((m, i) => (
+                      <div key={i} style={cardStyle({ textAlign: 'center', padding: '16px' })}>
+                        <div style={{ color: textSecondary, fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                          {m.label}
+                        </div>
+                        <div style={{ fontSize: '18px', fontWeight: '700', fontFamily: 'monospace', color: textSecondary }}>
+                          {m.value}
                         </div>
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
 
-              {/* ─── Architecture Diagram (HIGH LEVEL ONLY) ─── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                style={{ marginBottom: '48px' }}
-              >
-                <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                  Architecture Overview
-                </h3>
-                <div style={cardStyle({ padding: '32px', textAlign: 'center' })}>
-                  <svg viewBox="0 0 800 200" style={{ width: '100%', maxWidth: '800px', height: 'auto' }}>
-                    {/* Boxes */}
-                    {[
-                      { x: 20, y: 30, w: 140, h: 60, label: 'Frequency Domain', sub: '(HFTP)' },
-                      { x: 20, y: 110, w: 140, h: 60, label: 'Time Domain', sub: '(CNN)' },
-                      { x: 240, y: 70, w: 130, h: 60, label: 'Feature Fusion', sub: '' },
-                      { x: 440, y: 70, w: 150, h: 60, label: 'Subject', sub: 'Normalization' },
-                      { x: 660, y: 70, w: 120, h: 60, label: 'Prediction', sub: '' },
-                    ].map((box, i) => (
-                      <g key={i}>
-                        <rect
-                          x={box.x} y={box.y} width={box.w} height={box.h}
-                          rx="10" ry="10"
-                          fill={isDark ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.1)'}
-                          stroke={greenAccent}
-                          strokeWidth="1.5"
-                        />
-                        <text
-                          x={box.x + box.w / 2} y={box.y + (box.sub ? box.h / 2 - 6 : box.h / 2 + 4)}
-                          textAnchor="middle"
-                          fill={textPrimary}
-                          fontSize="13"
-                          fontWeight="600"
-                        >
-                          {box.label}
-                        </text>
-                        {box.sub && (
-                          <text
-                            x={box.x + box.w / 2} y={box.y + box.h / 2 + 12}
-                            textAnchor="middle"
-                            fill={textSecondary}
-                            fontSize="11"
-                          >
-                            {box.sub}
-                          </text>
+                  {/* Per-subject */}
+                  {results?.per_subject?.length > 0 && (
+                    <>
+                      <div style={{ fontSize: '15px', fontWeight: '600', color: textPrimary, marginBottom: '12px' }}>
+                        Per-Subject Performance
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                        {results.per_subject.map((subj, i) => (
+                          <div key={i} style={cardStyle()}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                              <span style={{ color: textPrimary, fontSize: '15px', fontWeight: '700' }}>
+                                Subject {i + 1}
+                              </span>
+                              <span style={{ color: textSecondary, fontSize: '12px' }}>
+                                {subj.samples?.toLocaleString()} samples
+                              </span>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                              <div>
+                                <div style={{ color: textSecondary, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '3px' }}>Correlation</div>
+                                <div style={{ color: green, fontSize: '18px', fontWeight: '700', fontFamily: 'monospace' }}>
+                                  {subj.correlation?.toFixed(4)}
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ color: textSecondary, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '3px' }}>MSE</div>
+                                <div style={{ color: textPrimary, fontSize: '18px', fontWeight: '700', fontFamily: 'monospace' }}>
+                                  {subj.mse?.toFixed(5)}
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ color: textSecondary, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '3px' }}>Mean Prediction</div>
+                                <div style={{ color: textPrimary, fontSize: '14px', fontFamily: 'monospace' }}>
+                                  {subj.mean_prediction?.toFixed(4)}
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ color: textSecondary, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '3px' }}>Actual Mean</div>
+                                <div style={{ color: textPrimary, fontSize: '14px', fontFamily: 'monospace' }}>
+                                  {subj.mean_target?.toFixed(4)}
+                                </div>
+                              </div>
+                            </div>
+                            {/* Accuracy bar */}
+                            <div style={{ marginTop: '12px' }}>
+                              <div style={{ height: '4px', borderRadius: '2px', background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', position: 'relative' }}>
+                                <div style={{
+                                  height: '100%', borderRadius: '2px', background: green,
+                                  width: `${Math.min(100, (subj.correlation || 0) * 100)}%`,
+                                  transition: 'width 0.8s ease',
+                                }} />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Consistency callout */}
+                      {results.per_subject.length > 1 && (() => {
+                        const corrs = results.per_subject.map(s => s.correlation)
+                        const min = Math.min(...corrs)
+                        const max = Math.max(...corrs)
+                        return (
+                          <div style={{
+                            textAlign: 'center', padding: '10px', borderRadius: '10px',
+                            background: isDark ? 'rgba(16,185,129,0.05)' : 'rgba(16,185,129,0.03)',
+                            border: `1px solid ${greenBorder}`, fontSize: '13px', color: textSecondary,
+                          }}>
+                            Cross-subject consistency: correlation range <span style={{ color: green, fontWeight: '600' }}>{min.toFixed(3)} — {max.toFixed(3)}</span> across unseen subjects
+                          </div>
+                        )
+                      })()}
+                    </>
+                  )}
+                </>
+              )}
+            </motion.div>
+          )}
+
+          {/* ═══════ METHODOLOGY + ARCHITECTURE ═══════ */}
+          <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
+            <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
+              How It Works
+            </h3>
+            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+              {/* Methodology text */}
+              <div style={{ flex: '3 1 360px', minWidth: '280px' }}>
+                <div style={cardStyle({ padding: '32px' })}>
+                  {[
+                    {
+                      title: 'Data Split Protocol',
+                      text: '14 training / 3 validation / 3 test subjects. Zero overlap. The model has never seen any data from test subjects during training — proving true generalization to new individuals.',
+                    },
+                    {
+                      title: 'What "Subject Invariant" Means',
+                      text: 'Brain signals vary between individuals — skull thickness, electrode placement, and neural architecture all differ. Domain adversarial training forces the model to learn universal patterns that transfer to anyone.',
+                    },
+                    {
+                      title: 'Competition Protocol',
+                      text: 'The NeurIPS 2025 EEG Foundation Model Challenge tested generalization to unseen subjects. Normalized error compares model MSE to a mean-prediction baseline. Lower is better.',
+                      link: true,
+                    },
+                  ].map((item, i) => (
+                    <div key={i} style={{ marginBottom: i < 2 ? '24px' : 0 }}>
+                      <h4 style={{ color: textPrimary, fontSize: '15px', fontWeight: '700', marginBottom: '6px', marginTop: 0 }}>
+                        {item.title}
+                      </h4>
+                      <p style={{ color: textSecondary, fontSize: '14px', lineHeight: '1.7', margin: 0 }}>
+                        {item.text}
+                        {item.link && (
+                          <>
+                            {' '}
+                            <a href="https://eeg-foundation.github.io/challenge/" target="_blank" rel="noopener noreferrer"
+                              style={{ color: green, textDecoration: 'none', fontWeight: '500' }}
+                            >
+                              NeurIPS Challenge Page →
+                            </a>
+                          </>
                         )}
-                      </g>
-                    ))}
-                    {/* Arrows */}
-                    {[
-                      { x1: 160, y1: 60, x2: 240, y2: 95 },
-                      { x1: 160, y1: 140, x2: 240, y2: 105 },
-                      { x1: 370, y1: 100, x2: 440, y2: 100 },
-                      { x1: 590, y1: 100, x2: 660, y2: 100 },
-                    ].map((arrow, i) => (
-                      <line key={i}
-                        x1={arrow.x1} y1={arrow.y1} x2={arrow.x2} y2={arrow.y2}
-                        stroke={isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'}
-                        strokeWidth="2"
-                        markerEnd="url(#arrowhead)"
-                      />
-                    ))}
-                    <defs>
-                      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                        <polygon
-                          points="0 0, 10 3.5, 0 7"
-                          fill={isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'}
-                        />
-                      </marker>
-                    </defs>
-                  </svg>
-                  <p style={{ color: textSecondary, fontSize: '13px', marginTop: '16px' }}>
-                    High-level architecture: dual-domain feature extraction with subject-invariant normalization.
-                    Domain adversarial training forces the network to learn representations that generalize across unseen subjects.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Architecture diagram — vertical pipeline */}
+              <div style={{ flex: '2 1 280px', minWidth: '240px' }}>
+                <div style={cardStyle({ padding: '28px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0' })}>
+                  {[
+                    { label: 'Raw EEG Signal', sub: '4 ch × 200 samples', color: textSecondary },
+                    null, // arrow
+                    { label: 'Dual-Domain Extraction', sub: 'HFTP (frequency) + CNN (time)', color: green },
+                    null,
+                    { label: 'Feature Fusion', sub: 'Cross-domain attention', color: textPrimary },
+                    null,
+                    { label: 'Subject Normalization', sub: 'Adversarial training', color: indigo },
+                    null,
+                    { label: 'Prediction', sub: 'Task-specific output', color: green },
+                  ].map((item, i) => {
+                    if (!item) {
+                      return (
+                        <div key={i} style={{
+                          width: '2px', height: '20px',
+                          background: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)',
+                        }}>
+                          <div style={{
+                            width: 0, height: 0,
+                            borderLeft: '5px solid transparent', borderRight: '5px solid transparent',
+                            borderTop: `6px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)'}`,
+                            marginLeft: '-4px', marginTop: '20px',
+                          }} />
+                        </div>
+                      )
+                    }
+                    return (
+                      <div key={i} style={{
+                        width: '100%', padding: '14px 18px', borderRadius: '10px',
+                        border: `1px solid ${item.color === green ? greenBorder : item.color === indigo ? 'rgba(99,102,241,0.25)' : cardBorder}`,
+                        background: item.color === green ? 'rgba(16,185,129,0.06)' : item.color === indigo ? 'rgba(99,102,241,0.05)' : isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                        textAlign: 'center',
+                      }}>
+                        <div style={{ fontSize: '14px', fontWeight: '650', color: textPrimary }}>{item.label}</div>
+                        <div style={{ fontSize: '12px', color: textSecondary, marginTop: '2px' }}>{item.sub}</div>
+                      </div>
+                    )
+                  })}
+                  <p style={{ color: textSecondary, fontSize: '12px', textAlign: 'center', marginTop: '16px', marginBottom: 0, lineHeight: '1.6' }}>
+                    Same pipeline for EEG, metabolomics, Raman spectroscopy, and audio — only the input layer changes.
                   </p>
                 </div>
-              </motion.div>
+              </div>
+            </div>
+          </motion.div>
 
-              {/* ─── API Playground ─── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                style={{ marginBottom: '48px' }}
-              >
-                <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                  API Playground
-                </h3>
-                <div style={cardStyle({ padding: '32px' })}>
-                  <p style={{ color: textSecondary, fontSize: '14px', marginBottom: '16px' }}>
-                    Send raw EEG data and get a live prediction. GLE encoding (band powers, normalization, DCT-II)
-                    happens server-side — you never need to understand the frequency transform.
-                  </p>
+          {/* ═══════ API PLAYGROUND ═══════ */}
+          <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
+            <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '6px' }}>
+              Try It Live
+            </h3>
+            <p style={{ color: textSecondary, fontSize: '14px', marginBottom: '20px' }}>
+              Send raw EEG data — GLE encoding happens server-side. You never touch the frequency transform.
+            </p>
 
+            <div style={cardStyle({ padding: '32px' })}>
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                {/* Input side */}
+                <div style={{ flex: '1 1 300px', minWidth: '260px' }}>
+                  {/* Channel visualization */}
                   <div style={{ marginBottom: '16px' }}>
-                    <label style={{ color: textSecondary, fontSize: '12px', fontWeight: '600', display: 'block', marginBottom: '6px' }}>
-                      Raw EEG Signal (JSON: 4 channels × 200 timepoints, 2 seconds at 100 Hz)
-                    </label>
-                    <textarea
-                      value={playgroundInput}
-                      onChange={e => setPlaygroundInput(e.target.value)}
-                      rows={3}
-                      style={{
-                        width: '100%', padding: '12px', borderRadius: '8px',
-                        background: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.04)',
-                        border: `1px solid ${cardBorder}`,
-                        color: textPrimary, fontSize: '12px', fontFamily: 'monospace',
-                        resize: 'vertical', boxSizing: 'border-box'
-                      }}
-                    />
+                    <div style={{ fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', color: textSecondary, marginBottom: '8px' }}>
+                      EEG Input (4 channels, 200 samples, 100 Hz)
+                    </div>
+                    {['TP9', 'AF7', 'AF8', 'TP10'].map((ch, i) => (
+                      <div key={ch} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '10px', fontFamily: 'monospace', color: textSecondary, width: '32px' }}>{ch}</span>
+                        <div style={{
+                          flex: 1, height: '12px', borderRadius: '3px',
+                          background: `linear-gradient(90deg, ${isDark ? 'rgba(16,185,129,0.2)' : 'rgba(16,185,129,0.15)'} ${20 + i * 5}%, ${isDark ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.12)'} ${50 + i * 3}%, ${isDark ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.1)'} 80%)`,
+                          border: `1px solid ${cardBorder}`,
+                        }} />
+                      </div>
+                    ))}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
                     <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={handlePredict}
-                      disabled={playgroundLoading}
+                      whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                      onClick={() => generateSignal()}
                       style={{
-                        padding: '10px 24px', borderRadius: '10px',
-                        background: `linear-gradient(135deg, ${greenAccent}, #059669)`,
-                        border: 'none', color: '#fff', fontSize: '14px', fontWeight: '600',
-                        cursor: playgroundLoading ? 'not-allowed' : 'pointer',
-                        opacity: playgroundLoading ? 0.6 : 1
+                        padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: '600',
+                        background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+                        border: `1px solid ${cardBorder}`, color: textPrimary, cursor: 'pointer',
                       }}
                     >
-                      {playgroundLoading ? 'Predicting...' : 'Predict'}
+                      Generate Random Signal
                     </motion.button>
-
-                    {playgroundResult && (
-                      <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                        <div>
-                          <span style={{ color: textSecondary, fontSize: '12px' }}>Prediction: </span>
-                          <span style={{ color: greenAccent, fontSize: '18px', fontWeight: '700', fontFamily: 'monospace' }}>
-                            {playgroundResult.prediction?.toFixed(6)}
-                          </span>
-                        </div>
-                        <div>
-                          <span style={{ color: textSecondary, fontSize: '12px' }}>Latency: </span>
-                          <span style={{ color: textPrimary, fontSize: '14px', fontFamily: 'monospace' }}>
-                            {playgroundResult.latency_ms?.toFixed(1)}ms
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {playgroundError && (
-                      <span style={{ color: '#ef4444', fontSize: '13px' }}>{playgroundError}</span>
-                    )}
+                    <button
+                      onClick={() => setShowRawInput(!showRawInput)}
+                      style={{
+                        padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: '500',
+                        background: 'transparent', border: `1px solid ${cardBorder}`,
+                        color: textSecondary, cursor: 'pointer',
+                      }}
+                    >
+                      {showRawInput ? 'Hide JSON' : 'Paste Custom Data'}
+                    </button>
                   </div>
 
+                  {showRawInput && (
+                    <textarea
+                      value={playgroundInput ? JSON.stringify(playgroundInput) : ''}
+                      onChange={e => { try { setPlaygroundInput(JSON.parse(e.target.value)) } catch {} }}
+                      rows={3}
+                      style={{
+                        width: '100%', padding: '10px', borderRadius: '8px',
+                        background: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.03)',
+                        border: `1px solid ${cardBorder}`, color: textPrimary,
+                        fontSize: '11px', fontFamily: 'monospace', resize: 'vertical',
+                        boxSizing: 'border-box', marginBottom: '12px',
+                      }}
+                    />
+                  )}
+
+                  <motion.button
+                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    onClick={handlePredict}
+                    disabled={playgroundLoading}
+                    style={{
+                      padding: '12px 32px', borderRadius: '10px', width: '100%',
+                      background: `linear-gradient(135deg, ${green}, #059669)`,
+                      border: 'none', color: '#fff', fontSize: '15px', fontWeight: '700',
+                      cursor: playgroundLoading ? 'not-allowed' : 'pointer',
+                      opacity: playgroundLoading ? 0.6 : 1,
+                      boxShadow: `0 4px 16px rgba(16,185,129,0.3)`,
+                    }}
+                  >
+                    {playgroundLoading ? 'Running inference...' : 'Run Prediction'}
+                  </motion.button>
+                </div>
+
+                {/* Output side */}
+                <div style={{ flex: '1 1 300px', minWidth: '260px' }}>
+                  {playgroundResult ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        padding: '28px', borderRadius: '12px', textAlign: 'center',
+                        background: isDark ? 'rgba(16,185,129,0.06)' : 'rgba(16,185,129,0.04)',
+                        border: `1px solid ${greenBorder}`, marginBottom: '16px',
+                      }}
+                    >
+                      <div style={{ fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.06em', color: textSecondary, marginBottom: '8px' }}>
+                        Prediction
+                      </div>
+                      <div style={{
+                        fontSize: '42px', fontWeight: '800',
+                        fontFamily: "'JetBrains Mono', monospace", color: green,
+                      }}>
+                        {playgroundResult.prediction?.toFixed(6)}
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '10px' }}>
+                        <span style={{ fontSize: '13px', color: textSecondary }}>
+                          {playgroundResult.latency_ms?.toFixed(1)}ms
+                        </span>
+                        <span style={{
+                          padding: '2px 8px', borderRadius: '8px', fontSize: '11px', fontWeight: '600',
+                          background: greenBg, color: green,
+                        }}>
+                          {playgroundResult.model_status === 'precomputed' ? 'PRECOMPUTED' : 'LIVE'}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ) : playgroundLoading ? (
+                    <div style={{
+                      padding: '28px', borderRadius: '12px', textAlign: 'center',
+                      background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                      border: `1px solid ${cardBorder}`, marginBottom: '16px',
+                    }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: green, animation: 'pulse 1s infinite', margin: '0 auto 8px' }} />
+                      <span style={{ color: textSecondary, fontSize: '13px' }}>Running inference...</span>
+                    </div>
+                  ) : (
+                    <div style={{
+                      padding: '28px', borderRadius: '12px', textAlign: 'center',
+                      background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                      border: `1px dashed ${cardBorder}`, marginBottom: '16px',
+                    }}>
+                      <span style={{ color: textSecondary, fontSize: '14px' }}>
+                        Result will appear here
+                      </span>
+                    </div>
+                  )}
+
+                  {playgroundError && (
+                    <div style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px', textAlign: 'center' }}>
+                      {playgroundError}
+                    </div>
+                  )}
+
                   {/* Code snippets */}
-                  <div style={{ marginTop: '24px' }}>
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
-                      {['curl', 'python'].map(lang => (
-                        <button
-                          key={lang}
-                          onClick={() => setActiveSnippet(lang)}
-                          style={{
-                            padding: '4px 12px', borderRadius: '6px', border: 'none',
-                            background: activeSnippet === lang ? greenBg : 'transparent',
-                            color: activeSnippet === lang ? greenAccent : textSecondary,
-                            fontSize: '13px', fontWeight: '600', cursor: 'pointer',
-                            textTransform: 'uppercase'
-                          }}
-                        >
-                          {lang}
-                        </button>
-                      ))}
+                  <div>
+                    <div style={{ display: 'flex', gap: '4px', marginBottom: '8px', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        {['curl', 'python', 'javascript'].map(lang => (
+                          <button key={lang} onClick={() => setActiveSnippet(lang)}
+                            style={{
+                              padding: '4px 10px', borderRadius: '6px', border: 'none',
+                              background: activeSnippet === lang ? greenBg : 'transparent',
+                              color: activeSnippet === lang ? green : textSecondary,
+                              fontSize: '12px', fontWeight: '600', cursor: 'pointer', textTransform: 'uppercase',
+                            }}
+                          >
+                            {lang}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => copyCode(codeSnippets[activeSnippet])}
+                        style={{
+                          padding: '4px 10px', borderRadius: '6px', border: `1px solid ${cardBorder}`,
+                          background: 'transparent', color: copied ? green : textSecondary,
+                          fontSize: '11px', fontWeight: '600', cursor: 'pointer',
+                        }}
+                      >
+                        {copied ? '✓ Copied' : 'Copy'}
+                      </button>
                     </div>
                     <pre style={{
-                      background: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.05)',
-                      border: `1px solid ${cardBorder}`,
-                      borderRadius: '10px', padding: '16px',
-                      color: isDark ? '#e2e8f0' : '#334155',
-                      fontSize: '12px', fontFamily: 'monospace',
-                      overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-all'
+                      background: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.04)',
+                      border: `1px solid ${cardBorder}`, borderRadius: '10px', padding: '14px',
+                      color: isDark ? '#e2e8f0' : '#334155', fontSize: '12px', fontFamily: 'monospace',
+                      overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-all',
+                      maxHeight: '180px', margin: 0,
                     }}>
                       {codeSnippets[activeSnippet]}
                     </pre>
                   </div>
                 </div>
-              </motion.div>
+              </div>
+            </div>
+          </motion.div>
 
-              {/* ─── Methodology ─── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.7 }}
-                style={{ marginBottom: '48px' }}
-              >
-                <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                  Methodology
-                </h3>
-                <div style={cardStyle({ padding: '32px' })}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
-                    <div>
-                      <h4 style={{ color: textPrimary, fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>
-                        Subject-Level Splits
-                      </h4>
-                      <p style={{ color: textSecondary, fontSize: '14px', lineHeight: '1.7', margin: 0 }}>
-                        Data is split at the subject level — 14 subjects for training, 3 for validation, 3 for testing.
-                        Zero overlap means the model has never seen any data from test subjects during training,
-                        proving true generalization to new individuals.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 style={{ color: textPrimary, fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>
-                        What Is Subject Invariance?
-                      </h4>
-                      <p style={{ color: textSecondary, fontSize: '14px', lineHeight: '1.7', margin: 0 }}>
-                        Brain signals vary significantly between individuals — different skull thickness,
-                        electrode placement, and neural architecture. A subject-invariant model learns
-                        universal patterns that transfer to anyone, regardless of individual brain differences.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 style={{ color: textPrimary, fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>
-                        Competition Context
-                      </h4>
-                      <p style={{ color: textSecondary, fontSize: '14px', lineHeight: '1.7', margin: 0 }}>
-                        The NeurIPS 2025 EEG Foundation Model Challenge tested whether models can predict
-                        behavioral measures from brain recordings of unseen subjects.
-                        The metric (normalized error) compares model MSE against a mean-prediction baseline.
-                        Lower scores indicate better generalization.
-                        {' '}
-                        <a
-                          href="https://eeg-foundation.github.io/challenge/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: greenAccent, textDecoration: 'none' }}
-                          onMouseEnter={e => e.target.style.textDecoration = 'underline'}
-                          onMouseLeave={e => e.target.style.textDecoration = 'none'}
-                        >
-                          Competition page
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+          {/* ═══════ CTA ═══════ */}
+          <motion.div {...sectionAnim} style={{ marginBottom: '40px' }}>
+            <div style={cardStyle({
+              padding: '40px', textAlign: 'center',
+              border: `1px solid ${isDark ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.1)'}`,
+              background: isDark ? 'rgba(99,102,241,0.04)' : 'rgba(99,102,241,0.02)',
+            })}>
+              <h3 style={{ fontSize: '22px', fontWeight: '800', color: textPrimary, margin: '0 0 12px 0' }}>
+                Every Model. Independently Verifiable.
+              </h3>
+              <p style={{ color: textSecondary, fontSize: '15px', lineHeight: '1.7', maxWidth: '600px', margin: '0 auto 24px' }}>
+                The ParagonDAO Verification Network ensures every health model claim is backed by reproducible evidence.
+                As each disease model reaches validation, it gets its own verification page — auditable by anyone.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  href="/models" style={{
+                    padding: '12px 28px', borderRadius: '12px', fontSize: '15px', fontWeight: '700',
+                    background: `linear-gradient(135deg, ${green}, #059669)`, color: '#fff',
+                    textDecoration: 'none', boxShadow: '0 4px 16px rgba(16,185,129,0.3)',
+                  }}
+                >
+                  View All Disease Models
+                </motion.a>
+                <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  href="/whitepaper" style={{
+                    padding: '12px 28px', borderRadius: '12px', fontSize: '15px', fontWeight: '600',
+                    background: `linear-gradient(135deg, ${indigo}, #8b5cf6)`, color: '#fff',
+                    textDecoration: 'none',
+                  }}
+                >
+                  Read the Whitepaper
+                </motion.a>
+                <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  href="/network" style={{
+                    padding: '12px 28px', borderRadius: '12px', fontSize: '15px', fontWeight: '600',
+                    background: 'transparent', color: textSecondary,
+                    border: `1px solid ${cardBorder}`, textDecoration: 'none',
+                  }}
+                >
+                  Explore the Network
+                </motion.a>
+              </div>
+            </div>
+          </motion.div>
 
-              {/* ─── Cross-Modality Implications ─── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                style={{ marginBottom: '48px' }}
-              >
-                <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                  Why This Matters for Every Disease Model
-                </h3>
-                <div style={cardStyle({
-                  padding: '32px',
-                  border: `2px solid ${isDark ? 'rgba(99,102,241,0.3)' : 'rgba(99,102,241,0.15)'}`,
-                  background: isDark ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.03)'
-                })}>
-                  <p style={{ color: textPrimary, fontSize: '16px', fontWeight: '600', marginBottom: '16px', lineHeight: '1.6' }}>
-                    Subject invariance is the single hardest problem in biosignal AI. Every person's biology is different.
-                    Models that memorize patients fail on new ones — which is why 99% of health AI never leaves the lab.
-                  </p>
-                  <p style={{ color: textSecondary, fontSize: '15px', lineHeight: '1.7', marginBottom: '20px' }}>
-                    The GLE encoding pipeline is identical across all modalities: raw biosignal → band powers → normalize →
-                    DCT-II → 128 frequency coefficients → transformer → prediction. What changes per disease is only the
-                    input sensor and the prediction head. The frequency-domain encoding and adversarial training that
-                    achieved subject invariance on EEG transfers directly to saliva-based diabetes screening,
-                    Raman spectroscopy for cancer detection, and metabolomics for Parkinson's.
-                  </p>
-
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '12px', marginBottom: '20px'
-                  }}>
-                    {[
-                      { signal: 'Brain (EEG)', model: 'Consciousness', status: 'Verified', color: greenAccent },
-                      { signal: 'Serum (LC-MS)', model: 'T2D Metabolomics', status: 'Validated', color: '#8b5cf6' },
-                      { signal: 'Saliva (Raman)', model: 'PD/AD, Cancer, COVID', status: 'Validated', color: '#8b5cf6' },
-                      { signal: 'Audio (Breathing)', model: 'Respiratory Health', status: 'Production', color: greenAccent },
-                      { signal: 'Voice + EEG', model: 'Mental Health Crisis', status: 'Research', color: '#f59e0b' },
-                    ].map((item, i) => (
-                      <div key={i} style={{
-                        padding: '12px 16px', borderRadius: '10px',
-                        background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)',
-                        border: `1px solid ${cardBorder}`
-                      }}>
-                        <div style={{ color: textSecondary, fontSize: '11px', textTransform: 'uppercase', marginBottom: '4px' }}>
-                          {item.signal}
-                        </div>
-                        <div style={{ color: textPrimary, fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
-                          {item.model}
-                        </div>
-                        <div style={{ color: item.color, fontSize: '12px', fontWeight: '600' }}>
-                          {item.status}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <p style={{ color: textSecondary, fontSize: '14px', lineHeight: '1.7', marginBottom: '16px' }}>
-                    This verification page is the first node in the ParagonDAO Verification Network.
-                    As each disease model reaches validation, it gets its own verification page — independently auditable
-                    by anyone. The network's job is to ensure every model claim is backed by reproducible evidence,
-                    so proven models reach patients faster.
-                  </p>
-
-                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <a
-                      href="/models"
-                      style={{
-                        padding: '8px 20px', borderRadius: '8px',
-                        background: isDark ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.1)',
-                        border: `1px solid ${isDark ? 'rgba(99,102,241,0.3)' : 'rgba(99,102,241,0.2)'}`,
-                        color: isDark ? '#a5b4fc' : '#6366f1',
-                        fontSize: '13px', fontWeight: '600', textDecoration: 'none'
-                      }}
-                    >
-                      View All Disease Models
-                    </a>
-                    <a
-                      href="/network"
-                      style={{
-                        padding: '8px 20px', borderRadius: '8px',
-                        background: 'transparent',
-                        border: `1px solid ${cardBorder}`,
-                        color: textSecondary,
-                        fontSize: '13px', fontWeight: '600', textDecoration: 'none'
-                      }}
-                    >
-                      ParagonDAO Network
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-            </>
-          )}
         </div>
       </main>
 
