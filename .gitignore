@@ -105,6 +105,16 @@ jspm_packages/
 tmp/
 temp/
 
+# Model files — NEVER commit these (security: public repo)
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.h5
+*.pkl
+checkpoints/
+BACKUPS/
+
 # Internal / Private (not for open-source)
 backend/
 src/agent/

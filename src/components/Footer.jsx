@@ -38,7 +38,7 @@ const Footer = () => {
       title: 'Network',
       links: [
         { label: 'HFTP Network', href: '/network' },
-        { label: 'Connected Agents', href: '/network' },
+        { label: 'Verification Network', href: '/verify' },
         { label: 'Economic Impact', href: '/economic-impact' },
         { label: 'Ecosystem', href: '/ecosystem' }
       ]

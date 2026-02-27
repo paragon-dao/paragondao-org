@@ -77,6 +77,7 @@ const Header = ({
     { label: 'Health', path: '/health' },
     { label: 'Models', path: '/models' },
     { label: 'Network', path: '/network' },
+    { label: 'Verify', path: '/verify' },
     { label: 'Essays', path: '/essays' },
     { label: 'Whitepaper', path: '/docs/THE_HEALTH_ECONOMY.html', external: true }
   ]

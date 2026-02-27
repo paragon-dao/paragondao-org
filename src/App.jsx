@@ -13,6 +13,7 @@ import EconomicImpactPage from './pages/EconomicImpactPage'
 import CommunityPage from './pages/CommunityPage'
 import EssaysPage from './pages/EssaysPage'
 import EssayDetailPage from './pages/EssayDetailPage'
+import VerifyPage from './pages/VerifyPage'
 import AdminPage from './pages/AdminPage'
 import InviteGate from './components/InviteGate'
 import { MagicProvider, useMagic } from './providers/MagicProvider'
@@ -129,6 +130,7 @@ function AppRoutes() {
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/essays" element={<EssaysPage />} />
         <Route path="/essays/:slug" element={<EssayDetailPage />} />
+        <Route path="/verify" element={<VerifyPage />} />
 
         {/* Protected Routes — require auth */}
         <Route path="/health" element={

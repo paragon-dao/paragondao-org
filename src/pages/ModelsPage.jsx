@@ -34,7 +34,7 @@ const availableModels = [
     modality: 'Metabolomics (LC-MS)',
     status: 'available',
     comparison: 'vs. HbA1c 80-85%',
-    sampleInfo: 'Saliva-based screening via partner program',
+    sampleInfo: 'Serum metabolomics via LC-MS laboratory',
     actionLabel: 'Learn More'
   },
   {
@@ -51,9 +51,9 @@ const availableModels = [
     accuracy: 'Validated',
     modality: 'Brain electrical',
     status: 'available',
-    comparison: 'NeurIPS 2025 winner (+4.87 pts)',
-    sampleInfo: 'Consumer EEG headband ($249)',
-    actionLabel: 'Learn More'
+    comparison: 'NeurIPS 2025 — 27.5% better (0.70879)',
+    sampleInfo: 'Independently verifiable — consumer EEG headband ($249)',
+    actionLabel: 'Verify Results'
   },
   {
     name: 'COVID-19',
@@ -201,6 +201,8 @@ const ModelsPage = () => {
                   onAction={() => {
                     if (model.actionLabel === 'Connect Your Health' || model.actionLabel === 'Access Breathing Layer') {
                       navigate('/health')
+                    } else if (model.name === 'EEG Consciousness') {
+                      navigate('/verify')
                     }
                   }}
                 />
