@@ -7,6 +7,7 @@ import Background from '../components/Background'
 import { getCurrentUser, getAuthToken } from '../services/api'
 import { useTheme } from '../providers/ThemeProvider'
 import { useMagic } from '../providers/MagicProvider'
+import SEO from '../components/SEO'
 
 const GovernancePage = () => {
   const navigate = useNavigate()
@@ -43,6 +44,11 @@ const GovernancePage = () => {
       position: 'relative',
       background: colors.background
     }}>
+      <SEO
+        title="Governance"
+        description="ParagonDAO governance: one person, one vote. Protocol standards, model certification, mission fund allocation, and network registry. Health is a right, not a product."
+        path="/governance"
+      />
       <Background />
       
       <Header 
@@ -76,10 +82,10 @@ const GovernancePage = () => {
             transition={{ duration: 0.8 }}
             style={{ textAlign: 'center', marginBottom: isMobile ? '48px' : '80px' }}
           >
-            <h1 style={{
+            <h1 key={isDark ? 'hd' : 'hl'} style={{
               fontSize: 'clamp(2rem, 5vw, 3.5rem)',
               fontWeight: '800',
-              background: isDark 
+              background: isDark
                 ? 'linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #8b5cf6 100%)'
                 : 'linear-gradient(135deg, #1e293b 0%, #6366f1 50%, #8b5cf6 100%)',
               WebkitBackgroundClip: 'text',

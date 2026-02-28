@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import { useMagic } from '../providers/MagicProvider'
 import { useTheme } from '../providers/ThemeProvider'
 import { getCurrentUser } from '../services/api'
+import SEO from '../components/SEO'
 
 // Designed Logo Components (using actual images)
 const FrogLogo = ({ isHovered = false, isMobile = false }) => (
@@ -407,8 +408,13 @@ const CommunityPage = () => {
       color: isDark ? '#fff' : '#1e293b',
       transition: 'all 0.3s ease'
     }}>
+      <SEO
+        title="Community"
+        description="Join the ParagonDAO community. Builders, researchers, healthcare professionals, and mission partners working together on the health economy."
+        path="/community"
+      />
       {/* Header */}
-      <Header 
+      <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         handleSearch={() => {}}

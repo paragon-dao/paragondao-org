@@ -82,7 +82,7 @@ const HealthPage = () => {
             animate={{ opacity: 1, y: 0 }}
             style={{ textAlign: 'center', marginBottom: '40px' }}
           >
-            <h1 style={{
+            <h1 key={isDark ? 'hd' : 'hl'} style={{
               fontSize: 'clamp(2rem, 4vw, 2.5rem)',
               fontWeight: '800',
               background: isDark

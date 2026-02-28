@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import Background from '../components/Background'
 import Footer from '../components/Footer'
 import EnvironmentCard from '../components/EnvironmentCard'
+import SEO from '../components/SEO'
 
 const HomePage = () => {
   const navigate = useNavigate()
@@ -55,6 +56,11 @@ const HomePage = () => {
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
       transition: 'background 0.3s ease'
     }}>
+      <SEO
+        title="The Health Economy"
+        description="ParagonDAO is the governance and certification network for GLE health models. One encoder reads every biosignal. 13.5x better than the NeurIPS 2025 winner."
+        path="/"
+      />
       <Background />
 
       <Header
@@ -217,7 +223,7 @@ const HomePage = () => {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
-            }}>
+            }} key={isDark ? 'hd' : 'hl'}>
               What GLE Can Screen
             </h2>
             <p style={{ textAlign: 'center', color: colors.textSecondary, margin: '0 0 32px 0', fontSize: '16px' }}>

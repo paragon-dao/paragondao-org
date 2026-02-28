@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import Background from '../components/Background'
 import Footer from '../components/Footer'
 import ModelCard from '../components/ModelCard'
+import SEO from '../components/SEO'
 
 const availableModels = [
   {
@@ -109,6 +110,11 @@ const ModelsPage = () => {
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
       transition: 'background 0.3s ease'
     }}>
+      <SEO
+        title="GLE Health Models"
+        description="One encoder, every biosignal. Disease screening models for breathing, diabetes, Parkinson's, Alzheimer's, EEG consciousness, and COVID-19. Validated with 88-97% accuracy."
+        path="/models"
+      />
       <Background />
 
       <Header
@@ -128,7 +134,7 @@ const ModelsPage = () => {
             transition={{ duration: 0.8 }}
             style={{ textAlign: 'center', marginBottom: '60px' }}
           >
-            <h1 style={{
+            <h1 key={isDark ? 'hd' : 'hl'} style={{
               fontSize: 'clamp(2rem, 4vw, 3rem)',
               fontWeight: '800',
               background: isDark

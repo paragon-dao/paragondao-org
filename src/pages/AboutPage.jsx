@@ -7,6 +7,7 @@ import Background from '../components/Background'
 import { getCurrentUser, getAuthToken } from '../services/api'
 import { useTheme } from '../providers/ThemeProvider'
 import { useMagic } from '../providers/MagicProvider'
+import SEO from '../components/SEO'
 
 const AboutPage = () => {
   const navigate = useNavigate()
@@ -43,6 +44,11 @@ const AboutPage = () => {
       position: 'relative',
       background: colors.background
     }}>
+      <SEO
+        title="About ParagonDAO"
+        description="ParagonDAO is the governance network for AI model knowledge sharing. We enable personal AI models to learn from each other via HFTP protocol, creating a new economic paradigm."
+        path="/about"
+      />
       <Background />
       
       <Header 
@@ -76,10 +82,10 @@ const AboutPage = () => {
             transition={{ duration: 0.8 }}
             style={{ textAlign: 'center', marginBottom: isMobile ? '48px' : '80px' }}
           >
-            <h1 style={{
+            <h1 key={isDark ? 'hd' : 'hl'} style={{
               fontSize: 'clamp(2rem, 5vw, 3.5rem)',
               fontWeight: '800',
-              background: isDark 
+              background: isDark
                 ? 'linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #8b5cf6 100%)'
                 : 'linear-gradient(135deg, #1e293b 0%, #6366f1 50%, #8b5cf6 100%)',
               WebkitBackgroundClip: 'text',

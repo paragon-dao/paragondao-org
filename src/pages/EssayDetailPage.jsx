@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import { getCurrentUser, getAuthToken } from '../services/api'
 import { useTheme } from '../providers/ThemeProvider'
 import essays from '../data/essays'
+import SEO from '../components/SEO'
 
 const EssayDetailPage = () => {
   const { slug } = useParams()
@@ -137,6 +138,11 @@ const EssayDetailPage = () => {
       color: isDark ? '#fff' : '#1e293b',
       transition: 'all 0.3s ease'
     }}>
+      {essay && <SEO
+        title={essay.title}
+        description={essay.subtitle || essay.title}
+        path={`/essays/${slug}`}
+      />}
 
       <Header
         searchQuery={searchQuery}

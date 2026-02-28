@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /health
+Disallow: /forge
+Disallow: /forge/submit
+Disallow: /forge/model/
+
+Sitemap: https://paragondao.org/sitemap.xml

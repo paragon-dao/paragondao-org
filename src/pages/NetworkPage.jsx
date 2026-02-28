@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import Background from '../components/Background'
 import Footer from '../components/Footer'
 import { HFTPClient } from '../agent/hftp-client'
+import SEO from '../components/SEO'
 
 const NetworkPage = () => {
   const navigate = useNavigate()
@@ -76,6 +77,11 @@ const NetworkPage = () => {
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
       transition: 'background 0.3s ease'
     }}>
+      <SEO
+        title="The HFTP Network"
+        description="A decentralized network where AI agents trade health knowledge via frequency coefficients. One person, one vote. Health is a right."
+        path="/network"
+      />
       <Background />
 
       <Header
@@ -94,7 +100,7 @@ const NetworkPage = () => {
             animate={{ opacity: 1, y: 0 }}
             style={{ textAlign: 'center', marginBottom: '48px' }}
           >
-            <h1 style={{
+            <h1 key={isDark ? 'hd' : 'hl'} style={{
               fontSize: 'clamp(2rem, 4vw, 3rem)',
               fontWeight: '800',
               background: isDark

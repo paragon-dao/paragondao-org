@@ -75,11 +75,11 @@ export const BENCHMARKS = [
 ]
 
 export const VALIDATORS = [
-  { id: 'v1', name: 'ParagonDAO Primary', location: 'Salt Lake City, UT', stake: '50,000 PGON' },
-  { id: 'v2', name: 'NeuroVerify Labs', location: 'Boston, MA', stake: '35,000 PGON' },
-  { id: 'v3', name: 'BioSignal Collective', location: 'Berlin, DE', stake: '42,000 PGON' },
-  { id: 'v4', name: 'Pacific Neural Trust', location: 'Singapore', stake: '28,000 PGON' },
-  { id: 'v5', name: 'Alpine Verification', location: 'Zurich, CH', stake: '31,000 PGON' },
+  { id: 'v1', name: 'ParagonDAO Primary', location: 'Salt Lake City, UT', stake: '50,000 PGON', role: 'Protocol', nodeType: 'Core validator — protocol governance and certification authority' },
+  { id: 'v2', name: 'U of U Research Node', location: 'Salt Lake City, UT', stake: '35,000 PGON', role: 'University', nodeType: 'University partner — produces trained builders via curriculum, validates research models' },
+  { id: 'v3', name: 'Silicon Slopes Hub', location: 'Lehi, UT', stake: '42,000 PGON', role: 'Ecosystem Hub', nodeType: 'Regional builder network — hosts local builders, connects to verticals' },
+  { id: 'v4', name: 'Promise2Live Mission', location: 'National (US)', stake: '28,000 PGON', role: 'Mission', nodeType: 'Mission partner — 988 crisis detection, receives free access funded by mission fund' },
+  { id: 'v5', name: 'Materic Hardware Node', location: 'Victoria, BC', stake: '31,000 PGON', role: 'Hardware', nodeType: 'Hardware partner — piezoelectric yarn + GLE, validates device-specific models' },
 ]
 
 function makeOnChainRecord(modelId, certTier, timestamp) {

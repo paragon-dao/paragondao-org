@@ -1,12 +1,6 @@
-# SPA routing - redirect all paths to index.html
+# Static files — serve directly, not through SPA
+/robots.txt    /robots.txt    200
+/sitemap.xml   /sitemap.xml   200
+
+# SPA routing — all other paths through index.html
 /*    /index.html   200
-
-
-
-
-
-
-
-
-
-

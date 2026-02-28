@@ -7,6 +7,7 @@ import Background from '../components/Background'
 import Footer from '../components/Footer'
 import CertificationBadge from '../components/CertificationBadge'
 import { CERTIFICATION_TIERS } from '../data/mockBuilderData'
+import SEO from '../components/SEO'
 
 const sectionAnim = {
   initial: { opacity: 0, y: 24 },
@@ -101,6 +102,11 @@ const ProofPipelinePage = () => {
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
       transition: 'background 0.3s ease',
     }}>
+      <SEO
+        title="Proof Pipeline — How Model Verification Works"
+        description="Seven steps from model submission to on-chain certification. Register, upload, train, benchmark, validate, certify, publish. Your model, independently verified, forever on chain."
+        path="/proof-pipeline"
+      />
       <Background />
       <Header />
       <main style={{ position: 'relative', zIndex: 5, paddingTop: '100px', minHeight: '100vh' }}>

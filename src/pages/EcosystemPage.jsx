@@ -5,6 +5,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { getCurrentUser, getAuthToken } from '../services/api'
 import { useTheme } from '../providers/ThemeProvider'
+import SEO from '../components/SEO'
 
 const EcosystemPage = () => {
   const navigate = useNavigate()
@@ -32,8 +33,13 @@ const EcosystemPage = () => {
       color: isDark ? '#fff' : '#1e293b',
       transition: 'all 0.3s ease'
     }}>
-      
-      <Header 
+      <SEO
+        title="Ecosystem"
+        description="The ParagonDAO ecosystem: universities produce builders, ecosystem hubs host regional networks, hardware partners provide devices, mission orgs receive free access."
+        path="/ecosystem"
+      />
+
+      <Header
         searchQuery={searchQuery}
         lastSearchedTerm=""
         setSearchQuery={setSearchQuery}

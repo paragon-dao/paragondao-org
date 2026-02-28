@@ -8,6 +8,7 @@ import Footer from '../components/Footer'
 import ModeToggle from '../components/ModeToggle'
 import ExchangeCard from '../components/ExchangeCard'
 import { exchangeModels, CERTIFICATION_TIERS } from '../data/mockBuilderData'
+import SEO from '../components/SEO'
 
 const sectionAnim = {
   initial: { opacity: 0, y: 24 },
@@ -95,6 +96,11 @@ const ExchangePage = () => {
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
       transition: 'background 0.3s ease',
     }}>
+      <SEO
+        title="Proof Exchange — Verified Health Models"
+        description="Browse ParagonDAO-certified health models. Every model independently verified by distributed validators. Bronze, Silver, Gold, and Platinum certification tiers."
+        path="/exchange"
+      />
       <Background />
       <Header />
       <main style={{ position: 'relative', zIndex: 5, paddingTop: '100px', minHeight: '100vh' }}>

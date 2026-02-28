@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import { getCurrentUser, getAuthToken } from '../services/api'
 import { useTheme } from '../providers/ThemeProvider'
 import essays from '../data/essays'
+import SEO from '../components/SEO'
 
 const EssaysPage = () => {
   const navigate = useNavigate()
@@ -40,6 +41,11 @@ const EssaysPage = () => {
       color: isDark ? '#fff' : '#1e293b',
       transition: 'all 0.3s ease'
     }}>
+      <SEO
+        title="Essays"
+        description="Essays on the health economy, the wealth of bodies, and why health data is the most valuable asset class in human history. PG-style essays by Philip Phuong Tran."
+        path="/essays"
+      />
 
       <Header
         searchQuery={searchQuery}
@@ -72,7 +78,7 @@ const EssaysPage = () => {
             transition={{ duration: 0.8 }}
             style={{ textAlign: 'center', marginBottom: '80px' }}
           >
-            <h1 style={{
+            <h1 key={isDark ? 'hd' : 'hl'} style={{
               fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
               fontWeight: '800',
               background: isDark

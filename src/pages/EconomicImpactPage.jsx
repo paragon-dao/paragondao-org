@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import { useMagic } from '../providers/MagicProvider'
 import { useTheme } from '../providers/ThemeProvider'
 import { getCurrentUser } from '../services/api'
+import SEO from '../components/SEO'
 
 const EconomicImpactPage = () => {
   const navigate = useNavigate()
@@ -161,8 +162,13 @@ const EconomicImpactPage = () => {
       color: isDark ? '#fff' : '#1e293b',
       transition: 'all 0.3s ease'
     }}>
+      <SEO
+        title="Economic Impact — The $200 Trillion Health Economy"
+        description="How GLE creates a new economic layer worth $12-17 trillion in addressable health technology markets, with potential to transform $200 trillion in human capital."
+        path="/economic-impact"
+      />
       {/* Header */}
-      <Header 
+      <Header
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         handleSearch={() => {}}
@@ -899,11 +905,11 @@ const EconomicImpactPage = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 style={{
+          <h2 key={isDark ? 'hd' : 'hl'} style={{
             fontSize: 'clamp(2rem, 5vw, 3rem)',
             fontWeight: '800',
             marginBottom: '24px',
-            background: isDark 
+            background: isDark
               ? 'linear-gradient(135deg, #fff 0%, #a5b4fc 100%)'
               : 'linear-gradient(135deg, #1e293b 0%, #6366f1 100%)',
             WebkitBackgroundClip: 'text',

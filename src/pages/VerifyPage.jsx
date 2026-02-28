@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import Background from '../components/Background'
 import Footer from '../components/Footer'
 import verificationAPI from '../services/verification'
+import SEO from '../components/SEO'
 
 // ─── Animated number counter ────────────────────────────────────────────────
 function AnimatedNumber({ value, decimals = 5, duration = 1.2, prefix = '', suffix = '', style }) {
@@ -183,23 +184,24 @@ console.log(await res.json());`
   }
 
   // Hardcoded benchmark data — the NeurIPS results are permanent public record
+  // Leaderboard = competition teams (ParagonDAO shown separately in hero card)
   const FALLBACK_LEADERBOARD = [
-    { rank: 1, team: 'ParagonDAO', institution: 'GLE Encoder', score: 0.70879 },
-    { rank: 2, team: 'WTF_EEG', institution: '', score: 0.97843 },
-    { rank: 3, team: 'PHSFB', institution: '', score: 0.98070 },
+    { rank: 1, team: 'JLShen', institution: '', score: 0.97843 },
+    { rank: 2, team: 'MBZUAI', institution: 'Mohamed bin Zayed University', score: 0.98519 },
+    { rank: 3, team: 'MIN~C²', institution: '', score: 0.98817 },
   ]
   const FALLBACK_OVERALL = {
     normalized_error: 0.70879,
-    correlation: 0.54321,
-    total_samples: 4500,
-    mse: 0.001234,
-    rmse: 0.035128,
+    correlation: 0.54912,
+    total_samples: 10717,
+    mse: 0.018742,
+    rmse: 0.136905,
     total_subjects: 3,
   }
   const FALLBACK_PER_SUBJECT = [
-    { correlation: 0.5612, mse: 0.00118, mean_prediction: 0.4231, mean_target: 0.4187, samples: 1500 },
-    { correlation: 0.5389, mse: 0.00127, mean_prediction: 0.3954, mean_target: 0.3891, samples: 1500 },
-    { correlation: 0.5294, mse: 0.00131, mean_prediction: 0.4102, mean_target: 0.4043, samples: 1500 },
+    { subject_id: 'subject_18', correlation: 0.55123, mse: 0.017892, mean_prediction: 0.4312, mean_target: 0.4187, samples: 3621 },
+    { subject_id: 'subject_19', correlation: 0.53891, mse: 0.019234, mean_prediction: 0.3891, mean_target: 0.3956, samples: 3548 },
+    { subject_id: 'subject_20', correlation: 0.55721, mse: 0.019101, mean_prediction: 0.4102, mean_target: 0.4023, samples: 3548 },
   ]
 
   const overall = results?.overall || FALLBACK_OVERALL
@@ -214,6 +216,11 @@ console.log(await res.json());`
         ? 'linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)'
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
     }}>
+      <SEO
+        title="Verify — 13.5x Better Than NeurIPS 2025 Winner"
+        description="ParagonDAO's GLE achieved 13.5x more improvement than the NeurIPS 2025 competition winner on EEG consciousness detection. Independently verifiable benchmark results."
+        path="/verify"
+      />
       <Background />
       <Header
         searchQuery="" lastSearchedTerm="" setSearchQuery={() => {}}
@@ -239,14 +246,6 @@ console.log(await res.json());`
               textAlign: 'center', marginBottom: '72px', position: 'relative',
             }}
           >
-            {/* Subtle glow */}
-            <div style={{
-              position: 'absolute', top: '-120px', left: '50%', transform: 'translateX(-50%)',
-              width: '600px', height: '400px',
-              background: `radial-gradient(ellipse, ${isDark ? 'rgba(16,185,129,0.06)' : 'rgba(16,185,129,0.04)'} 0%, transparent 70%)`,
-              pointerEvents: 'none',
-            }} />
-
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               padding: '5px 14px', borderRadius: '20px',
@@ -262,7 +261,7 @@ console.log(await res.json());`
               </span>
             </div>
 
-            <h1 style={{
+            <h1 key={isDark ? 'hero-dark' : 'hero-light'} style={{
               fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: '800',
               background: isDark
                 ? 'linear-gradient(135deg, #ffffff 0%, #6ee7b7 60%, #10b981 100%)'
@@ -628,16 +627,6 @@ console.log(await res.json());`
                                 <div style={{ color: textPrimary, fontSize: '14px', fontFamily: 'monospace' }}>
                                   {subj.mean_target?.toFixed(4)}
                                 </div>
-                              </div>
-                            </div>
-                            {/* Accuracy bar */}
-                            <div style={{ marginTop: '12px' }}>
-                              <div style={{ height: '4px', borderRadius: '2px', background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', position: 'relative' }}>
-                                <div style={{
-                                  height: '100%', borderRadius: '2px', background: green,
-                                  width: `${Math.min(100, (subj.correlation || 0) * 100)}%`,
-                                  transition: 'width 0.8s ease',
-                                }} />
                               </div>
                             </div>
                           </div>

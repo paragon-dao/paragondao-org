@@ -5,6 +5,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { getCurrentUser, getAuthToken } from '../services/api'
 import { useTheme } from '../providers/ThemeProvider'
+import SEO from '../components/SEO'
 
 const WhitepaperPage = () => {
   const navigate = useNavigate()
@@ -91,8 +92,13 @@ const WhitepaperPage = () => {
       color: isDark ? '#fff' : '#1e293b',
       transition: 'all 0.3s ease'
     }}>
-      
-      <Header 
+      <SEO
+        title="Whitepapers — HFTP Protocol & Health Economy"
+        description="Read the definitive whitepapers on the Health Economy, HFTP protocol, and HF-Auth security architecture. The technical foundation of the GLE health economy."
+        path="/whitepaper"
+      />
+
+      <Header
         searchQuery={searchQuery}
         lastSearchedTerm=""
         setSearchQuery={setSearchQuery}
