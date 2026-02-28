@@ -50,9 +50,18 @@ const ForgeModelDetailPage = () => {
     ...extra,
   })
 
+  const bgStyle = {
+    minHeight: '100vh',
+    position: 'relative',
+    background: isDark
+      ? 'linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)'
+      : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+    transition: 'background 0.3s ease',
+  }
+
   if (!model) {
     return (
-      <>
+      <div style={bgStyle}>
         <Background />
         <Header />
         <main style={{ position: 'relative', zIndex: 5, paddingTop: '100px', minHeight: '100vh' }}>
@@ -76,7 +85,7 @@ const ForgeModelDetailPage = () => {
           </div>
         </main>
         <Footer />
-      </>
+      </div>
     )
   }
 
@@ -99,7 +108,7 @@ const ForgeModelDetailPage = () => {
   })
 
   return (
-    <>
+    <div style={bgStyle}>
       <Background />
       <Header />
       <main style={{ position: 'relative', zIndex: 5, paddingTop: '100px', minHeight: '100vh' }}>
@@ -340,7 +349,7 @@ const ForgeModelDetailPage = () => {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   )
 }
 

@@ -208,6 +208,32 @@ const Header = ({
             alignItems: 'center',
             gap: '8px'
           }}>
+            {/* Desktop Theme Toggle - always visible */}
+            {!isMobile && (
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={toggleTheme}
+                aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+                  background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  padding: 0,
+                  transition: 'background 0.2s ease, border-color 0.2s ease',
+                }}
+              >
+                {isDark ? '☀️' : '🌙'}
+              </motion.button>
+            )}
+
             {/* Desktop: Auth Buttons / Mobile: Show in menu */}
             {!isMobile && (
               <>
@@ -215,7 +241,7 @@ const Header = ({
                 <div style={{
                   width: '1px',
                   height: '24px',
-                  background: 'rgba(255,255,255,0.1)'
+                  background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
                 }} />
 
                 {/* Auth Buttons */}
@@ -230,10 +256,10 @@ const Header = ({
                         alignItems: 'center',
                         gap: '8px',
                         padding: '6px 12px',
-                        background: 'rgba(255,255,255,0.1)',
-                        color: 'white',
+                        background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                        color: isDark ? '#fff' : '#1e293b',
                         borderRadius: '8px',
-                        border: '1px solid rgba(255,255,255,0.15)',
+                        border: isDark ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(0,0,0,0.1)',
                         cursor: 'pointer',
                         fontSize: '13px',
                         fontWeight: '500'
@@ -273,22 +299,22 @@ const Header = ({
                             right: 0,
                             marginTop: '8px',
                             minWidth: '180px',
-                            background: 'rgba(20, 20, 35, 0.98)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: isDark ? 'rgba(20, 20, 35, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+                            border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
                             borderRadius: '12px',
                             padding: '8px',
-                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                            boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.12)',
                             backdropFilter: 'blur(20px)',
                             zIndex: 1000
                           }}
                         >
                           <div style={{
                             padding: '12px',
-                            borderBottom: '1px solid rgba(255,255,255,0.1)',
+                            borderBottom: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
                             marginBottom: '8px'
                           }}>
-                            <p style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '4px' }}>Signed in as</p>
-                            <p style={{ fontSize: '14px', color: '#fff', fontWeight: '500', wordBreak: 'break-all' }}>
+                            <p style={{ fontSize: '12px', color: isDark ? '#9ca3af' : '#64748b', marginBottom: '4px' }}>Signed in as</p>
+                            <p style={{ fontSize: '14px', color: isDark ? '#fff' : '#1e293b', fontWeight: '500', wordBreak: 'break-all' }}>
                               {currentUser?.email || 'User'}
                             </p>
                           </div>
@@ -300,7 +326,7 @@ const Header = ({
                               background: 'transparent',
                               border: 'none',
                               borderRadius: '8px',
-                              color: '#d1d5db',
+                              color: isDark ? '#d1d5db' : '#475569',
                               fontSize: '14px',
                               textAlign: 'left',
                               cursor: 'pointer',
@@ -308,7 +334,7 @@ const Header = ({
                               alignItems: 'center',
                               gap: '8px'
                             }}
-                            onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
+                            onMouseEnter={(e) => e.target.style.background = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'}
                             onMouseLeave={(e) => e.target.style.background = 'transparent'}
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -327,7 +353,7 @@ const Header = ({
                                 background: 'transparent',
                                 border: 'none',
                                 borderRadius: '8px',
-                                color: '#d1d5db',
+                                color: isDark ? '#d1d5db' : '#475569',
                                 fontSize: '14px',
                                 textAlign: 'left',
                                 cursor: 'pointer',
@@ -335,7 +361,7 @@ const Header = ({
                                 alignItems: 'center',
                                 gap: '8px'
                               }}
-                              onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
+                              onMouseEnter={(e) => e.target.style.background = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'}
                               onMouseLeave={(e) => e.target.style.background = 'transparent'}
                             >
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -352,7 +378,7 @@ const Header = ({
                               background: 'transparent',
                               border: 'none',
                               borderRadius: '8px',
-                              color: '#d1d5db',
+                              color: isDark ? '#d1d5db' : '#475569',
                               fontSize: '14px',
                               textAlign: 'left',
                               cursor: 'pointer',
@@ -360,7 +386,7 @@ const Header = ({
                               alignItems: 'center',
                               justifyContent: 'space-between'
                             }}
-                            onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
+                            onMouseEnter={(e) => e.target.style.background = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'}
                             onMouseLeave={(e) => e.target.style.background = 'transparent'}
                           >
                             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -385,7 +411,7 @@ const Header = ({
                               background: 'transparent',
                               border: 'none',
                               borderRadius: '8px',
-                              color: '#f87171',
+                              color: isDark ? '#f87171' : '#dc2626',
                               fontSize: '14px',
                               textAlign: 'left',
                               cursor: 'pointer',
