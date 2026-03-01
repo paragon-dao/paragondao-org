@@ -76,6 +76,7 @@ const Header = ({
     { label: 'Environment', path: '/' },
     { label: 'Health', path: '/health' },
     { label: 'Models', path: '/models' },
+    { label: 'Apps', path: '/apps' },
     { label: 'Exchange', path: '/exchange' },
     { label: 'Network', path: '/network' },
     { label: 'Verify', path: '/verify' },

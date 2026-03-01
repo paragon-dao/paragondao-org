@@ -13,13 +13,17 @@ import EconomicImpactPage from './pages/EconomicImpactPage'
 import CommunityPage from './pages/CommunityPage'
 import EssaysPage from './pages/EssaysPage'
 import EssayDetailPage from './pages/EssayDetailPage'
-import VerifyPage from './pages/VerifyPage'
+import VerifyHubPage from './pages/VerifyHubPage'
+import VerifyModelPage from './pages/VerifyModelPage'
+import VerifyMethodologyPage from './pages/VerifyMethodologyPage'
 import ExchangePage from './pages/ExchangePage'
 import ExchangeModelPage from './pages/ExchangeModelPage'
 import ProofPipelinePage from './pages/ProofPipelinePage'
 import ForgePage from './pages/ForgePage'
 import ForgeSubmitPage from './pages/ForgeSubmitPage'
 import ForgeModelDetailPage from './pages/ForgeModelDetailPage'
+import AppsPage from './pages/AppsPage'
+import AppDetailPage from './pages/AppDetailPage'
 import AdminPage from './pages/AdminPage'
 import InviteGate from './components/InviteGate'
 import { MagicProvider, useMagic } from './providers/MagicProvider'
@@ -136,8 +140,12 @@ function AppRoutes() {
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/essays" element={<EssaysPage />} />
         <Route path="/essays/:slug" element={<EssayDetailPage />} />
-        <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/verify" element={<VerifyHubPage />} />
+        <Route path="/verify/methodology" element={<VerifyMethodologyPage />} />
+        <Route path="/verify/:modelId" element={<VerifyModelPage />} />
         <Route path="/proof-pipeline" element={<ProofPipelinePage />} />
+        <Route path="/apps" element={<AppsPage />} />
+        <Route path="/apps/:appId" element={<AppDetailPage />} />
         <Route path="/exchange" element={<ExchangePage />} />
         <Route path="/exchange/:modelId" element={<ExchangeModelPage />} />
 

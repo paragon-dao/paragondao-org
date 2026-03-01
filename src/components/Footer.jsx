@@ -37,6 +37,7 @@ const Footer = () => {
     {
       title: 'Network',
       links: [
+        { label: 'Health Apps', href: '/apps' },
         { label: 'HFTP Network', href: '/network' },
         { label: 'Verification Network', href: '/verify' },
         { label: 'Proof Exchange', href: '/exchange' },

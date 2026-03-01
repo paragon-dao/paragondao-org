@@ -3,6 +3,11 @@
  *
  * Calls the private ParagonDAO verification backend for model
  * performance data. No model code lives in this repo.
+ *
+ * Supports per-model endpoints via optional modelId parameter.
+ * When modelId is provided, requests go to /api/v1/verify/{modelId}/...
+ * When omitted, falls back to the default /api/v1/verify/... paths
+ * (backwards-compatible with existing EEG-only backend).
  */
 
 const BASE_URL = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
@@ -19,17 +24,33 @@ async function fetchJSON(path, options = {}) {
   return res.json()
 }
 
+function modelPath(modelId, suffix) {
+  if (modelId) return `/api/v1/verify/${modelId}${suffix}`
+  return `/api/v1/verify${suffix}`
+}
+
 export const verificationAPI = {
-  getResults: () => fetchJSON('/api/v1/verify/results'),
-  getBenchmark: () => fetchJSON('/api/v1/verify/benchmark'),
-  predict: (eegRaw, sfreq = 100) =>
-    fetchJSON('/api/v1/verify/predict', {
+  getResults: (modelId) => fetchJSON(modelPath(modelId, '/results')),
+  getBenchmark: (modelId) => fetchJSON(modelPath(modelId, '/benchmark')),
+  predict: (eegRaw, sfreq = 100, modelId) =>
+    fetchJSON(modelPath(modelId, '/predict'), {
       method: 'POST',
       body: JSON.stringify({ eeg_raw: eegRaw, sfreq }),
     }),
-  runVerification: () =>
-    fetchJSON('/api/v1/verify/run', { method: 'POST' }),
+  runVerification: (modelId) =>
+    fetchJSON(modelPath(modelId, '/run'), { method: 'POST' }),
   healthCheck: () => fetchJSON('/health'),
+
+  // Privacy verification endpoints
+  getPrivacyResults: (modelId) => fetchJSON(modelPath(modelId, '/privacy/results')),
+  runMembershipInference: (modelId) =>
+    fetchJSON(modelPath(modelId, '/privacy/membership-inference'), { method: 'POST' }),
+  runModelInversion: (modelId) =>
+    fetchJSON(modelPath(modelId, '/privacy/model-inversion'), { method: 'POST' }),
+  runAttributeInference: (modelId) =>
+    fetchJSON(modelPath(modelId, '/privacy/attribute-inference'), { method: 'POST' }),
+  runPrivacyAudit: (modelId) =>
+    fetchJSON(modelPath(modelId, '/privacy/run'), { method: 'POST' }),
 }
 
 export default verificationAPI
