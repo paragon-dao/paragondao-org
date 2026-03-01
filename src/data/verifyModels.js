@@ -117,8 +117,8 @@ export const VERIFY_MODELS = [
     modality: 'Serum (LC-MS)',
     modalityTag: 'Metabolomics',
     disease: 'Type 2 Diabetes',
-    status: 'validated',
-    certificationTier: 'gold',
+    status: 'research',
+    certificationTier: null,
     description: 'Metabolomic profiling via liquid chromatography-mass spectrometry to identify T2D biomarkers. GLE encoding compresses high-dimensional metabolite panels into subject-invariant representations.',
 
     accuracy: {
@@ -163,8 +163,8 @@ export const VERIFY_MODELS = [
     modality: 'Saliva (Raman)',
     modalityTag: 'Raman',
     disease: "PD/AD, Cancer, COVID",
-    status: 'validated',
-    certificationTier: 'gold',
+    status: 'research',
+    certificationTier: null,
     description: 'Surface-enhanced Raman spectroscopy of saliva samples for multi-disease screening. Single drop of saliva yields diagnostic-grade spectral fingerprints.',
 
     accuracy: {

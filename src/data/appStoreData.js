@@ -84,7 +84,7 @@ export const storeApps = [
     id: 'neuro-monitor',
     name: 'EEG Consciousness Monitor',
     builder: 'Univault Technologies',
-    description: 'Real-time EEG consciousness state classification using MUSE headband. NeurIPS 2025 validated at 97.65% accuracy — 27.5% better than competition. Monitors cognitive states: focused, relaxed, stressed, engaged, distracted.',
+    description: 'Real-time EEG state classification using MUSE headband. NeurIPS 2025 EEG Foundation Model Challenge — over 13× improvement over next best team (over a thousand competitors). Monitors cognitive states: focused, relaxed, stressed, engaged, distracted.',
     category: 'Neurological',
     certificationTier: 'platinum',
     models: ['EEG (97.65%)'],

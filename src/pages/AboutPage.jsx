@@ -253,14 +253,14 @@ const AboutPage = () => {
                   color: '#6366f1',
                   marginBottom: '8px'
                 }}>
-                  Legal Entity
+                  Operating Entity
                 </h3>
                 <p style={{
                   fontSize: isMobile ? '14px' : '16px',
                   color: colors.textSecondary,
                   margin: 0
                 }}>
-                  Wyoming DAO LLC
+                  Univault Technologies LLC (Utah)
                 </p>
               </div>
               <div>
@@ -277,7 +277,7 @@ const AboutPage = () => {
                   color: colors.textSecondary,
                   margin: 0
                 }}>
-                  Token-based voting
+                  Protocol compliance network — governance charter in development
                 </p>
               </div>
               <div>
@@ -294,7 +294,7 @@ const AboutPage = () => {
                   color: colors.textSecondary,
                   margin: 0
                 }}>
-                  All core Personal AI technology
+                  GLE patent pending — held by Univault Technologies LLC
                 </p>
               </div>
               <div>

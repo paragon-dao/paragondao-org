@@ -112,7 +112,7 @@ const ModelsPage = () => {
     }}>
       <SEO
         title="GLE Health Models"
-        description="One encoder, every biosignal. Disease screening models for breathing, diabetes, Parkinson's, Alzheimer's, EEG consciousness, and COVID-19. Validated with 88-97% accuracy."
+        description="Subject-invariant biosignal AI for disease screening. NeurIPS 2025: over 13× improvement over next best team. Breathing analysis: 88.97% accuracy on out-of-sample subjects. Research-stage models for T2D, Parkinson's, Alzheimer's, and COVID-19."
         path="/models"
       />
       <Background />
