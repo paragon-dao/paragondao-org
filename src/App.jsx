@@ -15,7 +15,8 @@ import EssaysPage from './pages/EssaysPage'
 import EssayDetailPage from './pages/EssayDetailPage'
 import VerifyHubPage from './pages/VerifyHubPage'
 import VerifyModelPage from './pages/VerifyModelPage'
-import VerifyMethodologyPage from './pages/VerifyMethodologyPage'
+import LearnHubPage from './pages/LearnHubPage'
+import LearnArticlePage from './pages/LearnArticlePage'
 import ExchangePage from './pages/ExchangePage'
 import ExchangeModelPage from './pages/ExchangeModelPage'
 import ProofPipelinePage from './pages/ProofPipelinePage'
@@ -140,8 +141,10 @@ function AppRoutes() {
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/essays" element={<EssaysPage />} />
         <Route path="/essays/:slug" element={<EssayDetailPage />} />
+        <Route path="/learn" element={<LearnHubPage />} />
+        <Route path="/learn/:slug" element={<LearnArticlePage />} />
         <Route path="/verify" element={<VerifyHubPage />} />
-        <Route path="/verify/methodology" element={<VerifyMethodologyPage />} />
+        <Route path="/verify/methodology" element={<Navigate to="/learn" replace />} />
         <Route path="/verify/:modelId" element={<VerifyModelPage />} />
         <Route path="/proof-pipeline" element={<ProofPipelinePage />} />
         <Route path="/apps" element={<AppsPage />} />

@@ -80,6 +80,7 @@ const Header = ({
     { label: 'Exchange', path: '/exchange' },
     { label: 'Network', path: '/network' },
     { label: 'Verify', path: '/verify' },
+    { label: 'Learn', path: '/learn' },
     { label: 'Essays', path: '/essays' },
     { label: 'Whitepaper', path: '/docs/THE_HEALTH_ECONOMY.html', external: true }
   ]

@@ -57,6 +57,7 @@ const Footer = () => {
     {
       title: 'Resources',
       links: [
+        { label: 'Learn', href: '/learn' },
         { label: 'Essays', href: '/essays' },
         { label: 'HFTP Whitepaper', href: '/whitepaper' },
         { label: 'Proof Pipeline', href: '/proof-pipeline' },
@@ -147,8 +148,8 @@ const Footer = () => {
               marginBottom: '24px',
               maxWidth: '280px'
             }}>
-              Your health models are the first assets in the $200 trillion AI-Native economy.
-              One encoder. Every biosignal. Health is a right.
+              One encoder. Every biosignal. Building the infrastructure for population-scale health screening.
+              Health is a right.
             </p>
 
             {/* Social Links */}

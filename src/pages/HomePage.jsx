@@ -33,11 +33,11 @@ const HomePage = () => {
   const handleSignupClick = () => navigate('/login')
 
   const diseaseModels = [
-    { name: 'Breathing Health', accuracy: 'Validated', status: 'available', desc: 'Audio-based breathing analysis' },
+    { name: 'Breathing Health', accuracy: '88.97%', status: 'available', desc: 'Audio-based breathing analysis — out-of-sample subjects' },
     { name: 'Mental Health', accuracy: 'Research', status: 'research', desc: 'Voice + breathing + EEG fusion' },
-    { name: 'Type 2 Diabetes', accuracy: 'Validated', status: 'available', desc: 'Metabolomics screening' },
-    { name: "Parkinson's & Alzheimer's", accuracy: 'Validated', status: 'available', desc: 'Saliva-based detection' },
-    { name: 'EEG Consciousness', accuracy: 'Validated', status: 'available', desc: 'Consumer EEG hardware' },
+    { name: 'Type 2 Diabetes', accuracy: 'Research-Stage', status: 'available', desc: 'Metabolomics screening' },
+    { name: "Parkinson's & Alzheimer's", accuracy: 'Research-Stage', status: 'available', desc: 'Saliva-based detection' },
+    { name: 'EEG Classification', accuracy: 'NeurIPS 2025', status: 'available', desc: '13.5× improvement — 1,183 competitors' },
     { name: 'Cancer & Epilepsy', accuracy: 'TBD', status: 'coming_soon', desc: 'In development' }
   ]
 
@@ -299,7 +299,7 @@ const HomePage = () => {
             </div>
           </motion.div>
 
-          {/* ===== SECTION 4: From Health to $200T Economy ===== */}
+          {/* ===== SECTION 4: From Health to Population-Scale Impact ===== */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -321,7 +321,7 @@ const HomePage = () => {
               textAlign: 'center',
               margin: '0 0 32px 0'
             }}>
-              From Health to the $200T Economy
+              From Health Data to Population-Scale Impact
             </h2>
 
             <div style={{

@@ -163,8 +163,8 @@ const EconomicImpactPage = () => {
       transition: 'all 0.3s ease'
     }}>
       <SEO
-        title="Economic Impact — The $200 Trillion Health Economy"
-        description="How GLE creates a new economic layer worth $12-17 trillion in addressable health technology markets, with potential to transform $200 trillion in human capital."
+        title="Economic Impact — The Health Economy"
+        description="How GLE creates a new economic layer worth $12-17 trillion in addressable health technology markets (McKinsey-cited). Long-range human capital reference: $200T."
         path="/economic-impact"
       />
       {/* Header */}
@@ -252,7 +252,7 @@ const EconomicImpactPage = () => {
             margin: '0 auto'
           }}>
             {[
-              { value: '$200T+', label: 'Economic Output', sublabel: 'Year 10 Projection' },
+              { value: '$12-17T', label: 'Addressable Market', sublabel: 'McKinsey-cited health AI' },
               { value: '408B', label: 'AI Models', sublabel: 'Autonomous Actors' },
               { value: '100x', label: 'Knowledge Multiplier', sublabel: 'Compounding Effect' }
             ].map((stat, i) => (
@@ -617,7 +617,7 @@ const EconomicImpactPage = () => {
             textAlign: 'center',
             marginBottom: '48px'
           }}>
-            The Mathematical Proof
+            The Economic Modeling Framework
           </h2>
         </motion.div>
 

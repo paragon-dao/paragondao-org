@@ -13,10 +13,10 @@ import SEO from '../components/SEO'
 const availableModels = [
   {
     name: 'Breathing Health',
-    accuracy: 'Validated',
+    accuracy: '88.97% accuracy',
     modality: 'Audio (breathing)',
     status: 'available',
-    comparison: 'vs. subjective assessment',
+    comparison: 'Out-of-sample subjects — subject-invariant',
     sampleInfo: 'Production-ready — immediate access',
     actionLabel: 'Connect Your Health'
   },
@@ -31,19 +31,19 @@ const availableModels = [
   },
   {
     name: 'Type 2 Diabetes',
-    accuracy: 'Validated',
+    accuracy: 'Research-Stage',
     modality: 'Metabolomics (LC-MS)',
     status: 'available',
-    comparison: 'vs. HbA1c 80-85%',
+    comparison: 'vs. HbA1c — research benchmark',
     sampleInfo: 'Serum metabolomics via LC-MS laboratory',
     actionLabel: 'Learn More'
   },
   {
     name: "Parkinson's & Alzheimer's",
-    accuracy: 'Validated',
+    accuracy: 'Research-Stage',
     modality: 'Raman spectroscopy (saliva)',
     status: 'available',
-    comparison: 'vs. CSF biomarkers 85-90%',
+    comparison: 'Saliva biomarker research — citing peer-reviewed datasets',
     sampleInfo: 'Non-invasive saliva kit',
     actionLabel: 'Learn More'
   },
@@ -58,10 +58,10 @@ const availableModels = [
   },
   {
     name: 'COVID-19',
-    accuracy: 'Validated',
+    accuracy: 'Research-Stage',
     modality: 'Raman spectroscopy (saliva)',
     status: 'available',
-    comparison: 'vs. rapid antigen 70-90%',
+    comparison: 'vs. rapid antigen — research benchmark',
     sampleInfo: 'Research access',
     actionLabel: 'Learn More'
   }
@@ -73,7 +73,7 @@ const comingSoonModels = [
     accuracy: 'Research',
     modality: 'EEG + saliva fusion',
     status: 'coming_soon',
-    sampleInfo: 'Partners: UCSF, UCSD, Mayo Clinic — Active research'
+    sampleInfo: 'Seeking clinical data partners — GLE-ready architecture'
   },
   {
     name: 'Cancer Screening',
@@ -156,7 +156,7 @@ const ModelsPage = () => {
               margin: '0 auto 16px',
               lineHeight: '1.6'
             }}>
-              The First Models in the $200 Trillion Economy
+              Disease Screening Models for Resource-Constrained Settings
             </h2>
             <p style={{
               fontSize: '15px',
