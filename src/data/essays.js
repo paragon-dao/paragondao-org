@@ -316,7 +316,7 @@ const essays = [
     subtitle: 'Why connecting your body to a network is the least scary thing you can do',
     author: 'ParagonDAO',
     date: 'March 2026',
-    readingTime: '14 min read',
+    readingTime: '18 min read',
     featured: true,
     tags: ['Trust', 'Privacy', 'Biosignal Agents', 'Network'],
     gradient: 'linear-gradient(135deg, #1a5276 0%, #2e86c1 50%, #3498db 100%)',
@@ -420,6 +420,49 @@ const essays = [
       },
       {
         type: 'heading',
+        text: 'What It Actually Looks Like'
+      },
+      {
+        type: 'paragraph',
+        text: "When I say I am going to connect my body to a network, you might picture wires, implants, something invasive. Let me show you what it actually looks like. Three examples \u2014 one that exists today, two that are coming."
+      },
+      {
+        type: 'paragraph',
+        text: "The first is Haven Phone. It is a crisis intervention app. A person in distress calls a number. While they speak to an AI counselor, the app captures the audio of their breathing \u2014 passively, through the phone\u2019s microphone. On the caller\u2019s device, the encoder converts that breathing into 128 coefficients and discards the audio. Those coefficients travel to a node on the network, where a trained model classifies the caller\u2019s respiratory distress level. If the pattern matches acute crisis, the system routes the call to a human counselor immediately. The voice recording used for breathing analysis never leaves the device \u2014 the call itself routes through standard telephony, but the audio the encoder processes stays on the phone and is deleted after encoding. The network never hears them breathe. It receives 128 numbers, and those numbers save a life. That is what \u201Cconnecting a body to a network\u201D means. You open an app. You breathe. The app does the rest."
+      },
+      {
+        type: 'paragraph',
+        text: "The second is a diabetes screening app, not yet built but technically ready. A patient visits a community health worker in rural Ethiopia. The worker draws a small blood sample and runs it through a portable spectrometer that costs less than $200. The spectrometer captures the metabolic signature of the sample. On the worker\u2019s phone, the encoder converts that signature into 128 coefficients. The coefficients travel to the network, where a model trained on metabolomic data classifies the risk of Type 2 diabetes at 95% accuracy in peer-reviewed metabolomic validation. The worker gets a result in seconds \u2014 and so does the patient \u2014 in a village with no laboratory, no specialist, no hospital within a hundred miles. The blood sample stays with the patient. The network never sees it. It receives 128 numbers."
+      },
+      {
+        type: 'paragraph',
+        text: "The third is an oncology screening app \u2014 further out, with years of validation ahead, but built on the same encoding architecture. A patient provides a tissue sample during a routine checkup. A Raman spectrometer reads the molecular vibration signature. The encoder compresses it into 128 coefficients. The network classifies the pattern against known cancer-associated signatures. The encoding works today. The clinical validation is future work."
+      },
+      {
+        type: 'paragraph',
+        text: "Notice the pattern. In every case, an app captures a biosignal. The encoder compresses it on the device. Only 128 coefficients travel the network. The raw signal \u2014 the breathing audio, the blood chemistry, the tissue vibration \u2014 never leaves. The app is the bridge between your body and the network. Without the app, nothing connects. With it, the connection is as ordinary as opening your phone."
+      },
+      {
+        type: 'paragraph',
+        text: "Now compare this to what you already do without a second thought."
+      },
+      {
+        type: 'paragraph',
+        text: "When you give blood at a lab, your full biological sample \u2014 DNA, antibodies, hormone levels, drug metabolites, disease markers, paternity information \u2014 travels to a facility you have never visited, is processed by people you will never meet, and is stored in a database you cannot access or delete. When you spit into a tube for a consumer DNA kit, your entire genome \u2014 the most personally identifying information that exists \u2014 is shipped to a server farm and held indefinitely by a company that can be acquired, subpoenaed, or breached. You gave them everything. They can reconstruct you."
+      },
+      {
+        type: 'paragraph',
+        text: "The network I am describing receives 128 numbers. It cannot reconstruct your voice. It cannot identify your DNA. It cannot determine your ancestry, your paternity, your drug history, or your genetic predispositions. It knows one thing: the frequency pattern of a biosignal at a moment in time. From that pattern, it can classify your health state. That is all."
+      },
+      {
+        type: 'paragraph',
+        text: "You have been connecting your body to networks your entire life \u2014 every blood draw, every urine test, every cheek swab, every time you handed your most intimate biological material to a stranger and hoped for the best. You just never called it that. What I am proposing is less invasive, less identifying, and more private than anything you have already done. The difference is that this time, your body stays yours."
+      },
+      {
+        type: 'divider'
+      },
+      {
+        type: 'heading',
         text: 'A Founder\u2019s Wager'
       },
       {
@@ -428,15 +471,27 @@ const essays = [
       },
       {
         type: 'paragraph',
-        text: "The nodes are being deployed now \u2014 three machines, three locations, one protocol. When I connect, my breathing will be encoded into 128 coefficients and transmitted across the network. If I go into cardiac distress, the network will detect the change before I feel it. My raw biosignal data will never leave my phone."
+        text: "The nodes are being deployed now \u2014 three machines, three locations, one protocol. When I connect through Haven Phone, my breathing will be encoded into 128 coefficients and transmitted across the network. My raw biosignal data will never leave my phone."
+      },
+      {
+        type: 'paragraph',
+        text: "Here is what I get from this connection."
+      },
+      {
+        type: 'paragraph',
+        text: "Every day, as I breathe into my phone, the network learns my baseline \u2014 my normal respiratory rhythm, my resting pattern, the signature of my body when nothing is wrong. Over weeks, that baseline becomes precise enough to detect deviation. If my breathing shifts in a way that correlates with early cardiovascular stress, the AI agent on the network flags it before I feel any symptom. If I develop a respiratory condition, the pattern change shows up in my coefficients weeks or months before I would have noticed. If I am under acute duress \u2014 a medical emergency, a threat \u2014 the stress signature in my breathing triggers an alert to my emergency contacts and locks down my accounts. I do not have to press a button. I do not have to be conscious. My body speaks, and the agent listens."
+      },
+      {
+        type: 'paragraph',
+        text: "The agent does not wait for me to visit a doctor. It does not require me to schedule a checkup or remember a symptom. It is a second pair of eyes on the one machine I cannot afford to ignore \u2014 running continuously, comparing every breath against every breath before it, watching for the shift I will never feel until it is too late. It is the dashboard my body never came with."
+      },
+      {
+        type: 'paragraph',
+        text: "And as more people join the network, the benefit compounds. My model improves because it learns from patterns across thousands of other bodies \u2014 not their identities, not their data, just the anonymized coefficient patterns that reveal how disease moves through a population. The network gets smarter for everyone with every body that joins. My breathing today helps a community health worker in Ethiopia catch a respiratory illness tomorrow. Her patient\u2019s metabolomic pattern helps refine the model that watches my heart."
       },
       {
         type: 'paragraph',
         text: "I will do this because I believe the ignorance we carry about our own biology is more dangerous than any disease. We do not die of cancer. We die of late detection. We do not lose people to suicide. We lose them to the hours of physiological crisis that nobody could hear. The signals were always there. We never built the instrument to read them."
-      },
-      {
-        type: 'paragraph',
-        text: "A developer in Utah is building a crisis detection app that classifies a 988 caller\u2019s distress from their breathing in real time. A team in Ethiopia will deploy it to community health workers who screen patients with nothing but a phone call. A hardware partner is weaving piezoelectric sensors into fabric so that a soldier\u2019s AI agent can classify his physiological status without any conscious input. Every one of these applications is a biosignal agent \u2014 an AI that receives health coefficients and uses them to guard a body. Every body on the network makes every model better for every other body."
       },
       {
         type: 'paragraph',
