@@ -40,17 +40,16 @@
   },
 
   "model_checkpoints": {
+    "note": "Checkpoint hashes are published for provenance verification. The trained model is proprietary (US provisional 63/985,936) and is NOT publicly downloadable. Verification is done via API access — contact philip@univault.org.",
     "subject_invariant_priority2/model_best.pt": {
       "sha256": "d9bbcb681604f85eb8c4d24d7502c6d64ffbe3666c8672d0679d80a1cafd563b",
-      "size_bytes": "~14MB",
       "epoch": 49,
       "val_correlation": 0.56012,
-      "description": "Subject-invariant dual-domain model (HFTP + Braindecode + domain adversarial)"
+      "description": "Subject-invariant dual-domain model — served via verification API, not downloadable"
     },
     "muse_exact_test/model_best.pt": {
       "sha256": "0c2bc861fec870603f99623dcc330042fc59fb34cc3d4f3a2499bbde82f7adf6",
-      "size_bytes": "~13MB",
-      "description": "HFTP base encoder checkpoint"
+      "description": "HFTP base encoder — served via verification API, not downloadable"
     }
   },
 
@@ -97,7 +96,7 @@
 
   "verification_levels": {
     "level_1_scoring": "pip install numpy && python scripts/scoring.py --verify",
-    "level_2_inference": "Download checkpoint + data, run generate_evidence.py, compare predictions.csv hash",
+    "level_2_inference": "Request API access (philip@univault.org), send EEG data, receive predictions, verify against ground truth",
     "level_3_docker": "TBD — containerized bit-exact reproduction",
     "level_4_training": "TBD — full training reproduction with hyperparameters"
   }

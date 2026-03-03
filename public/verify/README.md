@@ -10,7 +10,7 @@ pip install numpy
 python scripts/scoring.py
 ```
 
-This reads `results/predictions.csv` (10,717 per-sample predictions + ground truth)
+This reads `results/predictions.csv` (36,575 per-sample predictions + ground truth)
 and computes the Normalized Error score. No model code or PyTorch needed.
 
 ## What's Here
@@ -23,8 +23,7 @@ verify/
     predictions.csv           # Per-sample: sample_id, subject_id, prediction, ground_truth
     verification_results.json # Computed metrics + provenance (checkpoint hash, timestamp)
   scripts/
-    scoring.py                # Standalone verifier (numpy only, ~30 lines)
-    generate_evidence.py      # Full reproduction script (requires PyTorch + data)
+    scoring.py                # Standalone verifier (numpy only, includes integrity checks)
   README.md                   # This file
 ```
 
@@ -42,74 +41,38 @@ verify/
 The normalized error is computed as: `MSE(model) / MSE(mean_baseline)`.
 Lower is better. 1.0 = no improvement over always predicting the mean.
 
-## Reproduce From Scratch
+## Deeper Verification (API Access)
 
-To regenerate all evidence files from the model checkpoint + raw data:
+The model architecture and trained weights are proprietary (US provisional patent 63/985,936).
+The model is NOT publicly downloadable. For deeper verification beyond Level 1 scoring:
 
-### 1. Install dependencies
+**Request API access**: Contact philip@univault.org
+
+With a reviewer token, you can send EEG data to our verification API and receive predictions.
+The model runs on our infrastructure — you verify the predictions against your own ground truth.
 
 ```bash
-pip install torch numpy scipy tqdm braindecode
+curl -X POST https://paragondao-benchmark-api.fly.dev/api/v1/verify/predict \
+  -H "Authorization: Bearer <reviewer-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"eeg_raw": [[...], [...], [...], [...]], "sfreq": 100.0}'
 ```
 
-### 2. Get the data
+For full details, see [VERIFICATION_GUIDE.md](VERIFICATION_GUIDE.md).
 
-The dataset comes from the **NeurIPS 2025 EEG Foundation Model Challenge** — an open competition with 1,183 teams. The data is fully public, no agreement required.
+## Public Data Sources
 
-**Competition-format data (recommended):**
+The evaluation data comes from the **NeurIPS 2025 EEG Foundation Model Challenge** — an open
+competition with 1,183 teams. The data is fully public, no agreement required.
 
 | Source | Link | Notes |
 |--------|------|-------|
 | AWS S3 (anonymous) | `aws s3 cp --recursive s3://nmdatasets/NeurIPS25/R1_mini_L100_bdf ./data --no-sign-request` | No credentials needed |
 | SCCN direct download | https://sccn.ucsd.edu/download/eeg2025/ | ZIP files |
+| OpenNeuro | https://openneuro.org/datasets/ds005512 | CC-BY-SA 4.0 |
 | Competition page | https://www.codabench.org/competitions/9975/ | Codabench |
 | Start kit | https://github.com/eeg2025/startkit | Code + instructions |
 | Competition website | https://eeg2025.github.io/eeg2025.github.io/ | Overview |
-
-**Original full-resolution HBN-EEG data:**
-
-| Source | Link | License |
-|--------|------|---------|
-| OpenNeuro | https://openneuro.org/datasets/ds005512 | CC-BY-SA 4.0 |
-| FCP-INDI AWS | `s3://fcp-indi/data/Projects/HBN/BIDS_EEG/` | Open |
-| HBN data page | https://neuromechanist.github.io/data/hbn/ | Open |
-
-**Pre-processed files used by `generate_evidence.py`:**
-
-- `hbn_eeg_hftp.pt` (63MB) — HFTP frequency-domain coefficients
-- `hbn_raw_eeg.pt` (118MB) — Raw EEG time-domain signals
-
-These are derived from the competition data using the HFTP encoding pipeline.
-
-### 3. Get the checkpoint
-
-The model checkpoint (`subject_invariant_priority2/model_best.pt`, ~14MB) is available
-from the ParagonDAO R2 bucket:
-
-```
-eeg-models/challenge2_winning/subject_invariant_priority2/model_best.pt
-```
-
-SHA-256 hash is recorded in `results/verification_results.json` under `provenance.si_checkpoint_sha256`.
-
-### 4. Run evidence generation
-
-```bash
-python scripts/generate_evidence.py
-```
-
-This will:
-1. Load the model and checkpoint
-2. Load test data (subjects 18, 19, 20 — determined by seed=42 split)
-3. Run inference on all 36,575 test samples
-4. Compute metrics and output all evidence files
-5. Record SHA-256 hashes for provenance
-
-### 5. Verify the output
-
-```bash
-python scripts/scoring.py
-```
 
 ## Competition Details
 
