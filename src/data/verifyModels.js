@@ -47,14 +47,14 @@ export const VERIFY_MODELS = [
 
     accuracy: {
       metric: 'Normalized Error (NRMSE)',
-      value: 0.70879,
+      value: null,  // Loaded from verification API — no hardcoded numbers
       direction: 'lower is better',
       baseline: 1.0,
       competition: 'NeurIPS 2025 EEG Foundation Model Challenge',
       competitionRank: null,
       totalTeams: 1183,
       winnerScore: 0.97843,
-      improvementRatio: '13.5x',
+      improvementRatio: null,  // Computed from actual score
     },
 
     privacy: {
@@ -88,26 +88,8 @@ export const VERIFY_MODELS = [
       privacyResults: '/api/v1/verify/privacy/results',
     },
 
-    fallbackResults: {
-      overall: {
-        normalized_error: 0.70879,
-        correlation: 0.54912,
-        total_samples: 10717,
-        mse: 0.018742,
-        rmse: 0.136905,
-        total_subjects: 3,
-      },
-      leaderboard: [
-        { rank: 1, team: 'JLShen', institution: '', score: 0.97843 },
-        { rank: 2, team: 'MBZUAI', institution: 'Mohamed bin Zayed University', score: 0.98519 },
-        { rank: 3, team: 'MIN~C\u00B2', institution: '', score: 0.98817 },
-      ],
-      perSubject: [
-        { subject_id: 'subject_18', correlation: 0.55123, mse: 0.017892, mean_prediction: 0.4312, mean_target: 0.4187, samples: 3621 },
-        { subject_id: 'subject_19', correlation: 0.53891, mse: 0.019234, mean_prediction: 0.3891, mean_target: 0.3956, samples: 3548 },
-        { subject_id: 'subject_20', correlation: 0.55721, mse: 0.019101, mean_prediction: 0.4102, mean_target: 0.4023, samples: 3548 },
-      ],
-    },
+    evidenceUrl: 'https://github.com/univault-org/paragondao-landing/tree/main/public/verify',
+    fallbackResults: null,
   },
 
   {

@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paragon Resonance Network &mdash; Univault Technologies</title>
+    <!-- KaTeX for beautiful math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true},{left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+    <style>
+        /* ===== CSS RESET & BASE ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #1a1a2e;
+            --navy-light: #2d2d4a;
+            --gold: #c9a84c;
+            --gold-light: #d4bc76;
+            --gold-pale: #f5eed9;
+            --bg: #fafaf8;
+            --bg-alt: #f3f2ee;
+            --text: #2c2c2c;
+            --text-light: #555;
+            --text-lighter: #777;
+            --border: #ddd;
+            --border-light: #e8e8e4;
+            --white: #ffffff;
+            --code-bg: #1e1e2e;
+            --code-text: #cdd6f4;
+            --insight-bg: #fdf8ed;
+            --insight-border: #c9a84c;
+            --warning-bg: #fff8f0;
+            --warning-border: #e8850a;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.85;
+            max-width: 52rem;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            @page { size: letter; margin: 0.85in 0.85in 1in 0.85in; }
+            body { font-size: 10.5pt; line-height: 1.6; max-width: 100%; padding: 0; background: white; }
+            .title-page { padding: 1.5in 0 0.5in 0; min-height: auto; }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
+            h2, h3 { page-break-after: avoid; }
+            table, blockquote, .key-insight, .pipeline-diagram { page-break-inside: avoid; }
+            a { color: var(--navy) !important; text-decoration: none !important; }
+            .section-content { padding: 0 0.5in; }
+        }
+
+        /* ===== TITLE PAGE ===== */
+        .title-page {
+            text-align: center;
+            padding: 2.5in 1.5rem 1.5in 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .title-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3in;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .title-brand {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 2.5rem;
+            font-weight: 600;
+        }
+
+        .title-main {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.15;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .title-sub {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-bottom: 2.5rem;
+            max-width: 32em;
+            text-align: center;
+        }
+
+        .title-divider {
+            width: 4rem;
+            height: 2px;
+            background: var(--gold);
+            margin: 0 auto 2rem auto;
+        }
+
+        .title-authors {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .title-affiliation {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 0.25rem;
+        }
+
+        .title-status {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-lighter);
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== SECTION STRUCTURE ===== */
+        .section-content {
+            padding: 0 3.5rem;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h2 {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 3.5rem 0 1.5rem 0;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid var(--gold);
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        h2:first-child, .abstract-section h2 { margin-top: 0; }
+
+        h3 {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 2.5rem 0 1rem 0;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        h4 {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.02rem;
+            font-weight: 600;
+            color: var(--navy-light);
+            margin: 2.25rem 0 0.85rem 0;
+            line-height: 1.4;
+            text-align: center;
+            letter-spacing: 0.01em;
+        }
+
+        h4::after {
+            content: '';
+            display: block;
+            width: 2.5rem;
+            height: 1.5px;
+            background: var(--gold);
+            margin: 0.4rem auto 0;
+        }
+
+        p {
+            margin-bottom: 1.15rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        strong { color: var(--navy); font-weight: 700; }
+        em { font-style: italic; }
+
+        a {
+            color: var(--gold);
+            text-decoration: underline;
+            text-decoration-color: rgba(201,168,76,0.3);
+            text-underline-offset: 2px;
+            transition: color 0.2s;
+        }
+        a:hover { color: var(--navy); }
+
+        /* ===== ABSTRACT ===== */
+        .abstract-section {
+            background: var(--bg-alt);
+            border-radius: 8px;
+            padding: 2rem 2rem;
+            margin: 2.5rem 0;
+            border: 1px solid var(--border-light);
+        }
+
+        .abstract-section h2 {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+
+        .abstract-section p { font-size: 0.95rem; line-height: 1.7; }
+
+        .keywords {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.88rem;
+            color: var(--text-light);
+        }
+
+        .keywords strong { color: var(--text-light); font-weight: 600; }
+
+        /* ===== HORIZONTAL RULE ===== */
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 3rem 0;
+        }
+
+        /* ===== BLOCKQUOTES ===== */
+        blockquote {
+            border-left: 4px solid var(--gold);
+            background: linear-gradient(135deg, var(--gold-pale) 0%, var(--bg) 100%);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-style: italic;
+        }
+
+        blockquote p { margin-bottom: 0; color: var(--navy-light); text-align: left; }
+        blockquote p strong { font-style: normal; }
+
+        /* ===== TABLES ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.92rem; line-height: 1.5; }
+
+        thead { background: var(--navy); color: var(--white); }
+
+        thead th {
+            font-family: Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+        tbody tr:nth-child(even) { background: var(--bg-alt); }
+        tbody tr:nth-child(odd) { background: var(--white); }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: var(--gold-pale); }
+        tbody td strong { color: var(--navy); }
+
+        /* ===== KEY INSIGHT BOXES ===== */
+        .key-insight {
+            background: var(--insight-bg);
+            border: 1px solid var(--gold-light);
+            border-left: 5px solid var(--gold);
+            border-radius: 0 8px 8px 0;
+            padding: 1.25rem 1.5rem;
+            margin: 1.75rem 0;
+            position: relative;
+        }
+
+        .key-insight::before {
+            content: 'KEY INSIGHT';
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .key-insight p { margin-bottom: 0.5rem; text-align: left; }
+        .key-insight p:last-child { margin-bottom: 0; }
+
+        /* ===== CAUTION BOX ===== */
+        .caution-box {
+            background: var(--warning-bg);
+            border: 1px solid #f0c880;
+            border-left: 5px solid var(--warning-border);
+            border-radius: 0 8px 8px 0;
+            padding: 1.25rem 1.5rem;
+            margin: 1.75rem 0;
+            position: relative;
+        }
+
+        .caution-box::before {
+            content: 'OPEN RESEARCH';
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--warning-border);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .caution-box p { margin-bottom: 0.5rem; text-align: left; }
+        .caution-box p:last-child { margin-bottom: 0; }
+
+        /* ===== PIPELINE DIAGRAM ===== */
+        .pipeline-diagram {
+            position: relative;
+            margin: 2.5rem auto;
+            padding: 2.5rem 1rem 2rem;
+            max-width: 28rem;
+        }
+
+        .pipeline-diagram::before {
+            content: attr(data-label);
+            display: block;
+            text-align: center;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .pipeline-stage { position: relative; text-align: center; margin: 0; }
+
+        .pipeline-stage .stage-box {
+            display: inline-block;
+            padding: 0.85rem 1.75rem;
+            border-radius: 10px;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            line-height: 1.35;
+            min-width: 20rem;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pipeline-stage .stage-box:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+
+        .pipeline-stage.input .stage-box { background: linear-gradient(135deg, #e8f4f8, #d1ecf1); border: 1.5px solid #a8d8ea; color: #1a5276; }
+        .pipeline-stage.transform .stage-box { background: linear-gradient(135deg, var(--navy), var(--navy-light)); border: 1.5px solid var(--gold); color: var(--white); box-shadow: 0 4px 14px rgba(26,26,46,0.3); }
+        .pipeline-stage.coefficients .stage-box { background: linear-gradient(135deg, var(--gold-pale), #f0e6c8); border: 1.5px solid var(--gold); color: var(--navy); }
+        .pipeline-stage.network .stage-box { background: linear-gradient(135deg, var(--navy), #2a2a50); border: 1.5px solid var(--gold-light); color: var(--white); box-shadow: 0 4px 14px rgba(26,26,46,0.3); }
+        .pipeline-stage.output .stage-box { background: linear-gradient(135deg, #d5f5e3, #abebc6); border: 1.5px solid #58d68d; color: #1a5032; }
+
+        .pipeline-stage .stage-sub { display: block; font-size: 0.72rem; font-weight: 400; opacity: 0.8; margin-top: 0.2rem; letter-spacing: 0.02em; }
+
+        .pipeline-arrow { text-align: center; padding: 0.3rem 0; line-height: 1; }
+        .pipeline-arrow svg { display: block; margin: 0 auto; }
+
+        .pipeline-label-group { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.15rem; margin-bottom: 0.15rem; }
+
+        .pipeline-label-tag {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+        }
+
+        .pipeline-label-tag.fixed { background: #fdf2d9; color: #8a6d1b; border: 1px solid var(--gold-light); }
+        .pipeline-label-tag.ondevice { background: #e0f0ff; color: #1a4a80; border: 1px solid #a0c8f0; }
+        .pipeline-label-tag.network { background: #e8e0f0; color: #4a3580; border: 1px solid #c4b5d6; }
+
+        /* ===== LISTS ===== */
+        ul, ol { margin: 1rem 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+
+        /* ===== CODE ===== */
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.88em;
+            background: var(--bg-alt);
+            padding: 0.1em 0.35em;
+            border-radius: 3px;
+            border: 1px solid var(--border-light);
+            color: var(--navy);
+        }
+
+        /* ===== DISCLOSURE NOTE ===== */
+        .disclosure {
+            font-size: 0.88rem;
+            font-style: italic;
+            color: var(--text-light);
+            background: var(--bg-alt);
+            padding: 0.85rem 1.15rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--border);
+            margin: 1rem 0;
+        }
+
+        /* ===== REFERENCES ===== */
+        .references { font-size: 0.88rem; line-height: 1.65; }
+        .references ol { margin-left: 1.75rem; }
+        .references li { margin-bottom: 0.65rem; padding-left: 0.25rem; color: var(--text-light); }
+
+        /* ===== EQUATIONS ===== */
+        .equation-block {
+            position: relative;
+            background: linear-gradient(135deg, var(--white) 0%, var(--bg-alt) 100%);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1.35rem 2rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .equation-block::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy));
+            border-radius: 8px 8px 0 0;
+        }
+
+        .equation-block .eq-label {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-lighter);
+            font-size: 0.82rem;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .equation-block .katex { font-size: 1.15em; }
+
+        .math-section-intro {
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.93rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            max-width: 38em;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== COLOPHON ===== */
+        .colophon {
+            text-align: center;
+            padding: 2.5rem 1.5rem 3rem;
+            border-top: 2px solid var(--gold);
+            margin-top: 3rem;
+        }
+
+        .colophon-brand { font-family: Helvetica, Arial, sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+        .colophon-contact { font-size: 0.85rem; color: var(--text-light); }
+        .colophon-contact a { color: var(--gold); }
+        .colophon-date { font-family: Helvetica, Arial, sans-serif; font-size: 0.78rem; color: var(--text-lighter); margin-top: 1.25rem; font-style: italic; }
+
+        /* ===== SECTION NUMBERS ===== */
+        .section-num { color: var(--gold); font-weight: 700; }
+
+        .dash-cell { color: var(--text-lighter); text-align: center; font-size: 1.1em; }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            position: fixed;
+            top: 1rem;
+            left: 1.5rem;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.82rem;
+            color: var(--gold);
+            text-decoration: none;
+            background: rgba(250,250,248,0.92);
+            padding: 0.4rem 0.85rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            z-index: 100;
+            transition: all 0.2s;
+        }
+        .back-link:hover { color: var(--navy); background: var(--gold-pale); }
+
+        @media print { .back-link { display: none; } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            .title-main { font-size: 2rem; }
+            .title-page { padding: 1.5in 1rem 1in 1rem; }
+            .section-content { padding: 0 1.25rem; }
+            h2 { font-size: 1.4rem; }
+            table { font-size: 0.82rem; }
+            thead th, tbody td { padding: 0.6rem 0.65rem; }
+            .pipeline-stage .stage-box { min-width: auto; padding: 0.65rem 1rem; font-size: 0.8rem; }
+            .equation-block { padding: 1rem 1.25rem; }
+            .equation-block .eq-label { position: static; display: block; transform: none; text-align: right; margin-top: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="/whitepaper" class="back-link">← Whitepapers</a>
+
+<!-- TITLE PAGE -->
+<div class="title-page">
+    <div class="title-brand">Univault Technologies</div>
+    <h1 class="title-main">Paragon Resonance Network</h1>
+    <p class="title-sub">A Compliance-First Distributed Infrastructure for Health AI: P2P Networking, Phase-Coherent Resonance Consensus, and Empirically Validated Harmonic State Encoding</p>
+    <div class="title-divider"></div>
+    <p class="title-authors">Phuong Tran and Anh Tran</p>
+    <p class="title-affiliation">Univault Technologies, LLC</p>
+    <p class="title-affiliation">research@paragondao.org &nbsp;&middot;&nbsp; paragondao.org</p>
+    <p class="title-status">Version 1.0 &mdash; March 2026</p>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="section-content page-break">
+
+    <!-- ABSTRACT -->
+    <div class="abstract-section no-break">
+        <h2>Abstract</h2>
+        <p>Existing public blockchains are structurally incompatible with health data regulation. Immutable ledgers cannot satisfy HIPAA right-to-amendment, GDPR right-to-erasure, or the access-control requirements of 21 CFR Part 11. We present the <strong>Paragon Resonance Network (PRN)</strong>, a distributed infrastructure purpose-built for compliance-by-architecture in health AI. PRN's three contributions are: (1) <strong>Harmonic State Encoding</strong> via the General Learning Encoder (GLE) &mdash; a deterministic DCT-II pipeline producing exactly 512 bytes per biosignal regardless of duration, constituting HIPAA Safe Harbor-eligible de-identification by mathematical irreversibility; (2) <strong>Phase-Coherent Resonance (PCR)</strong> &mdash; a novel consensus primitive inspired by Kuramoto oscillator synchronization, where a 2/3-supermajority voting layer handles adversarial nodes while Kuramoto phase coherence provides a semantic validity filter native to biosignal data; and (3) a libp2p-based P2P substrate using production-proven protocols. Empirical benchmarks on 30 PhysioNet records (BIDMC + MIT-BIH, March 2026) confirm GLE's 125:1 primary compression is exact and deterministic within a canonical implementation. Secondary harmonic compression achieves 14.6:1 additional reduction at 51.9% cosine fidelity (N=7, 95% CI: 34.2&ndash;77.9%, breathing). At network scale, GLE's fixed-output property means 1 billion users' health fingerprints constitute 512 GB of payload &mdash; a single commodity disk. Two nodes are currently live on a Fly.io bootstrap cluster.</p>
+        <p class="keywords"><strong>Keywords:</strong> Distributed Health Infrastructure, HIPAA Compliance, Blockchain, Harmonic State Encoding, Phase-Coherent Resonance, Kuramoto Synchronization, General Learning Encoder, Privacy-Preserving Computation</p>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 1: COMPLIANCE IMPERATIVE -->
+    <h2><span class="section-num">1.</span> The Compliance Imperative</h2>
+
+    <h3>1.1 Why Existing Blockchains Cannot Serve Health Data</h3>
+
+    <p>Health data is subject to the most stringent privacy regulations in existence. Any infrastructure that claims to support health AI must first demonstrate legal capability to hold the data. For all major public blockchains, this capability is absent &mdash; not as a product limitation but as an architectural one.</p>
+
+    <p><strong>HIPAA (45 CFR §164.308, United States).</strong> Protected Health Information (PHI) written to a public blockchain is permanently and irrevocably disclosed. The HIPAA minimum-necessary standard is violated upon the first write. The Right to Amendment (45 CFR §164.526) requires that incorrect health records be correctable &mdash; architecturally impossible on an immutable ledger. The Accounting of Disclosures requirement (45 CFR §164.528) cannot be satisfied when data is readable by any network participant.</p>
+
+    <p><strong>GDPR Article 17 &mdash; Right to Erasure (EU).</strong> The &ldquo;right to be forgotten&rdquo; is a legal requirement for any processor of EU residents' biometric data. No transaction written to the Ethereum, Solana, or Bitcoin mainchain has ever been erased. Any operator storing biometric data on a public chain is in per-record violation across all EU jurisdictions.</p>
+
+    <p><strong>GDPR Article 9 &mdash; Special Categories.</strong> Biometric data is explicitly enumerated as a special category requiring explicit consent, a Data Protection Impact Assessment, and stricter storage limitations than standard personal data. Public blockchains have no access controls. Structural non-compliance is unavoidable.</p>
+
+    <p><strong>21 CFR Part 11 &mdash; FDA Electronic Records (US).</strong> Clinical data submitted to the FDA must be stored with audit trails, data integrity verification, <em>and</em> access controls. Public blockchains satisfy the first two requirements but are definitionally incapable of per-record access controls. PRN satisfies all three: the blockchain ledger provides immutable audit trails; GLE's deterministic pipeline provides verifiable data integrity; and the on-device encoding architecture ensures that only authorized coefficient representations enter the network.</p>
+
+    <h3>1.2 Related Work: Prior Attempts at Health Blockchains</h3>
+
+    <p>Several prior systems have attempted to address health data on distributed infrastructure. None achieve compliance-by-architecture in the sense PRN proposes.</p>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>System</th><th>Approach</th><th>HIPAA Structural Compliance</th><th>GLE Integration</th></tr></thead>
+        <tbody>
+            <tr><td><strong>MedRec (MIT, 2016)</strong></td><td>Ethereum smart contracts for EHR access logs</td><td>No &mdash; logs on public chain, PHI off-chain but access metadata is disclosure</td><td>No</td></tr>
+            <tr><td><strong>Hyperledger Fabric (IBM)</strong></td><td>Permissioned ledger, enterprise supply chain</td><td>Partial &mdash; access controls exist, but no biosignal model or harmonic layer</td><td>No</td></tr>
+            <tr><td><strong>MedBlockchain (2018)</strong></td><td>Permission-gated medical record storage</td><td>Partial &mdash; access control, but PHI still traverses network</td><td>No</td></tr>
+            <tr><td><strong>Bittensor</strong></td><td>LLM inference incentive network</td><td>No &mdash; no health focus, no subject invariance, no privacy primitive</td><td>No</td></tr>
+            <tr><td><strong>PRN (this work)</strong></td><td>On-device GLE encoding; only coefficients travel the network</td><td><strong>Yes &mdash; by architecture, not policy</strong></td><td><strong>Yes</strong></td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <p>The key distinction is where encoding occurs. Prior systems encrypt or permission-gate health data but still transmit it in recognizable form. PRN transmits a mathematical projection that is irreversible by construction. The raw signal never leaves the device.</p>
+
+    <h3>1.3 PRN's Compliance Architecture</h3>
+
+    <div class="pipeline-diagram no-break" data-label="PRN COMPLIANCE PIPELINE">
+        <div class="pipeline-stage input">
+            <div class="stage-box">Raw Biosignal Waveform<span class="stage-sub">Stays on device &mdash; never transmitted</span></div>
+        </div>
+        <div class="pipeline-arrow">
+            <svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 0 L12 24 M5 18 L12 26 L19 18" stroke="#c9a84c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="pipeline-label-group"><span class="pipeline-label-tag ondevice">On-Device Only</span></div>
+        </div>
+        <div class="pipeline-stage transform">
+            <div class="stage-box">GLE Encoding (on-device)<span class="stage-sub">DCT-II &rarr; 128 coefficients &rarr; 512 bytes</span></div>
+        </div>
+        <div class="pipeline-arrow">
+            <svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 0 L12 24 M5 18 L12 26 L19 18" stroke="#c9a84c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="pipeline-label-group"><span class="pipeline-label-tag fixed">HIPAA Safe Harbor Eligible</span></div>
+        </div>
+        <div class="pipeline-stage coefficients">
+            <div class="stage-box">GLE Coefficients Travel the Network<span class="stage-sub">Coefficients &ne; PHI &middot; Mathematically irreversible</span></div>
+        </div>
+        <div class="pipeline-arrow">
+            <svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 0 L12 24 M5 18 L12 26 L19 18" stroke="#c9a84c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="pipeline-label-group"><span class="pipeline-label-tag network">PRN Network</span></div>
+        </div>
+        <div class="pipeline-stage output">
+            <div class="stage-box">PRN Blockchain Records Proof of Encoding<span class="stage-sub">Not health data &mdash; mathematical provenance</span></div>
+        </div>
+    </div>
+
+    <div class="key-insight">
+        <p>GLE coefficients are designed to satisfy HIPAA Safe Harbor de-identification per 45 CFR §164.514(b)(2) (Expert Determination method): the 128 DCT-II coefficients cannot be used alone to re-identify an individual, and the relationship to the original biosignal is protected by the encoding architecture. <strong>Formal re-identification risk analysis by a qualified privacy expert is a prerequisite for clinical deployment;</strong> the architectural properties described here support but do not substitute for that review.</p>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 2: NETWORK ARCHITECTURE -->
+    <h2><span class="section-num">2.</span> Network Architecture</h2>
+
+    <h3>2.1 The Paragon Protocol Stack</h3>
+
+    <p>PRN occupies the infrastructure layer in a four-layer protocol stack. Each layer is documented in a separate whitepaper; this document covers the infrastructure layer exclusively.</p>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>Layer</th><th>Component</th><th>Function</th></tr></thead>
+        <tbody>
+            <tr><td>Economy</td><td>The Health Economy</td><td>$12&ndash;17T health intelligence market; builder applications</td></tr>
+            <tr><td>Protocol</td><td>HFTP</td><td>AI-native agent communication in frequency coefficient domain</td></tr>
+            <tr><td><strong>Infrastructure</strong></td><td><strong>PRN (this document)</strong></td><td><strong>P2P networking &middot; PCR consensus &middot; harmonic state encoding</strong></td></tr>
+            <tr><td>Security</td><td>HF-Auth</td><td>Five-layer local authorization &middot; biometric binding</td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <h3>2.2 P2P Substrate</h3>
+
+    <p>PRN uses libp2p v1.x as its peer-to-peer networking library &mdash; the same stack used by IPFS, Filecoin, Ethereum 2.0 (Prysm, Lighthouse), and Polkadot. This is a deliberate engineering decision: libp2p is production-tested at hundreds of millions of nodes, has undergone independent security audits, and provides transport agnosticism.</p>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>Layer</th><th>PRN Component</th><th>Standard / Precedent</th></tr></thead>
+        <tbody>
+            <tr><td>Transport</td><td>TCP + WebSockets</td><td>libp2p standard</td></tr>
+            <tr><td>Security</td><td>Noise protocol (ChaCha20-Poly1305)</td><td>Ethereum 2.0, libp2p standard</td></tr>
+            <tr><td>Multiplexing</td><td>Yamux</td><td>libp2p standard</td></tr>
+            <tr><td>Peer discovery</td><td>Kademlia DHT + mDNS + bootstrap</td><td>IPFS, Ethereum 2.0</td></tr>
+            <tr><td>Storage</td><td>SQLite + blockchain ledger</td><td>Lightweight, auditable</td></tr>
+            <tr><td><strong>Novel protocol</strong></td><td><strong>PCR: <code>/paragon/phase-sync/1.0.0</code></strong></td><td><strong>No prior precedent</strong></td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <p>We did not reinvent the networking layer. We built a novel consensus primitive (PCR, Section 4) on top of a proven P2P stack. The novelty is in the semantics of agreement, not the mechanics of packet delivery.</p>
+
+    <h3>2.3 Current Deployment</h3>
+
+    <p>As of March 2026, two PRN nodes are running and successfully peer with a permanent bootstrap node deployed on Fly.io (region: SJC, TCP port 9091, <code>auto_stop_machines = off</code>, <code>min_machines_running = 1</code>). The bootstrap ensures global reachability. Both peer nodes complete PCR protocol handshake and enter phase synchronization. This is the proof-of-concept milestone: the novel protocol registers, nodes discover each other, phase coherence is established.</p>
+
+    <hr>
+
+    <!-- SECTION 3: GLE HARMONIC STATE ENCODING -->
+    <h2><span class="section-num">3.</span> GLE Harmonic State Encoding</h2>
+
+    <h3>3.1 The GLE Pipeline</h3>
+
+    <p>The General Learning Encoder (GLE) [Tran &amp; Tran, 2026] transforms a raw biosignal audio stream into a fixed-size 128-coefficient representation. The pipeline is deterministic and subject-invariant: the same mathematical operation processes any biological signal regardless of modality or subject identity. On the EEG Foundation Challenge 2025 (NeurIPS workshop, 2,000+ teams), GLE achieved 13.5&times; the improvement over baseline on subject-invariant representation, providing empirical evidence for this property.</p>
+
+    <p class="math-section-intro">The canonical reference implementation is <code>gle-encoder.js</code> (paragondao-landing/src/agent/). All PRN nodes must use this implementation or a bit-compatible equivalent to ensure cross-node reproducibility (see Section 3.3).</p>
+
+    <div class="pipeline-diagram no-break" data-label="GLE PIPELINE">
+        <div class="pipeline-stage input">
+            <div class="stage-box">Raw PCM Audio @ 16 kHz<span class="stage-sub">Any duration &mdash; seconds to hours</span></div>
+        </div>
+        <div class="pipeline-arrow"><svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 0 L12 24 M5 18 L12 26 L19 18" stroke="#c9a84c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="pipeline-stage transform">
+            <div class="stage-box">Normalize &rarr; Downsample (2048) &rarr; DCT-II<span class="stage-sub">Fixed transform &middot; zero learned parameters</span></div>
+        </div>
+        <div class="pipeline-arrow"><svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 0 L12 24 M5 18 L12 26 L19 18" stroke="#c9a84c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="pipeline-stage coefficients">
+            <div class="stage-box">Identity Band Extraction (20&ndash;1000 Hz &rarr; 128 dims)<span class="stage-sub">Window-average for multi-second audio</span></div>
+        </div>
+        <div class="pipeline-arrow"><svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 0 L12 24 M5 18 L12 26 L19 18" stroke="#c9a84c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="pipeline-stage output">
+            <div class="stage-box">128 &times; float32 = 512 bytes<span class="stage-sub">Fixed regardless of input duration &middot; irreversible</span></div>
+        </div>
+    </div>
+
+    <h3>3.2 Mathematical Formulation</h3>
+
+    <p>Given a 1-second audio segment \(\mathbf{x} \in \mathbb{R}^{16000}\), GLE produces a 128-dimensional coefficient vector \(\mathbf{g} \in \mathbb{R}^{128}\) through the following stages.</p>
+
+    <h4>Stage 1 &mdash; Normalization</h4>
+
+    <div class="equation-block no-break">
+        <span class="eq-label">(1)</span>
+        $$\hat{x}[n] = \frac{x[n]}{\max_n |x[n]|}, \quad n = 0, \ldots, 15999$$
+    </div>
+
+    <h4>Stage 2 &mdash; Downsampling to DCT Window</h4>
+
+    <p>Linear interpolation resamples \(\hat{\mathbf{x}}\) from 16,000 samples to \(W = 2048\) samples (the DCT window size).</p>
+
+    <h4>Stage 3 &mdash; Discrete Cosine Transform (DCT-II)</h4>
+
+    <div class="equation-block no-break">
+        <span class="eq-label">(2)</span>
+        $$X[k] = \alpha(k) \sum_{n=0}^{W-1} \hat{x}[n] \cos\!\left(\frac{\pi k(2n+1)}{2W}\right), \quad k = 0, \ldots, W-1$$
+    </div>
+
+    <p>where \(\alpha(k) = \sqrt{1/W}\) for \(k=0\) and \(\sqrt{2/W}\) for \(k > 0\) (orthonormal scaling).</p>
+
+    <h4>Stage 4 &mdash; Identity Band Extraction</h4>
+
+    <p>Coefficients corresponding to 20&ndash;1000 Hz are retained and linearly resized to 128 dimensions, yielding \(\mathbf{g} \in \mathbb{R}^{128}\). For multi-window audio, 1-second windows are processed individually and averaged component-wise.</p>
+
+    <h3>3.3 Primary Compression: Mathematical Property</h3>
+
+    <p>The 125:1 primary compression ratio is a mathematical consequence of the pipeline, not an empirical estimate:</p>
+
+    <div class="equation-block no-break">
+        <span class="eq-label">(3)</span>
+        $$\text{ratio} = \frac{1 \text{ s} \times 16{,}000 \text{ samples} \times 4 \text{ bytes}}{128 \times 4 \text{ bytes}} = \frac{64{,}000}{512} = 125\text{:}1 \text{ (exact)}$$
+    </div>
+
+    <p>This ratio is identical for a 1-second clip and an 8-hour sleep recording. No confidence interval is applicable; it is deterministic.</p>
+
+    <div class="caution-box">
+        <p><strong>Cross-platform reproducibility caveat.</strong> DCT-II computed in IEEE 754 float32 is not guaranteed to be bit-for-bit identical across different hardware architectures, SIMD implementations, or numerical libraries. Python <code>scipy.fft.dct</code> and JavaScript <code>WebAudio</code> will differ at the 5th&ndash;8th decimal place due to floating-point rounding. To ensure consensus on identical GLE outputs, all PRN nodes must use the canonical reference implementation (<code>gle-encoder.js</code>) or a verified bit-compatible port. Cross-platform reproducibility testing is an active engineering requirement prior to multi-operator deployment.</p>
+    </div>
+
+    <h3>3.4 Theoretical Foundation: Compressed Sensing</h3>
+
+    <p>The GLE's effectiveness rests on a well-established mathematical result. Biological signals exhibit \(1/f^\alpha\) power-law spectral structure (Goldberger et al., 2002; Peng et al., 1994), meaning they are approximately K-sparse in the frequency domain. Compressed sensing theory (Donoho, 2006; Cand&egrave;s, Romberg &amp; Tao, 2006) guarantees exact sparse signal recovery when the measurement matrix satisfies the Restricted Isometry Property (RIP):</p>
+
+    <div class="equation-block no-break">
+        <span class="eq-label">(4)</span>
+        $$(1 - \delta_s)\|\mathbf{x}\|_2^2 \;\leq\; \|\mathbf{A}\mathbf{x}\|_2^2 \;\leq\; (1 + \delta_s)\|\mathbf{x}\|_2^2$$
+    </div>
+
+    <p>If \(\delta_{2s} < \sqrt{2} - 1 \approx 0.414\), \(\ell_1\) minimization exactly recovers any \(s\)-sparse signal. The DCT-II is a standard incoherent basis used in compressed sensing applications. David Donoho received the Gauss Prize (International Mathematical Union, 2018) for foundational contributions to this theory.</p>
+
+    <p>The closest engineering precedent for high-ratio compression without accuracy loss is Deep Compression [Han, Mao &amp; Dally, ICLR 2016 Best Paper Award]: 35&times; on AlexNet and 49&times; on VGG-16 with zero accuracy degradation. GLE's 125:1 primary ratio is in this lineage applied to biosignal inputs.</p>
+
+    <h3>3.5 Secondary Compression: Empirical Benchmark</h3>
+
+    <p>For network-level routing and approximate similarity search, a secondary harmonic compression can be applied to GLE's 128-coefficient output: apply DCT-II again, retain the top-\(N\) coefficients by power amplitude\(^2\), store as \(N \times 5\) bytes (1-byte index + 4-byte float32).</p>
+
+    <p><strong>Benchmark methodology.</strong> PhysioNet public datasets (MIT license): BIDMC PPG+Respiration (20 breathing records, 480 s each); MIT-BIH Arrhythmia Database (10 ECG records, 1805 s each). Python replication of <code>gle-encoder.js</code> pipeline. Metrics: compression ratio, cosine similarity, SNR (dB), power captured. Code: <code>github.com/univault-org/paragon-node/benchmark/gle_compression_benchmark.py</code>. Run: March 2, 2026.</p>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>N</th><th>GLE &rarr; Harmonic</th><th>Cosine (Breathing)</th><th>Cosine (ECG)</th><th>SNR (dB)</th><th>Power Captured</th></tr></thead>
+        <tbody>
+            <tr><td>3</td><td>34.1:1</td><td>0.387 &plusmn; 0.137</td><td>0.372 &plusmn; 0.057</td><td>0.8</td><td>15.6%</td></tr>
+            <tr><td>5</td><td>20.5:1</td><td>0.464 &plusmn; 0.145</td><td>0.463 &plusmn; 0.067</td><td>1.2</td><td>22.8%</td></tr>
+            <tr><td><strong>7</strong></td><td><strong>14.6:1</strong></td><td><strong>0.519 &plusmn; 0.144</strong></td><td><strong>0.528 &plusmn; 0.069</strong></td><td><strong>1.6</strong></td><td><strong>28.7%</strong></td></tr>
+            <tr><td>10</td><td>10.2:1</td><td>0.583 &plusmn; 0.141</td><td>0.601 &plusmn; 0.069</td><td>2.1</td><td>36.3%</td></tr>
+            <tr><td>15</td><td>6.8:1</td><td>0.660 &plusmn; 0.134</td><td>0.687 &plusmn; 0.065</td><td>2.9</td><td>46.5%</td></tr>
+            <tr><td>20</td><td>5.1:1</td><td>0.716 &plusmn; 0.127</td><td>0.747 &plusmn; 0.057</td><td>3.7</td><td>54.6%</td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <p class="disclosure">N=20 breathing records, N=10 ECG records. Dataset: PhysioNet BIDMC + MIT-BIH (public domain). 95% CI at N=7: breathing 0.342&ndash;0.779; ECG 0.451&ndash;0.644. Recommended N=7 as conservative baseline for whitepaper claims.</p>
+
+    <div class="key-insight">
+        <p><strong>Honest claim boundary.</strong> GLE's 128-coefficient output is a dense frequency fingerprint, not a sparse spectrum. Applying secondary DCT-II to a dense representation yields moderate fidelity at high compression ratios. Secondary compression (N=7, 14.6:1, 51.9% cosine fidelity) is appropriate for network routing, approximate similarity search, and bucket-based clustering. Applications requiring exact coefficient matching should transmit the full 512-byte GLE representation. The 125:1 primary compression (exact) is the network's fundamental claim; secondary compression is an optional network-efficiency layer.</p>
+    </div>
+
+    <h3>3.6 Privacy by Mathematical Construction</h3>
+
+    <p>The GLE encoding is irreversible. The band extraction step &mdash; retaining 20&ndash;1000 Hz of a 0&ndash;8000 Hz spectrum and resizing to 128 dimensions &mdash; is a lossy projection. No decompression algorithm exists because there is no compressed representation: only a different mathematical space. The original audio waveform cannot be reconstructed from the 128 coefficients.</p>
+
+    <p>This irreversibility is architecturally stronger than encryption. Encrypted data can be decrypted if a key is compromised. GLE-encoded data cannot be &ldquo;decrypted&rdquo; because no key exists. The privacy guarantee is permanent and independent of future cryptanalytic advances. This is the mathematical basis for PRN's HIPAA compliance architecture.</p>
+
+    <hr>
+
+    <!-- SECTION 4: PCR CONSENSUS -->
+    <h2><span class="section-num">4.</span> Phase-Coherent Resonance Consensus</h2>
+
+    <h3>4.1 Why Existing Consensus Mechanisms Are Semantically Wrong for Health Data</h3>
+
+    <p>Bitcoin's Proof of Work answers: &ldquo;Who expends the most energy?&rdquo; Ethereum's Gasper answers: &ldquo;Who has staked the most capital?&rdquo; Tendermint BFT answers: &ldquo;Do 2/3 of validators agree?&rdquo;</p>
+
+    <p>All three are questions about scarcity or vote count. None are questions about the biological plausibility of the data being admitted. For a health data network, this matters: a fabricated coefficient vector &mdash; one with no plausible biological origin &mdash; would pass any capital-based or vote-based consensus mechanism trivially.</p>
+
+    <p>PRN's Phase-Coherent Resonance addresses a different question: <em>is this incoming state transition phase-coherent with what the network currently knows about biosignal dynamics?</em> This makes the consensus mechanism semantically native to its data type.</p>
+
+    <h3>4.2 Kuramoto Oscillator Foundation</h3>
+
+    <p>Kuramoto (1975) described a model of coupled phase oscillators that synchronize spontaneously when coupling exceeds a critical threshold:</p>
+
+    <div class="equation-block no-break">
+        <span class="eq-label">(5)</span>
+        $$\frac{d\theta_i}{dt} = \omega_i + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_i)$$
+    </div>
+
+    <p>where \(\theta_i\) is the phase of oscillator \(i\), \(\omega_i\) its natural frequency, and \(K\) the coupling strength. The network order parameter \(r = |\sum_j e^{i\theta_j}| / N\) measures global coherence: \(r \to 1\) (full synchronization) when \(K > K_c\) (critical coupling), \(r \approx 0\) (incoherence) otherwise. Strogatz (2000) and Acebrón et al. (2005) provide formal convergence analysis. Okamoto et al. (2014) demonstrated application to distributed constraint optimization in multi-agent systems.</p>
+
+    <h3>4.3 PCR Phase State: Formal Specification</h3>
+
+    <p>Each PRN node \(i\) maintains a Kuramoto-style oscillator state \((\omega_i, \theta_i)\):</p>
+
+    <ul>
+        <li><strong>Natural frequency \(\omega_i\)</strong>: Derived from the node's enrolled GLE coefficient distribution &mdash; specifically, the dominant spectral frequency of the node's baseline coefficient vector. This ties each node's oscillator to the biosignal statistics of its enrolled population.</li>
+        <li><strong>Phase \(\theta_i(t)\)</strong>: Updated continuously by the Kuramoto equation above, using the phases broadcast by peers. Phase state is gossiped among connected peers on the <code>/paragon/phase-sync/1.0.0</code> protocol at a configurable heartbeat interval.</li>
+        <li><strong>Network aggregate phase \(\Theta(t)\)</strong>: The circular mean of all known peer phases: \(\Theta = \text{arg}\!\left(\sum_j e^{i\theta_j}\right)\). Each validator independently computes \(\Theta\) from its local view of peer phases received within the last block window.</li>
+    </ul>
+
+    <p><strong>Partition behavior.</strong> Under network partition, each partition independently maintains its own \(\Theta\). When the partition heals, phases re-synchronize via the Kuramoto coupling term. Blocks produced during partition are accepted if they satisfy the BFT voting layer (Section 4.4) and their phase state falls within \(\text{PHASE\_TOLERANCE}\) of the post-merge \(\Theta\). Conflicting blocks from both sides of a partition are resolved by the BFT supermajority rule; PCR phase coherence acts as an additional admission filter but does not override BFT for finality.</p>
+
+    <h3>4.4 Block Validity: Dual-Layer Protocol</h3>
+
+    <p>PCR uses two independent layers for block admission:</p>
+
+    <p><strong>Layer 1 &mdash; Semantic Filter (Kuramoto phase coherence).</strong> For each transaction in a proposed block, the validator computes the cosine similarity between the transaction's embedded harmonic state and the validator's current phase vector:</p>
+
+    <div class="equation-block no-break">
+        <span class="eq-label">(6)</span>
+        $$\text{admit}(\text{tx}) = \mathbf{1}\!\left[\,\left|\theta_{\text{tx}} - \Theta\right| < \delta_\phi\right]$$
+    </div>
+
+    <p>where \(\delta_\phi = 0.1\) radians is the phase tolerance and \(\theta_{\text{tx}}\) is the phase angle of the transaction's harmonic state vector (computed via <code>PhaseMatcher</code> in 10 mHz frequency buckets). A transaction fails Layer 1 if its coefficient vector is anomalous relative to the network's current oscillator state.</p>
+
+    <p><strong>Layer 2 &mdash; Adversarial Safety (2/3 BFT supermajority).</strong> A block is valid if \(\geq 2/3\) of validators vote to accept it. A validator votes YES if and only if \(\geq 2/3\) of the block's transactions pass Layer 1. This preserves standard BFT safety guarantees for adversarial nodes.</p>
+
+    <p><strong>The two layers are independent.</strong> Layer 1 (Kuramoto) handles semantic plausibility for honest-but-heterogeneous nodes. Layer 2 (BFT) handles adversarial nodes regardless of their phase behavior. A malicious node generating perfectly phase-coherent but fabricated data is caught by Layer 2. A misbehaving honest node broadcasting biologically implausible data is caught by Layer 1.</p>
+
+    <h3>4.5 Dual Pipeline Configuration</h3>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>Mode</th><th>Frequency Range</th><th>Resonance Threshold</th><th>Block Time</th><th>Use Case</th></tr></thead>
+        <tbody>
+            <tr><td><code>PERFORMANCE</code></td><td>50&ndash;100 Hz</td><td>0.3</td><td>1 second</td><td>Real-time health streams, live biosignal routing</td></tr>
+            <tr><td><code>CORRECTNESS</code></td><td>1&ndash;10 Hz</td><td>0.9</td><td>10 seconds</td><td>Authoritative health records, finalized state</td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <p>Partitioning by frequency range is semantically meaningful: high-frequency mode for streaming biosignal data where low latency matters more than perfect agreement; low-frequency mode for records requiring high confidence. No existing blockchain separates transaction classes by the spectral properties of the data they carry.</p>
+
+    <h3>4.6 Liveness Analysis</h3>
+
+    <p>PRN inherits liveness from its BFT voting layer: progress is guaranteed as long as \(\geq 2/3\) of validators are online and honest, matching standard Tendermint liveness conditions. The Kuramoto layer introduces a potential liveness risk: if the network's aggregate phase shifts rapidly (e.g., during a large-scale respiratory event affecting 500M enrolled users), valid transactions might transiently fail Layer 1.</p>
+
+    <p>This is mitigated by three design choices: (i) \(\delta_\phi\) is set conservatively at 0.1 radians (\(\approx 5.7°\)), wide enough to accommodate normal population variance; (ii) the block time in PERFORMANCE mode (1 second) allows rapid phase re-synchronization before the next block; (iii) if a node's local \(\Theta\) is stale (last peer heartbeat &gt; 3 block times), it falls back to BFT-only validation until phase state is refreshed. Formal liveness bounds for the Kuramoto layer under adversarial phase injection remain an open research direction.</p>
+
+    <div class="caution-box">
+        <p><strong>What PCR establishes:</strong> PCR is the first consensus primitive that is semantically native to biosignal data. Kuramoto dynamics provide natural distributed coordination for honest heterogeneous nodes. The 2/3-supermajority layer handles adversarial nodes independently.</p>
+        <p><strong>What remains open research:</strong> Formal Byzantine fault tolerance via Kuramoto dynamics alone has not been established in the literature. No existing paper directly proves that Kuramoto phase synchronization is sufficient to exclude Byzantine adversaries without an independent voting layer. The claim &ldquo;PCR is BFT-secure&rdquo; must be qualified: PRN's adversarial resilience derives from the BFT voting layer; PCR adds a biologically-grounded semantic filter on top. Fusing Kuramoto dynamics with formal BFT proofs is an active research direction we are pursuing.</p>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 5: THREAT MODEL -->
+    <h2><span class="section-num">5.</span> Threat Model</h2>
+
+    <h3>5.1 Assumptions</h3>
+
+    <p>PRN assumes a partial synchrony network model (messages are eventually delivered with unknown but bounded delay) and a Byzantine adversary controlling fewer than 1/3 of validators by stake-weight. Standard BFT conditions apply: safety is guaranteed if &lt;1/3 validators are Byzantine; liveness requires &gt;2/3 to be online and honest.</p>
+
+    <h3>5.2 Adversary Classes and Mitigations</h3>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>Adversary Class</th><th>Attack Vector</th><th>PRN Mitigation</th></tr></thead>
+        <tbody>
+            <tr>
+                <td><strong>Fabricated Coefficient Injection</strong></td>
+                <td>Attacker generates coefficient vectors that do not correspond to real biosignals</td>
+                <td>Layer 1 (Kuramoto): fabricated vectors are out-of-phase with network oscillator state and fail Phase Tolerance check. Layer 2 (BFT): requires 2/3 validator agreement to admit any block containing such transactions.</td>
+            </tr>
+            <tr>
+                <td><strong>Replay Attack</strong></td>
+                <td>Attacker replays a previously valid coefficient vector</td>
+                <td>Coefficients are timestamped and bound to a block height nonce. Replayed transactions fail nonce validation at the ledger layer.</td>
+            </tr>
+            <tr>
+                <td><strong>Phase Manipulation</strong></td>
+                <td>Adversarial validator broadcasts false phase state to skew network \(\Theta\)</td>
+                <td>Phase state is weighted by stake and cross-validated against at least 3 independent peers. A single adversarial node cannot move \(\Theta\) beyond the tolerance band of honest nodes.</td>
+            </tr>
+            <tr>
+                <td><strong>Traffic Analysis</strong></td>
+                <td>Adversary infers population health state from coefficient traffic patterns (volume, timing, source distribution) without breaking individual coefficient privacy</td>
+                <td><strong>Partial mitigation only.</strong> Large-scale events (pandemic outbreak) will produce observable traffic shifts. PRN does not currently provide k-anonymity or differential privacy on traffic metadata. This is acknowledged as a group privacy limitation and an area of active research.</td>
+            </tr>
+            <tr>
+                <td><strong>Coefficient Correlation</strong></td>
+                <td>Adversary with many coefficient vectors from similar individuals performs population inference without individual re-identification</td>
+                <td><strong>Architectural limitation.</strong> Group privacy is distinct from individual privacy. Two users with similar health states will produce similar (not identical) GLE vectors. Population-level inference is possible with sufficient samples. Applications handling sensitive group attributes should consider adding differential privacy noise at the application layer above PRN.</td>
+            </tr>
+            <tr>
+                <td><strong>Validator Cartel (&gt;1/3 stake)</strong></td>
+                <td>Colluding validators control &gt;1/3 of network; can halt consensus (safety violation requires &gt;2/3)</td>
+                <td>Standard BFT assumption: any network with &gt;1/3 Byzantine validators is unsafe. PRN relies on economic incentives and validator diversity. Stake-weighting and slashing conditions are under active design.</td>
+            </tr>
+            <tr>
+                <td><strong>Device Compromise</strong></td>
+                <td>Attacker compromises user device, extracts GLE coefficients</td>
+                <td>HF-Auth (separate whitepaper) provides five-layer local authorization. Extracted coefficients are 512-byte vectors: non-PHI by design and cannot reconstruct the original audio. The risk is coefficient impersonation, not health data exposure.</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <div class="key-insight">
+        <p>Traffic analysis and coefficient correlation attacks represent genuine group privacy limitations that PRN v1.0 does not fully mitigate. Acknowledging these honestly is preferable to overclaiming. Differential privacy and k-anonymity layers are planned for v2.0. The individual privacy guarantee (no raw biosignal leaves the device, GLE is irreversible) is strong. The population-level inference guarantee is weaker and application-dependent.</p>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 6: SCALABILITY -->
+    <h2><span class="section-num">6.</span> Scalability Analysis</h2>
+
+    <h3>6.1 The Fixed-Cost Encoding Property</h3>
+
+    <p>GLE always produces 128 float32 coefficients (512 bytes) regardless of input duration. The benchmark confirmed this: every BIDMC record (480 seconds = approximately 29.4 MB of raw audio) produces exactly 512 bytes. This fixed-output property means:</p>
+
+    <blockquote>
+        <p>The cost of processing one person's health fingerprint on the PRN network is constant &mdash; 512 bytes of payload &mdash; regardless of how many people join the network.</p>
+    </blockquote>
+
+    <h3>6.2 Comparison to Known Networks</h3>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>Property</th><th>Bitcoin</th><th>Ethereum (L1)</th><th>Solana</th><th>Cosmos</th><th>PRN (design)</th></tr></thead>
+        <tbody>
+            <tr><td>TPS</td><td>7</td><td>~15</td><td>~3,000 actual</td><td>~10,000/chain</td><td>Pending benchmark (254 TPS annual check, 13K TPS weekly, 93K TPS daily at 8B users)</td></tr>
+            <tr><td>Block time</td><td>10 min</td><td>12 sec</td><td>400 ms</td><td>~1 sec</td><td>1 s (PERFORMANCE: live streams) / 10 s (CORRECTNESS: authoritative records)</td></tr>
+            <tr><td>Consensus</td><td>PoW (Nakamoto)</td><td>Gasper</td><td>PoH + PoS</td><td>Tendermint BFT</td><td>PCR + 2/3 BFT</td></tr>
+            <tr><td>Health data</td><td class="dash-cell">&#10006; Illegal</td><td class="dash-cell">&#10006; Illegal</td><td class="dash-cell">&#10006; Illegal</td><td class="dash-cell">&#10006; Illegal</td><td><strong>&#10003; Legal by architecture</strong></td></tr>
+            <tr><td>Storage per user</td><td class="dash-cell">&mdash;</td><td>$10&ndash;100/MB gas</td><td>~$0.01/MB</td><td>~$0.001/MB</td><td><strong>512 bytes payload (fixed)</strong></td></tr>
+            <tr><td>Subject invariance</td><td class="dash-cell">&mdash;</td><td class="dash-cell">&mdash;</td><td class="dash-cell">&mdash;</td><td class="dash-cell">&mdash;</td><td><strong>Yes (GLE property)</strong></td></tr>
+            <tr><td>Privacy primitive</td><td>None</td><td>ZK-proofs (complex)</td><td>None</td><td>None</td><td><strong>GLE irreversibility</strong></td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <div class="key-insight">
+        <p><strong>Fixed payload at planetary scale.</strong> GLE payload is always 512 bytes per person regardless of how often they submit. Enrollment for the entire human population:</p>
+        <ul>
+            <li><strong>1 billion users</strong> &rarr; 512 GB &mdash; a single commodity hard drive</li>
+            <li><strong>8 billion users (full planet)</strong> &rarr; <strong>4 TB</strong> &mdash; four commodity hard drives</li>
+        </ul>
+        <p>This refers to GLE payload data only. Protocol overhead (block headers, consensus records, validator signatures, sharding metadata) adds additional storage; the payload is the binding constraint no other network can match for health data.</p>
+        <p><strong>TPS requirement at 8B users</strong> depends on usage frequency: annual health check = 254 TPS; weekly = ~13,000 TPS (achievable with sharding); daily = ~93,000 TPS (requires multi-shard testnet, Q2 2026 milestone). Compare Ethereum at 8B daily users: ~10 petabytes on-chain + billions in gas fees vs. PRN's 4 TB payload.</p>
+    </div>
+
+    <h3>6.3 Concrete Scale Scenarios</h3>
+
+    <h4>Pandemic Respiratory Surveillance</h4>
+
+    <p>500 million smartphone users complete a 30-second breathing check. GLE encodes locally &rarr; 512 bytes per person &rarr; transmitted to PRN. Network detects distributional shift in coefficient clusters &rarr; outbreak signal raised. Zero patient records transmitted. Zero HIPAA violations. Zero bilateral data-sharing agreements required. Total dataset: 256 GB &mdash; fits in RAM on a single server.</p>
+
+    <h4>Drug Trial Enrollment</h4>
+
+    <p>Trial protocol broadcasts eligibility criteria as a GLE coefficient range query across 100 million enrolled users. Users whose coefficient vectors fall within range receive an invitation. The trial operator accesses no PHI until explicit user consent is provided. Enrollment time: days. Geographic constraint: none.</p>
+
+    <h4>Crisis Detection at 988 Scale</h4>
+
+    <p>988 callers speak &rarr; device microphone captures breathing &rarr; GLE encodes on-device &rarr; 512 bytes. PRN verifies coefficient provenance. Counselor's dashboard displays breathing-derived risk signal. No audio recorded. No voice stored. At 988 annual scale (720,000 calls): 369 MB per year of coefficient data &mdash; less than a single JPEG image per call.</p>
+
+    <hr>
+
+    <!-- SECTION 7: STACK INTEGRATION -->
+    <h2><span class="section-num">7.</span> Stack Integration</h2>
+
+    <h3>7.1 Relationship to HFTP</h3>
+
+    <p>HFTP (Harmonic Frequency Transfer Protocol) is the AI-native agent communication protocol for frequency coefficient exchange. PRN provides the trust substrate: when two HFTP agents exchange GLE coefficient vectors, PRN's PCR consensus verifies that the coefficients were legitimately generated before the exchange is recorded on-chain. HFTP handles <em>what</em> travels between agents; PRN handles <em>whether</em> that exchange is trusted by the network.</p>
+
+    <h3>7.2 Relationship to HF-Auth</h3>
+
+    <p>HF-Auth provides five-layer local authorization and biometric binding entirely on-device. PRN operates entirely off-device. No biometric data crosses the boundary between the two layers. HF-Auth gates the GLE encoding event; PRN records its proof. The security model is defense-in-depth: HF-Auth protects the device side, PRN protects the network side.</p>
+
+    <hr>
+
+    <!-- SECTION 8: CURRENT STATUS -->
+    <h2><span class="section-num">8.</span> Current Status and Roadmap</h2>
+
+    <div class="table-wrapper">
+    <table>
+        <thead><tr><th>Milestone</th><th>Status</th><th>What It Proves</th></tr></thead>
+        <tbody>
+            <tr><td>Two nodes connected to Fly.io bootstrap</td><td><strong>&#10003; March 2026</strong></td><td>libp2p networking functional; PCR protocol registers; phase sync established</td></tr>
+            <tr><td>Bootstrap node always-on (SJC, TCP 9091)</td><td><strong>&#10003; Complete</strong></td><td>Global reachability</td></tr>
+            <tr><td>GLE 125:1 compression: mathematical proof</td><td><strong>&#10003; Confirmed</strong></td><td>Deterministic; no confidence interval required</td></tr>
+            <tr><td>PhysioNet benchmark (30 records)</td><td><strong>&#10003; March 2, 2026</strong></td><td>Secondary compression numbers are empirical and reproducible</td></tr>
+            <tr><td>2/3 BFT consensus prototype</td><td><strong>&#10003; Implemented</strong></td><td>Core voting logic functional in <code>src/consensus/protocol.ts</code></td></tr>
+            <tr><td>PCR phase-coherence prototype</td><td><strong>&#10003; Implemented</strong></td><td><code>PhaseMatcher</code> class; Float32 phase matching; 10 mHz buckets</td></tr>
+            <tr><td>BAGLE API encode endpoint</td><td>&#9711; April 2026</td><td>First external builder can encode biosignals via API</td></tr>
+            <tr><td>10-node testnet</td><td>&#9711; Q2 2026</td><td>Multi-shard architecture; horizontal scaling proof</td></tr>
+            <tr><td>TPS benchmark published</td><td>&#9711; Q2 2026</td><td>Performance numbers with real measurement</td></tr>
+            <tr><td>Cross-platform GLE reproducibility suite</td><td>&#9711; Q2 2026</td><td>Float-point equivalence tests across Python, JS, Go</td></tr>
+            <tr><td>Differential privacy layer (v2.0)</td><td>&#9711; Research</td><td>Group privacy mitigation for population inference</td></tr>
+            <tr><td>Kuramoto-BFT formal analysis</td><td>&#9711; Research</td><td>PCR's theoretical contribution to consensus literature</td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <h3>8.1 The Structural Insight</h3>
+
+    <p>Satoshi Nakamoto's Bitcoin whitepaper (2008) contained one sentence that changed finance: <em>&ldquo;A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution.&rdquo;</em> The insight was that trust could be mathematical rather than institutional.</p>
+
+    <p>PRN's equivalent: <em>&ldquo;A person's health can be known by AI without that person's health data leaving their device.&rdquo;</em> The same structural insight applied to health: remove the trusted intermediary (hospital, EHR vendor, health data broker), replace institutional trust with mathematical structure (GLE irreversibility + PRN consensus).</p>
+
+    <p>If a 30-second breathing pattern can be encoded into 512 bytes that cannot be reverse-engineered, and if that encoding generalizes across individuals never seen in training, then health records as we know them &mdash; files, databases, PHI repositories &mdash; become unnecessary for most AI health applications. The Paragon whitepaper's purpose is to make that question thinkable for the first time.</p>
+
+    <hr>
+
+    <!-- REFERENCES -->
+    <h2><span class="section-num">9.</span> References</h2>
+
+    <div class="references">
+        <ol>
+            <li>Acebrón, J.A. et al. (2005). The Kuramoto model: A simple paradigm for synchronization phenomena. <em>Reviews of Modern Physics</em>, 77(3).</li>
+            <li>Buchman, E. (2016). Tendermint: Byzantine Fault Tolerance in the Age of Blockchains. M.Sc. Thesis, University of Guelph.</li>
+            <li>Cand&egrave;s, E.J., Romberg, J., &amp; Tao, T. (2006). Robust uncertainty principles: Exact signal reconstruction from highly incomplete frequency information. <em>IEEE Transactions on Information Theory</em>, 52(2), 489&ndash;509.</li>
+            <li>Cand&egrave;s, E.J. &amp; Tao, T. (2006). Near optimal signal recovery from random projections. <em>IEEE Transactions on Information Theory</em>, 52(12), 5405&ndash;5425.</li>
+            <li>Castro, M. &amp; Liskov, B. (1999). Practical Byzantine Fault Tolerance. <em>OSDI 1999</em>.</li>
+            <li>Donoho, D.L. (2006). Compressed sensing. <em>IEEE Transactions on Information Theory</em>, 52(4), 1289&ndash;1306. [Gauss Prize 2018; Shaw Prize in Mathematics 2013]</li>
+            <li>Goldberger, A.L. et al. (2002). Fractal dynamics in physiology: alterations with disease and aging. <em>PNAS</em>, 99(suppl 1), 2466&ndash;2472.</li>
+            <li>Han, S., Mao, H., &amp; Dally, W.J. (2016). Deep Compression: Compressing Deep Neural Networks with Pruning, Trained Quantization, and Huffman Coding. <em>ICLR 2016 Best Paper Award.</em> arXiv:1510.00149.</li>
+            <li>Kuo, T.T., Kim, H.E., &amp; Ohno-Machado, L. (2017). Blockchain distributed ledger technologies for biomedical and health care applications. <em>JAMIA</em>, 24(6), 1211&ndash;1220. [MedRec and related work survey]</li>
+            <li>Kuramoto, Y. (1975). <em>Chemical Oscillations, Waves, and Turbulence.</em> Springer.</li>
+            <li>Linn, L.A. &amp; Koo, M.B. (2016). Blockchain for Health Data and Its Potential Use in Health IT and Health Care Related Research. <em>ONC/NIST Workshop.</em> [Hyperledger health context]</li>
+            <li>Moody, G.B. &amp; Mark, R.G. (2001). The impact of the MIT-BIH arrhythmia database. <em>IEEE Engineering in Medicine and Biology</em>, 20(3), 45&ndash;50.</li>
+            <li>Nakamoto, S. (2008). Bitcoin: A Peer-to-Peer Electronic Cash System. bitcoin.org.</li>
+            <li>Okamoto, S. et al. (2014). Using Collective Behavior of Coupled Oscillators for Solving DCOP. <em>AAMAS 2014</em>.</li>
+            <li>Peng, C.K. et al. (1994). Long-range anticorrelations and non-Gaussian behavior of the heartbeat. <em>Physical Review Letters</em>, 70(9), 1343.</li>
+            <li>Strogatz, S.H. (2000). From Kuramoto to Crawford: exploring the onset of synchronization in populations of coupled oscillators. <em>Physica D</em>, 143, 1&ndash;20.</li>
+            <li>Tran, P. &amp; Tran, A. (2026). GLE: The General Learning Encoder &mdash; A Universal Foundation Model for Multi-Modal Biological Signal Intelligence. Univault Technologies.</li>
+            <li>Yin, M. et al. (2019). HotStuff: BFT Consensus with Linearity and Responsiveness. <em>PODC 2019</em>.</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <div class="disclosure">
+        <strong>Regulatory Disclaimer.</strong> The Paragon Resonance Network is research infrastructure and is not a medical device. Applications built on PRN that perform clinical decision support, diagnosis, or treatment recommendations may qualify as Software as a Medical Device (SaMD) and require independent regulatory clearance (FDA 510(k), CE marking, or equivalent) prior to clinical deployment. GLE's architectural compatibility with HIPAA Safe Harbor de-identification per 45 CFR §164.514(b) has been described herein; formal re-identification risk analysis by a qualified privacy expert is required for any clinical deployment. This whitepaper does not constitute legal or medical advice.
+    </div>
+
+</div>
+
+<!-- COLOPHON -->
+<div class="colophon">
+    <div class="colophon-brand">Univault Technologies, LLC</div>
+    <div class="colophon-contact">research@paragondao.org &nbsp;&middot;&nbsp; <a href="https://paragondao.org">paragondao.org</a></div>
+    <div class="colophon-contact" style="margin-top:0.5rem;">Benchmark data and methodology: <a href="https://github.com/univault-org/paragon-node/tree/main/benchmark">github.com/univault-org/paragon-node/benchmark</a></div>
+    <div class="colophon-date">Version 1.0 &mdash; March 2026 &mdash; CC BY 4.0</div>
+</div>
+
+</body>
+</html>

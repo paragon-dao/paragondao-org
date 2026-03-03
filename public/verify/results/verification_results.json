@@ -1,0 +1,216 @@
+{
+  "overall": {
+    "normalized_error": 0.7126,
+    "correlation": 0.56012,
+    "p_value": 0.0,
+    "mse": 0.048077,
+    "rmse": 0.219265,
+    "mae": 0.175605,
+    "baseline_mse": 0.067467,
+    "total_samples": 36575,
+    "total_subjects": 20
+  },
+  "per_subject": [
+    {
+      "subject_id": "sub-NDARAC904DMU",
+      "samples": 1589,
+      "correlation": null,
+      "mse": 0.028343,
+      "mean_prediction": 0.6887,
+      "mean_target": 0.8315
+    },
+    {
+      "subject_id": "sub-NDARAM704GKZ",
+      "samples": 1798,
+      "correlation": null,
+      "mse": 0.013339,
+      "mean_prediction": 0.743,
+      "mean_target": 0.8492
+    },
+    {
+      "subject_id": "sub-NDARAP359UM6",
+      "samples": 1831,
+      "correlation": null,
+      "mse": 0.023222,
+      "mean_prediction": 0.407,
+      "mean_target": 0.2894
+    },
+    {
+      "subject_id": "sub-NDARBD879MBX",
+      "samples": 2013,
+      "correlation": null,
+      "mse": 0.055494,
+      "mean_prediction": 0.5522,
+      "mean_target": 0.747
+    },
+    {
+      "subject_id": "sub-NDARBH024NH2",
+      "samples": 2023,
+      "correlation": null,
+      "mse": 0.021494,
+      "mean_prediction": 0.5519,
+      "mean_target": 0.4619
+    },
+    {
+      "subject_id": "sub-NDARBK082PDD",
+      "samples": 1982,
+      "correlation": null,
+      "mse": 0.093966,
+      "mean_prediction": 0.6135,
+      "mean_target": 0.8999
+    },
+    {
+      "subject_id": "sub-NDARCA153NKE",
+      "samples": 1737,
+      "correlation": null,
+      "mse": 0.008839,
+      "mean_prediction": 0.6017,
+      "mean_target": 0.5589
+    },
+    {
+      "subject_id": "sub-NDARCE721YB5",
+      "samples": 1967,
+      "correlation": null,
+      "mse": 0.072678,
+      "mean_prediction": 0.7155,
+      "mean_target": 0.9775
+    },
+    {
+      "subject_id": "sub-NDARCJ594BWQ",
+      "samples": 1783,
+      "correlation": null,
+      "mse": 0.01678,
+      "mean_prediction": 0.6119,
+      "mean_target": 0.6724
+    },
+    {
+      "subject_id": "sub-NDARCN669XPR",
+      "samples": 1822,
+      "correlation": null,
+      "mse": 0.012727,
+      "mean_prediction": 0.6813,
+      "mean_target": 0.7899
+    },
+    {
+      "subject_id": "sub-NDARCW094JCG",
+      "samples": 1772,
+      "correlation": null,
+      "mse": 0.008566,
+      "mean_prediction": 0.6278,
+      "mean_target": 0.6547
+    },
+    {
+      "subject_id": "sub-NDARCZ947WU5",
+      "samples": 1793,
+      "correlation": null,
+      "mse": 0.048874,
+      "mean_prediction": 0.705,
+      "mean_target": 0.4965
+    },
+    {
+      "subject_id": "sub-NDARDH670PXH",
+      "samples": 2478,
+      "correlation": null,
+      "mse": 0.220365,
+      "mean_prediction": 0.4557,
+      "mean_target": 0.0
+    },
+    {
+      "subject_id": "sub-NDARDL511UND",
+      "samples": 1743,
+      "correlation": null,
+      "mse": 0.07864,
+      "mean_prediction": 0.691,
+      "mean_target": 0.9584
+    },
+    {
+      "subject_id": "sub-NDARDU986RBM",
+      "samples": 1840,
+      "correlation": null,
+      "mse": 0.014109,
+      "mean_prediction": 0.5844,
+      "mean_target": 0.5481
+    },
+    {
+      "subject_id": "sub-NDAREM731BYM",
+      "samples": 1543,
+      "correlation": null,
+      "mse": 0.029969,
+      "mean_prediction": 0.6534,
+      "mean_target": 0.7946
+    },
+    {
+      "subject_id": "sub-NDAREN519BLJ",
+      "samples": 2242,
+      "correlation": null,
+      "mse": 0.016454,
+      "mean_prediction": 0.5734,
+      "mean_target": 0.49
+    },
+    {
+      "subject_id": "sub-NDARFK610GY5",
+      "samples": 1489,
+      "correlation": null,
+      "mse": 0.011384,
+      "mean_prediction": 0.5129,
+      "mean_target": 0.5464
+    },
+    {
+      "subject_id": "sub-NDARFT581ZW5",
+      "samples": 1635,
+      "correlation": null,
+      "mse": 0.081854,
+      "mean_prediction": 0.7195,
+      "mean_target": 1.0
+    },
+    {
+      "subject_id": "sub-NDARFW972KFQ",
+      "samples": 1495,
+      "correlation": null,
+      "mse": 0.032247,
+      "mean_prediction": 0.6786,
+      "mean_target": 0.8328
+    }
+  ],
+  "provenance": {
+    "checkpoint": "subject_invariant_priority2/model_best.pt",
+    "checkpoint_epoch": 49,
+    "checkpoint_val_correlation": 0.56012,
+    "hftp_data_sha256": "caa5c33b638b8d7f34ca6d2c7567f591dd62a1517da619bb0cea3bdd533cfdc1",
+    "raw_data_sha256": "37e84242d12ca9bd35a50930dc158c8bee8b4a215e16b5bec2c7251c286ab88b",
+    "si_checkpoint_sha256": "d9bbcb681604f85eb8c4d24d7502c6d64ffbe3666c8672d0679d80a1cafd563b",
+    "hftp_checkpoint_sha256": "0c2bc861fec870603f99623dcc330042fc59fb34cc3d4f3a2499bbde82f7adf6",
+    "device": "cpu",
+    "torch_version": "2.8.0",
+    "numpy_version": "1.26.4",
+    "generated_at": "2026-03-03T01:29:13.930350+00:00",
+    "seed": 42,
+    "split_method": "subject-level (seed=42, train=70%, val=15%, test=15%)"
+  },
+  "competition": {
+    "name": "NeurIPS 2025 EEG Foundation Model Challenge",
+    "challenge": "Challenge 2: Subject-Invariant Representation",
+    "metric": "Normalized Error (MSE / Baseline MSE)",
+    "metric_direction": "lower is better",
+    "total_teams": 1183,
+    "leaderboard": [
+      {
+        "rank": 1,
+        "team": "JLShen",
+        "score": 0.97843
+      },
+      {
+        "rank": 2,
+        "team": "MBZUAI",
+        "score": 0.98519
+      },
+      {
+        "rank": 3,
+        "team": "MIN~C\u00b2",
+        "score": 0.98817
+      }
+    ]
+  },
+  "verified_at": "2026-03-03T01:29:13.930361+00:00",
+  "model_epoch": 49
+}

@@ -91,15 +91,20 @@ const VerifyPage = () => {
   const purpleBg = 'rgba(139,92,246,0.1)'
   const purpleBorder = 'rgba(139,92,246,0.3)'
 
+  // Provenance state
+  const [provenance, setProvenance] = useState(null)
+
   useEffect(() => {
     async function fetchData() {
       try {
-        const [r, b] = await Promise.all([
-          verificationAPI.getResults().catch(() => null),
-          verificationAPI.getBenchmark().catch(() => null),
+        const [r, b, prov] = await Promise.all([
+          verificationAPI.getResults(),
+          verificationAPI.getBenchmark(),
+          verificationAPI.getProvenance().catch(() => null),
         ])
         setResults(r)
         setBenchmark(b)
+        setProvenance(prov)
       } catch (e) {
         setError(e.message)
       } finally {
@@ -108,10 +113,10 @@ const VerifyPage = () => {
     }
     async function fetchPrivacy() {
       try {
-        const p = await verificationAPI.getPrivacyResults().catch(() => null)
+        const p = await verificationAPI.getPrivacyResults()
         setPrivacyResults(p)
       } catch (e) {
-        // Privacy results optional
+        // Privacy results are a separate concern
       } finally {
         setPrivacyLoading(false)
       }
@@ -287,31 +292,10 @@ console.log("Certified:", audit.privacy_certified);`
     transition: { duration: 0.5 },
   }
 
-  // Hardcoded benchmark data — the NeurIPS results are permanent public record
-  // Leaderboard = competition teams (ParagonDAO shown separately in hero card)
-  const FALLBACK_LEADERBOARD = [
-    { rank: 1, team: 'JLShen', institution: '', score: 0.97843 },
-    { rank: 2, team: 'MBZUAI', institution: 'Mohamed bin Zayed University', score: 0.98519 },
-    { rank: 3, team: 'MIN~C²', institution: '', score: 0.98817 },
-  ]
-  const FALLBACK_OVERALL = {
-    normalized_error: 0.70879,
-    correlation: 0.54912,
-    total_samples: 10717,
-    mse: 0.018742,
-    rmse: 0.136905,
-    total_subjects: 3,
-  }
-  const FALLBACK_PER_SUBJECT = [
-    { subject_id: 'subject_18', correlation: 0.55123, mse: 0.017892, mean_prediction: 0.4312, mean_target: 0.4187, samples: 3621 },
-    { subject_id: 'subject_19', correlation: 0.53891, mse: 0.019234, mean_prediction: 0.3891, mean_target: 0.3956, samples: 3548 },
-    { subject_id: 'subject_20', correlation: 0.55721, mse: 0.019101, mean_prediction: 0.4102, mean_target: 0.4023, samples: 3548 },
-  ]
-
-  const overall = results?.overall || FALLBACK_OVERALL
-  const leaderboard = benchmark?.leaderboard?.length > 0 ? benchmark.leaderboard : FALLBACK_LEADERBOARD
-  const pScore = benchmark?.paragondao?.score || overall.normalized_error || 0.70879
-  const totalTeams = benchmark?.total_teams || 1183
+  const overall = results?.overall
+  const leaderboard = benchmark?.leaderboard
+  const pScore = benchmark?.paragondao?.score ?? overall?.normalized_error
+  const totalTeams = benchmark?.total_teams ?? 0
 
   return (
     <div style={{
@@ -321,8 +305,8 @@ console.log("Certified:", audit.privacy_certified);`
         : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
     }}>
       <SEO
-        title="Verify — 13.5x Better Than NeurIPS 2025 Winner"
-        description="ParagonDAO's GLE achieved 13.5x more improvement than the NeurIPS 2025 competition winner on EEG consciousness detection. Independently verifiable benchmark results."
+        title="Verify — Independently Verifiable EEG Results"
+        description="ParagonDAO's GLE encoder on the NeurIPS 2025 EEG Foundation Model Challenge. Every result is independently verifiable from raw predictions."
         path="/verify"
       />
       <Background />
@@ -340,6 +324,31 @@ console.log("Certified:", audit.privacy_certified);`
 
       <main style={{ position: 'relative', zIndex: 5, paddingTop: '100px', paddingBottom: '40px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+
+          {/* ═══════ ERROR STATE ═══════ */}
+          {!loading && error && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              style={{
+                padding: '24px', borderRadius: '12px', marginBottom: '32px',
+                background: isDark ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.04)',
+                border: '1px solid rgba(239,68,68,0.3)', textAlign: 'center',
+              }}
+            >
+              <div style={{ color: '#ef4444', fontSize: '15px', fontWeight: '600', marginBottom: '8px' }}>
+                Verification API Unavailable
+              </div>
+              <div style={{ color: textSecondary, fontSize: '13px', lineHeight: '1.6' }}>
+                {error}. View raw evidence at{' '}
+                <a href="https://github.com/univault-org/paragondao-landing/tree/main/public/verify"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ color: green, textDecoration: 'none', fontWeight: '600' }}>
+                  GitHub
+                </a>{' '}
+                or run <code style={{ padding: '2px 6px', borderRadius: '4px', background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)', fontSize: '12px' }}>python scoring.py</code> locally.
+              </div>
+            </motion.div>
+          )}
 
           {/* ═══════ HERO ═══════ */}
           <motion.div
@@ -373,17 +382,21 @@ console.log("Certified:", audit.privacy_certified);`
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               margin: '0 0 20px 0', lineHeight: '1.08',
             }}>
-              13.5x More Improvement Than the NeurIPS 2025 Winner
+              {benchmark?.paragondao?.improvement_ratio || ''} More Improvement Than the NeurIPS 2025 Winner
             </h1>
 
             <p style={{
               fontSize: 'clamp(1rem, 2vw, 1.15rem)', fontWeight: '450',
               color: textSecondary, maxWidth: '720px', margin: '0 auto 28px', lineHeight: '1.65',
             }}>
-              Our GLE encoder achieved <span style={{ color: green, fontWeight: '600' }}>0.709</span> normalized error
-              on the NeurIPS 2025 EEG Foundation Model Challenge — beating the winning team's 0.978 by
-              improving <span style={{ color: green, fontWeight: '600' }}>13.5x more</span> below
-              baseline in a field of {totalTeams.toLocaleString()} teams. Every result on this page is independently verifiable.
+              {overall ? (
+                <>
+                  Our GLE encoder achieved <span style={{ color: green, fontWeight: '600' }}>{overall.normalized_error?.toFixed(3)}</span> normalized error
+                  on the NeurIPS 2025 EEG Foundation Model Challenge — beating the winning team's 0.978 by
+                  improving <span style={{ color: green, fontWeight: '600' }}>{benchmark?.paragondao?.improvement_ratio || '13.5x'}</span> more below
+                  baseline in a field of {totalTeams?.toLocaleString() || '1,183'} teams. Every result on this page is independently verifiable.
+                </>
+              ) : loading ? 'Loading verification data...' : 'Verification data unavailable. See error above.'}
             </p>
 
             <div style={{
@@ -451,6 +464,16 @@ console.log("Certified:", audit.privacy_certified);`
               <div style={{ display: 'flex', gap: '16px' }}>
                 <Skeleton height="200px" style={{ flex: 3 }} />
                 <Skeleton height="200px" style={{ flex: 2 }} />
+              </div>
+            ) : !leaderboard || !pScore ? (
+              <div style={{
+                padding: '32px', borderRadius: '12px', textAlign: 'center',
+                background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                border: `1px dashed ${cardBorder}`,
+              }}>
+                <span style={{ color: textSecondary, fontSize: '14px' }}>
+                  Competition benchmark data unavailable
+                </span>
               </div>
             ) : (
               <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
@@ -540,7 +563,7 @@ console.log("Certified:", audit.privacy_certified);`
                   </div>
 
                   <div style={{ fontSize: '14px', color: textSecondary, marginBottom: '4px' }}>
-                    vs. {leaderboard[0]?.score?.toFixed(5) || '0.97843'} (1st place)
+                    vs. {leaderboard?.[0]?.score?.toFixed(5)} (1st place)
                   </div>
 
                   <div style={{
@@ -548,7 +571,7 @@ console.log("Certified:", audit.privacy_certified);`
                     padding: '6px 16px', borderRadius: '8px', marginTop: '8px',
                     background: 'rgba(16,185,129,0.1)',
                   }}>
-                    13.5x more improvement
+                    {benchmark?.paragondao?.improvement_ratio || ''} more improvement
                   </div>
 
                   <div style={{ fontSize: '12px', color: textSecondary, marginTop: '12px' }}>
@@ -636,7 +659,7 @@ console.log("Certified:", audit.privacy_certified);`
           </motion.div>
 
           {/* ═══════ VERIFICATION DASHBOARD ═══════ */}
-          {(results?.overall || !loading) && (
+          {results?.overall && (
             <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -722,7 +745,7 @@ console.log("Certified:", audit.privacy_certified);`
 
                   {/* Per-subject */}
                   {(() => {
-                    const perSubject = results?.per_subject?.length > 0 ? results.per_subject : FALLBACK_PER_SUBJECT
+                    const perSubject = results?.per_subject || []
                     return perSubject.length > 0 && (
                     <>
                       <div style={{ fontSize: '15px', fontWeight: '600', color: textPrimary, marginBottom: '12px' }}>
@@ -741,9 +764,11 @@ console.log("Certified:", audit.privacy_certified);`
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                               <div>
-                                <div style={{ color: textSecondary, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '3px' }}>Correlation</div>
+                                <div style={{ color: textSecondary, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '3px' }}>
+                                  {subj.correlation != null ? 'Correlation' : 'MSE (per-subject)'}
+                                </div>
                                 <div style={{ color: green, fontSize: '18px', fontWeight: '700', fontFamily: 'monospace' }}>
-                                  {subj.correlation?.toFixed(4)}
+                                  {subj.correlation != null ? subj.correlation.toFixed(4) : subj.mse?.toFixed(5)}
                                 </div>
                               </div>
                               <div>
@@ -770,16 +795,17 @@ console.log("Certified:", audit.privacy_certified);`
                       </div>
                       {/* Consistency callout */}
                       {perSubject.length > 1 && (() => {
-                        const corrs = perSubject.map(s => s.correlation)
-                        const min = Math.min(...corrs)
-                        const max = Math.max(...corrs)
+                        const mses = perSubject.map(s => s.mse).filter(v => v != null)
+                        if (mses.length < 2) return null
+                        const min = Math.min(...mses)
+                        const max = Math.max(...mses)
                         return (
                           <div style={{
                             textAlign: 'center', padding: '10px', borderRadius: '10px',
                             background: isDark ? 'rgba(16,185,129,0.05)' : 'rgba(16,185,129,0.03)',
                             border: `1px solid ${greenBorder}`, fontSize: '13px', color: textSecondary,
                           }}>
-                            Cross-subject consistency: correlation range <span style={{ color: green, fontWeight: '600' }}>{min.toFixed(3)} — {max.toFixed(3)}</span> across unseen subjects
+                            Cross-subject MSE range: <span style={{ color: green, fontWeight: '600' }}>{min.toFixed(4)} — {max.toFixed(4)}</span> across {perSubject.length} subjects
                           </div>
                         )
                       })()}
@@ -787,6 +813,71 @@ console.log("Certified:", audit.privacy_certified);`
                   )})()}
                 </>
               )}
+            </motion.div>
+          )}
+
+          {/* ═══════ PROVENANCE + EVIDENCE ═══════ */}
+          {(provenance || results) && (
+            <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
+              <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
+                Evidence Trail
+              </h3>
+              <div style={cardStyle({ padding: '28px' })}>
+                {provenance && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+                    {[
+                      { label: 'Checkpoint', value: provenance.checkpoint || 'N/A' },
+                      { label: 'Checkpoint SHA-256', value: provenance.si_checkpoint_sha256 ? provenance.si_checkpoint_sha256.slice(0, 16) + '...' : 'N/A' },
+                      { label: 'Data Hash (HFTP)', value: provenance.hftp_data_sha256 ? provenance.hftp_data_sha256.slice(0, 16) + '...' : 'N/A' },
+                      { label: 'Generated', value: provenance.generated_at ? new Date(provenance.generated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A' },
+                      { label: 'Torch Version', value: provenance.torch_version || 'N/A' },
+                      { label: 'Split Seed', value: provenance.seed ?? 'N/A' },
+                    ].map((item, i) => (
+                      <div key={i} style={{ padding: '12px', borderRadius: '8px', background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)', border: `1px solid ${cardBorder}` }}>
+                        <div style={{ fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.04em', color: textSecondary, marginBottom: '4px' }}>{item.label}</div>
+                        <div style={{ fontSize: '13px', fontFamily: 'monospace', color: textPrimary, wordBreak: 'break-all' }}>{item.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <a
+                    href="https://github.com/univault-org/paragondao-landing/tree/main/public/verify/results/predictions.csv"
+                    target="_blank" rel="noopener noreferrer"
+                    style={{
+                      padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: '600',
+                      background: greenBg, border: `1px solid ${greenBorder}`, color: green,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Download predictions.csv
+                  </a>
+                  <a
+                    href="https://github.com/univault-org/paragondao-landing/tree/main/public/verify/scripts/scoring.py"
+                    target="_blank" rel="noopener noreferrer"
+                    style={{
+                      padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: '600',
+                      background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)',
+                      border: `1px solid ${cardBorder}`, color: textSecondary,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    View scoring.py
+                  </a>
+                  <a
+                    href="https://github.com/univault-org/paragondao-landing/tree/main/public/verify"
+                    target="_blank" rel="noopener noreferrer"
+                    style={{
+                      padding: '8px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: '600',
+                      background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)',
+                      border: `1px solid ${cardBorder}`, color: textSecondary,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Full Evidence Directory
+                  </a>
+                </div>
+              </div>
             </motion.div>
           )}
 
@@ -888,10 +979,10 @@ console.log("Certified:", audit.privacy_certified);`
           {/* ═══════ API PLAYGROUND ═══════ */}
           <motion.div {...sectionAnim} style={{ marginBottom: '64px' }}>
             <h3 style={{ color: textPrimary, fontSize: '20px', fontWeight: '700', marginBottom: '6px' }}>
-              Try It Live
+              API Contract Demo
             </h3>
             <p style={{ color: textSecondary, fontSize: '14px', marginBottom: '20px' }}>
-              Send raw EEG data — GLE encoding happens server-side. You never touch the frequency transform.
+              Test the API endpoint shape. Live inference requires the model server — verified results are served from the evidence pipeline above.
             </p>
 
             <div style={cardStyle({ padding: '32px' })}>

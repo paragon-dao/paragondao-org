@@ -80,6 +80,26 @@ const WhitepaperPage = () => {
           <path d="M8 12L11 15L16 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )
+    },
+    {
+      id: 'prn-infrastructure',
+      title: 'PRN Infrastructure',
+      subtitle: 'Paragon Resonance Network',
+      description: 'A Compliance-First Distributed Infrastructure for Health AI — P2P, Phase-Coherent Resonance consensus, and empirically validated GLE compression',
+      version: 'Version 1.0 — March 2026',
+      abstract: 'Existing public blockchains are structurally incompatible with health data law (HIPAA, GDPR). This paper presents the Paragon Resonance Network (PRN), the first distributed infrastructure purpose-built for compliance-by-architecture in health AI. PRN combines libp2p-based P2P networking with Phase-Coherent Resonance (PCR) consensus — a novel primitive inspired by Kuramoto oscillator synchronization — and GLE Harmonic State Encoding. Empirical benchmarks on 30 PhysioNet records confirm GLE\'s 125:1 primary compression is deterministic and exact. At global scale: 1 billion users\' health fingerprints require 512 GB of total network storage.',
+      link: '/docs/PRN_INFRASTRUCTURE_WHITEPAPER.html',
+      gradient: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #075985 100%)',
+      icon: (
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="5" r="2" fill="white"/>
+          <circle cx="5" cy="19" r="2" fill="white"/>
+          <circle cx="19" cy="19" r="2" fill="white"/>
+          <line x1="12" y1="7" x2="5" y2="17" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+          <line x1="12" y1="7" x2="19" y2="17" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+          <line x1="5" y1="19" x2="19" y2="19" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      )
     }
   ]
 

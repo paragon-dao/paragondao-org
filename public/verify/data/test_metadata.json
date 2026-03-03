@@ -1,0 +1,69 @@
+{
+  "split_method": "subject-level (seed=42)",
+  "split_ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "test_subject_ids": [
+    "sub-NDARAC904DMU",
+    "sub-NDARAM704GKZ",
+    "sub-NDARAP359UM6",
+    "sub-NDARBD879MBX",
+    "sub-NDARBH024NH2",
+    "sub-NDARBK082PDD",
+    "sub-NDARCA153NKE",
+    "sub-NDARCE721YB5",
+    "sub-NDARCJ594BWQ",
+    "sub-NDARCN669XPR",
+    "sub-NDARCW094JCG",
+    "sub-NDARCZ947WU5",
+    "sub-NDARDH670PXH",
+    "sub-NDARDL511UND",
+    "sub-NDARDU986RBM",
+    "sub-NDAREM731BYM",
+    "sub-NDAREN519BLJ",
+    "sub-NDARFK610GY5",
+    "sub-NDARFT581ZW5",
+    "sub-NDARFW972KFQ"
+  ],
+  "test_samples_per_subject": {
+    "sub-NDARAC904DMU": 1589,
+    "sub-NDARAM704GKZ": 1798,
+    "sub-NDARAP359UM6": 1831,
+    "sub-NDARBD879MBX": 2013,
+    "sub-NDARBH024NH2": 2023,
+    "sub-NDARBK082PDD": 1982,
+    "sub-NDARCA153NKE": 1737,
+    "sub-NDARCE721YB5": 1967,
+    "sub-NDARCJ594BWQ": 1783,
+    "sub-NDARCN669XPR": 1822,
+    "sub-NDARCW094JCG": 1772,
+    "sub-NDARCZ947WU5": 1793,
+    "sub-NDARDH670PXH": 2478,
+    "sub-NDARDL511UND": 1743,
+    "sub-NDARDU986RBM": 1840,
+    "sub-NDAREM731BYM": 1543,
+    "sub-NDAREN519BLJ": 2242,
+    "sub-NDARFK610GY5": 1489,
+    "sub-NDARFT581ZW5": 1635,
+    "sub-NDARFW972KFQ": 1495
+  },
+  "total_test_samples": 36575,
+  "data_format": {
+    "hftp": "128 frequency coefficients per sample (DCT-II)",
+    "raw_eeg": "4 channels x 200 timepoints (100Hz, 2-second windows)",
+    "channels": [
+      "TP9",
+      "AF7",
+      "AF8",
+      "TP10"
+    ],
+    "target": "Externalizing factor (normalized 0-1)"
+  },
+  "data_hashes": {
+    "hftp_data": "caa5c33b638b8d7f34ca6d2c7567f591dd62a1517da619bb0cea3bdd533cfdc1",
+    "raw_data": "37e84242d12ca9bd35a50930dc158c8bee8b4a215e16b5bec2c7251c286ab88b"
+  },
+  "generated_at": "2026-03-03T01:29:13.930681+00:00"
+}

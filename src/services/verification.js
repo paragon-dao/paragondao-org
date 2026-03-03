@@ -1,13 +1,12 @@
 /**
  * Verification API Service
  *
- * Calls the private ParagonDAO verification backend for model
- * performance data. No model code lives in this repo.
+ * Calls the ParagonDAO verification backend for model performance data.
+ * No fallbacks — errors propagate so the UI can show honest error states.
  *
  * Supports per-model endpoints via optional modelId parameter.
  * When modelId is provided, requests go to /api/v1/verify/{modelId}/...
- * When omitted, falls back to the default /api/v1/verify/... paths
- * (backwards-compatible with existing EEG-only backend).
+ * When omitted, falls back to the default /api/v1/verify/... paths.
  */
 
 const BASE_URL = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
@@ -40,6 +39,11 @@ export const verificationAPI = {
   runVerification: (modelId) =>
     fetchJSON(modelPath(modelId, '/run'), { method: 'POST' }),
   healthCheck: () => fetchJSON('/health'),
+
+  // New evidence endpoints
+  getProvenance: (modelId) => fetchJSON(modelPath(modelId, '/provenance')),
+  getPredictions: (modelId, offset = 0, limit = 100) =>
+    fetchJSON(modelPath(modelId, `/predictions?offset=${offset}&limit=${limit}`)),
 
   // Privacy verification endpoints
   getPrivacyResults: (modelId) => fetchJSON(modelPath(modelId, '/privacy/results')),

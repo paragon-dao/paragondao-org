@@ -121,10 +121,10 @@ export default function VerifyMethodologyPage() {
             <ul>
               <li><strong>1.0</strong> = model performs same as always predicting the mean (no improvement)</li>
               <li><strong>&lt; 1.0</strong> = model outperforms the baseline (lower is better)</li>
-              <li><strong>0.709</strong> = ParagonDAO's GLE encoder (29.1% better than baseline)</li>
+              <li><strong>~0.71</strong> = ParagonDAO's GLE encoder (~29% better than baseline, see /verify for exact score)</li>
               <li><strong>0.978</strong> = NeurIPS 2025 winner (2.2% better than baseline)</li>
             </ul>
-            <p>ParagonDAO improved <strong>13.5x more</strong> below baseline than the winning team. Both beat baseline, but our improvement margin was dramatically larger.</p>
+            <p>ParagonDAO improved dramatically more below baseline than the winning team. Both beat baseline, but our improvement margin was an order of magnitude larger. See the <a href="/verify" style={{ color: c.green, textDecoration: 'none', fontWeight: '600' }}>Verify page</a> for exact numbers from the evidence pipeline.</p>
           </Section>
 
           {/* ── Section 4: Subject-Level Splits ── */}
@@ -140,7 +140,7 @@ export default function VerifyMethodologyPage() {
                 <p style={{ fontSize: '13px', margin: 0 }}>All samples from a subject go into one split only. If subject 18 is in test, zero samples from subject 18 appear in train or validation. This tests true generalization.</p>
               </div>
             </div>
-            <p>Our <code>verify_subject_splits.py</code> script programmatically checks for any overlap between splits and fails verification if found. The current split: 14 train / 3 validation / 3 test subjects with zero overlap.</p>
+            <p>The dataset loader (<code>HBNEEGChallenge2Dataset</code>) programmatically enforces subject-level splits and raises an error if any overlap is detected. The current split: 14 train / 3 validation / 3 test subjects with zero overlap. See the <a href="https://github.com/univault-org/paragondao-landing/tree/main/public/verify" target="_blank" rel="noopener noreferrer" style={{ color: c.green, textDecoration: 'none', fontWeight: '600' }}>evidence directory</a> for the full verification pipeline.</p>
           </Section>
 
           {/* ── Section 5: Privacy Testing ── */}
@@ -206,13 +206,13 @@ export default function VerifyMethodologyPage() {
               <li><strong>Cross-domain attention</strong> — fuses frequency and time representations</li>
               <li><strong>Domain adversarial layer</strong> — GradientReversalLayer removes subject-specific information</li>
             </ol>
-            <p>The <code>verify_data_compliance.py</code> script checks that submitted data conforms to these format requirements before verification runs.</p>
+            <p>The <a href="https://github.com/univault-org/paragondao-landing/tree/main/public/verify/scripts/generate_evidence.py" target="_blank" rel="noopener noreferrer" style={{ color: c.green, textDecoration: 'none', fontWeight: '600' }}>generate_evidence.py</a> script loads data, validates format compliance, runs inference, and produces all evidence files. Run <a href="https://github.com/univault-org/paragondao-landing/tree/main/public/verify/scripts/scoring.py" target="_blank" rel="noopener noreferrer" style={{ color: c.green, textDecoration: 'none', fontWeight: '600' }}>scoring.py</a> to independently verify the score from predictions.csv.</p>
           </Section>
 
           {/* ── Section 8: FAQ ── */}
           <Section id="faq" title="8. FAQ" isDark={isDark} c={c}>
             {[
-              { q: 'Can I verify these results myself?', a: 'Yes. The verification API is public. Send EEG data to the /predict endpoint and compare results. The benchmark script and evaluation metrics are documented above.' },
+              { q: 'Can I verify these results myself?', a: 'Yes. Download predictions.csv and run scoring.py (numpy only) from the evidence directory at github.com/univault-org/paragondao-landing/public/verify. For full reproduction, use generate_evidence.py with the model checkpoint and dataset.' },
               { q: 'Is this a third-party audit?', a: 'No. These are self-administered tests following standard academic methodologies. We publish all methodology so third parties can replicate. ParagonDAO validators independently confirm results, but we do not claim third-party audit status.' },
               { q: 'Does the model need FDA clearance?', a: 'The GLE encoder itself is not a medical device. Applications built on top of GLE that make clinical claims (diagnosis, treatment recommendations) would independently need to pursue SaMD (Software as a Medical Device) classification.' },
               { q: 'How do I submit my own model for verification?', a: 'Use the Forge submission page (/forge/submit). You can run in simulation mode without uploading weights. For full verification, upload your model artifact and select benchmarks.' },
