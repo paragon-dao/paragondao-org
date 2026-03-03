@@ -1,0 +1,104 @@
+{
+  "description": "Cryptographic integrity manifest for GLE EEG verification evidence",
+  "generated_at": "2026-03-03T01:29:13.930350+00:00",
+  "note": "All hashes are SHA-256. If ANY hash does not match, the evidence chain is broken.",
+
+  "scripts": {
+    "scripts/scoring.py": {
+      "sha256": "343ddd715ab73c319da8b8f9cc9c73ea4fded5adf84959e69cec1b1576e7a0b1",
+      "description": "Standalone verifier (numpy only, ~100 lines, includes integrity checks)"
+    }
+  },
+
+  "evidence_files": {
+    "results/predictions.csv": {
+      "sha256": "34c11deb01234594760bbeaeb17190593839b1d04d750a8587adbb05ca51edb6",
+      "rows": 36575,
+      "description": "Per-sample predictions and ground truth (sample_id, subject_id, prediction, ground_truth)"
+    },
+    "results/verification_results.json": {
+      "sha256": "7ea33573e73309fbccc811ce8f13460e0c9761df4a88430638353cdb3006c583",
+      "description": "Computed metrics, per-subject breakdown, provenance, competition data"
+    }
+  },
+
+  "input_data": {
+    "hbn_eeg_hftp.pt": {
+      "sha256": "caa5c33b638b8d7f34ca6d2c7567f591dd62a1517da619bb0cea3bdd533cfdc1",
+      "size_bytes": "~63MB",
+      "description": "HFTP frequency-domain coefficients (128 DCT-II coefficients per sample)",
+      "source": "Derived from HBN-EEG Release 5 via HFTP encoding pipeline",
+      "public_source": "Original HBN-EEG: s3://nmdatasets/NeurIPS25/R1_mini_L100_bdf (--no-sign-request)"
+    },
+    "hbn_raw_eeg.pt": {
+      "sha256": "37e84242d12ca9bd35a50930dc158c8bee8b4a215e16b5bec2c7251c286ab88b",
+      "size_bytes": "~118MB",
+      "description": "Raw EEG time-domain signals (4 channels x 200 timepoints at 100Hz)",
+      "source": "Derived from HBN-EEG Release 5",
+      "public_source": "Original HBN-EEG: s3://nmdatasets/NeurIPS25/R1_mini_L100_bdf (--no-sign-request)"
+    }
+  },
+
+  "model_checkpoints": {
+    "subject_invariant_priority2/model_best.pt": {
+      "sha256": "d9bbcb681604f85eb8c4d24d7502c6d64ffbe3666c8672d0679d80a1cafd563b",
+      "size_bytes": "~14MB",
+      "epoch": 49,
+      "val_correlation": 0.56012,
+      "description": "Subject-invariant dual-domain model (HFTP + Braindecode + domain adversarial)"
+    },
+    "muse_exact_test/model_best.pt": {
+      "sha256": "0c2bc861fec870603f99623dcc330042fc59fb34cc3d4f3a2499bbde82f7adf6",
+      "size_bytes": "~13MB",
+      "description": "HFTP base encoder checkpoint"
+    }
+  },
+
+  "environment": {
+    "torch_version": "2.8.0",
+    "numpy_version": "1.26.4",
+    "python_seed": 42,
+    "torch_seed": 42,
+    "device": "cpu",
+    "split_method": "subject-level (seed=42, train=70%, val=15%, test=15%)"
+  },
+
+  "competition": {
+    "name": "NeurIPS 2025 EEG Foundation Model Challenge",
+    "challenge": "Challenge 2: Externalizing Factor Prediction",
+    "platform": "https://www.codabench.org/competitions/9975/",
+    "website": "https://eeg2025.github.io/eeg2025.github.io/",
+    "arxiv": "https://arxiv.org/abs/2506.19141",
+    "total_teams": 1183,
+    "winner_score": 0.97843,
+    "winner_team": "JLShen",
+    "our_score": 0.7126,
+    "improvement_ratio": "13.3x (ratio of unexplained variance reduction)"
+  },
+
+  "data_sources": {
+    "aws_s3": {
+      "command": "aws s3 cp --recursive s3://nmdatasets/NeurIPS25/R1_mini_L100_bdf ./data --no-sign-request",
+      "access": "Anonymous, no credentials required"
+    },
+    "sccn_download": {
+      "url": "https://sccn.ucsd.edu/download/eeg2025/",
+      "access": "Direct ZIP download"
+    },
+    "openneuro": {
+      "url": "https://openneuro.org/datasets/ds005512",
+      "license": "CC-BY-SA 4.0"
+    },
+    "start_kit": {
+      "url": "https://github.com/eeg2025/startkit",
+      "access": "Public GitHub"
+    }
+  },
+
+  "verification_levels": {
+    "level_1_scoring": "pip install numpy && python scripts/scoring.py --verify",
+    "level_2_inference": "Download checkpoint + data, run generate_evidence.py, compare predictions.csv hash",
+    "level_3_docker": "TBD — containerized bit-exact reproduction",
+    "level_4_training": "TBD — full training reproduction with hyperparameters"
+  }
+}

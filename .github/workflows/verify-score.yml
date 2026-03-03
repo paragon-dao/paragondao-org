@@ -1,0 +1,57 @@
+name: Verify EEG Score
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/verify/**'
+  pull_request:
+    paths:
+      - 'public/verify/**'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install numpy
+        run: pip install numpy
+
+      - name: Verify file integrity (SHA-256)
+        run: |
+          echo "Checking predictions.csv hash..."
+          EXPECTED="34c11deb01234594760bbeaeb17190593839b1d04d750a8587adbb05ca51edb6"
+          ACTUAL=$(sha256sum public/verify/results/predictions.csv | cut -d' ' -f1)
+          echo "  Expected: $EXPECTED"
+          echo "  Actual:   $ACTUAL"
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "FAIL: predictions.csv hash mismatch"
+            exit 1
+          fi
+          echo "  PASS"
+
+      - name: Run scoring verification
+        run: python public/verify/scripts/scoring.py --verify
+
+      - name: Verify NRMSE score matches claim
+        run: |
+          SCORE=$(python -c "
+          import numpy as np
+          data = np.genfromtxt('public/verify/results/predictions.csv', delimiter=',', skip_header=1)
+          mse = np.mean((data[:,2] - data[:,3]) ** 2)
+          baseline = np.mean((data[:,3] - np.mean(data[:,3])) ** 2)
+          print(f'{mse/baseline:.4f}')
+          ")
+          echo "Computed NRMSE: $SCORE"
+          if [ "$SCORE" != "0.7126" ]; then
+            echo "FAIL: Expected NRMSE 0.7126, got $SCORE"
+            exit 1
+          fi
+          echo "PASS: NRMSE 0.7126 confirmed"
