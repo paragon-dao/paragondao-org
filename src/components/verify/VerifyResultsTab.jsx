@@ -15,7 +15,7 @@ export default function VerifyResultsTab({ model, results, benchmark, loading, r
   const totalTeams = benchmark?.total_teams || model.accuracy?.totalTeams || 0
   const perSubject = results?.per_subject?.length > 0 ? results.per_subject : (fallback.perSubject || [])
 
-  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
+  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'https://bagle-api.fly.dev'
 
   // For non-verified models, show claimed metrics
   if (model.status !== 'verified') {

@@ -9,7 +9,7 @@
  * When omitted, falls back to the default /api/v1/verify/... paths.
  */
 
-const BASE_URL = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
+const BASE_URL = import.meta.env.VITE_VERIFY_API_URL || 'https://bagle-api.fly.dev'
 
 async function fetchJSON(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, {

@@ -16,7 +16,7 @@ export default function VerifyPlaygroundTab({ model, onPredict }) {
   const [activeSnippet, setActiveSnippet] = useState('curl')
   const [copied, setCopied] = useState(false)
 
-  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
+  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'https://bagle-api.fly.dev'
 
   const generateSignal = () => {
     const channels = Array.from({ length: 4 }, () =>

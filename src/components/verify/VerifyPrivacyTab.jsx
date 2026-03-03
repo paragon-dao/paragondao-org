@@ -14,7 +14,7 @@ export default function VerifyPrivacyTab({ model, privacyResults, privacyLoading
   const [privacySnippet, setPrivacySnippet] = useState('curl')
   const [privacyCopied, setPrivacyCopied] = useState(false)
 
-  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
+  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'https://bagle-api.fly.dev'
 
   const handlePrivacyAudit = async () => {
     if (!onRunAudit) return

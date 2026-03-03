@@ -214,7 +214,7 @@ const VerifyPage = () => {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'http://localhost:2051'
+  const apiBaseUrl = import.meta.env.VITE_VERIFY_API_URL || 'https://bagle-api.fly.dev'
 
   const codeSnippets = {
     curl: `curl -X POST ${apiBaseUrl}/api/v1/verify/predict \\
