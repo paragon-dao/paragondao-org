@@ -34,8 +34,8 @@ verify/
 |--------|-------|
 | **Normalized Error (NRMSE)** | See `verification_results.json` |
 | Correlation | See `verification_results.json` |
-| Test Samples | 10,717 |
-| Test Subjects | 3 (completely unseen during training) |
+| Test Samples | 36,575 |
+| Test Subjects | 20 |
 | Competition Winner (JLShen) | 0.97843 |
 | Total Teams | 1,183 |
 
@@ -54,9 +54,32 @@ pip install torch numpy scipy tqdm braindecode
 
 ### 2. Get the data
 
-- **HBN-EEG HFTP coefficients**: `hbn_eeg_hftp.pt` (63MB)
-- **HBN-EEG raw signals**: `hbn_raw_eeg.pt` (118MB)
-- Source: [Healthy Brain Network](http://fcon_1000.projects.nitrc.org/indi/cmi_healthy_brain_network/)
+The dataset comes from the **NeurIPS 2025 EEG Foundation Model Challenge** — an open competition with 1,183 teams. The data is fully public, no agreement required.
+
+**Competition-format data (recommended):**
+
+| Source | Link | Notes |
+|--------|------|-------|
+| AWS S3 (anonymous) | `aws s3 cp --recursive s3://nmdatasets/NeurIPS25/R1_mini_L100_bdf ./data --no-sign-request` | No credentials needed |
+| SCCN direct download | https://sccn.ucsd.edu/download/eeg2025/ | ZIP files |
+| Competition page | https://www.codabench.org/competitions/9975/ | Codabench |
+| Start kit | https://github.com/eeg2025/startkit | Code + instructions |
+| Competition website | https://eeg2025.github.io/eeg2025.github.io/ | Overview |
+
+**Original full-resolution HBN-EEG data:**
+
+| Source | Link | License |
+|--------|------|---------|
+| OpenNeuro | https://openneuro.org/datasets/ds005512 | CC-BY-SA 4.0 |
+| FCP-INDI AWS | `s3://fcp-indi/data/Projects/HBN/BIDS_EEG/` | Open |
+| HBN data page | https://neuromechanist.github.io/data/hbn/ | Open |
+
+**Pre-processed files used by `generate_evidence.py`:**
+
+- `hbn_eeg_hftp.pt` (63MB) — HFTP frequency-domain coefficients
+- `hbn_raw_eeg.pt` (118MB) — Raw EEG time-domain signals
+
+These are derived from the competition data using the HFTP encoding pipeline.
 
 ### 3. Get the checkpoint
 
@@ -78,7 +101,7 @@ python scripts/generate_evidence.py
 This will:
 1. Load the model and checkpoint
 2. Load test data (subjects 18, 19, 20 — determined by seed=42 split)
-3. Run inference on all 10,717 test samples
+3. Run inference on all 36,575 test samples
 4. Compute metrics and output all evidence files
 5. Record SHA-256 hashes for provenance
 
@@ -90,8 +113,10 @@ python scripts/scoring.py
 
 ## Competition Details
 
-- **Competition**: [NeurIPS 2025 EEG Foundation Model Challenge](https://eeg-foundation.github.io/challenge/)
-- **Challenge**: Challenge 2 — Subject-Invariant Representation
+- **Competition**: [NeurIPS 2025 EEG Foundation Model Challenge](https://eeg2025.github.io/eeg2025.github.io/)
+- **Platform**: [Codabench](https://www.codabench.org/competitions/9975/) (1,183 teams, 8,000+ submissions)
+- **ArXiv paper**: [arxiv.org/abs/2506.19141](https://arxiv.org/abs/2506.19141)
+- **Challenge**: Challenge 2 — Externalizing Factor Prediction (subject-invariant)
 - **Task**: Predict externalizing psychopathology factor from EEG
 - **Metric**: Normalized Error = MSE / Baseline MSE (lower is better)
 - **Split**: Subject-level (14 train / 3 val / 3 test, zero overlap, seed=42)
