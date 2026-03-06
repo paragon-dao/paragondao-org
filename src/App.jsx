@@ -4,7 +4,7 @@ import './App.css'
 import HomePage from './pages/HomePage'
 import HealthPage from './pages/HealthPage'
 import ModelsPage from './pages/ModelsPage'
-import NetworkPage from './pages/NetworkPage'
+import NetworkPage from './pages/ProofPage'
 import WhitepaperPage from './pages/WhitepaperPage'
 import AboutPage from './pages/AboutPage'
 import EcosystemPage from './pages/EcosystemPage'
@@ -146,6 +146,7 @@ function AppRoutes() {
         <Route path="/verify" element={<VerifyHubPage />} />
         <Route path="/verify/methodology" element={<Navigate to="/learn" replace />} />
         <Route path="/verify/:modelId" element={<VerifyModelPage />} />
+        <Route path="/proof" element={<Navigate to="/network" replace />} />
         <Route path="/proof-pipeline" element={<ProofPipelinePage />} />
         <Route path="/apps" element={<AppsPage />} />
         <Route path="/apps/:appId" element={<AppDetailPage />} />

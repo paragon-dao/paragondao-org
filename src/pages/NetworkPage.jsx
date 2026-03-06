@@ -172,26 +172,36 @@ const NetworkPage = () => {
 
             {peers.length > 0 ? (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-                {peers.map((peer, i) => (
-                  <div key={i} style={{
-                    padding: '8px 14px',
-                    background: isDark ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.08)',
-                    border: '1px solid rgba(99,102,241,0.2)',
-                    borderRadius: '100px',
-                    fontSize: '12px',
-                    color: '#6366f1',
-                    fontFamily: 'monospace',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}>
-                    <div style={{
-                      width: '6px', height: '6px', borderRadius: '50%',
-                      background: peer.breathingAttested ? '#10b981' : '#f59e0b'
-                    }} />
-                    {peer.nodeId.slice(0, 12)}...
-                  </div>
-                ))}
+                {peers.map((peer, i) => {
+                  const typeColors = {
+                    server: { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.3)', text: '#3b82f6', label: 'Server' },
+                    haven: { bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)', text: '#10b981', label: 'Haven' },
+                    builder: { bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.3)', text: '#8b5cf6', label: 'Builder' },
+                  }
+                  const tc = typeColors[peer.type] || typeColors.server
+                  return (
+                    <div key={i} style={{
+                      padding: '8px 14px',
+                      background: isDark ? tc.bg : tc.bg,
+                      border: `1px solid ${tc.border}`,
+                      borderRadius: '100px',
+                      fontSize: '12px',
+                      color: tc.text,
+                      fontFamily: 'monospace',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}>
+                      <div style={{
+                        width: '6px', height: '6px', borderRadius: '50%',
+                        background: peer.breathingAttested ? '#10b981' : tc.text
+                      }} />
+                      <span style={{ fontWeight: 600, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{tc.label}</span>
+                      {peer.nodeId.slice(0, 12)}...
+                      {peer.region && <span style={{ opacity: 0.7, fontSize: '10px' }}>{peer.region}</span>}
+                    </div>
+                  )
+                })}
               </div>
             ) : (
               <div style={{
