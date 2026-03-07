@@ -14,7 +14,7 @@
 
 // Registry URL priority: env var > production > localhost
 const REGISTRY_URL = import.meta.env.VITE_HFTP_REGISTRY_URL
-  || (import.meta.env.PROD ? 'wss://registry.paragondao.org' : 'ws://localhost:8775');
+  || (import.meta.env.PROD ? 'wss://paragon-polaris.fly.dev' : 'ws://localhost:8775');
 
 export class HFTPClient {
   constructor(hubUrl = REGISTRY_URL, userId = null) {
