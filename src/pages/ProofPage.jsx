@@ -123,6 +123,7 @@ const ProofPage = () => {
   const [hftpPeers, setHftpPeers] = useState([])
   const [hftpConnected, setHftpConnected] = useState(false)
   const [hftpAggregate, setHftpAggregate] = useState(null)
+  const [constellationNodes, setConstellationNodes] = useState([])
 
   // Theme colors
   const textPrimary = isDark ? '#fff' : '#1e293b'
@@ -146,6 +147,26 @@ const ProofPage = () => {
       .then(r => r.json())
       .then(data => setProofResults(data))
       .catch(() => {})
+  }, [])
+
+  // Fetch constellation node status (Polaris, Vega, Altair)
+  useEffect(() => {
+    const nodes = [
+      { id: 'polaris', name: 'Polaris', role: 'Bootstrap', url: 'https://paragon-polaris.fly.dev' },
+      { id: 'vega', name: 'Vega', role: 'Validator', url: 'https://paragon-vega.fly.dev' },
+      { id: 'altair', name: 'Altair', role: 'Validator', url: 'https://paragon-altair.fly.dev' },
+    ]
+    Promise.all(nodes.map(async (node) => {
+      try {
+        const [status, pcr] = await Promise.all([
+          fetch(`${node.url}/api/status`).then(r => r.json()),
+          fetch(`${node.url}/api/pcr/stats`).then(r => r.json()).catch(() => null),
+        ])
+        return { ...node, online: true, uptime: status.uptime, pcr }
+      } catch {
+        return { ...node, online: false, uptime: 0, pcr: null }
+      }
+    })).then(setConstellationNodes)
   }, [])
 
   // Connect to HFTP registry for live node list
@@ -299,7 +320,7 @@ const ProofPage = () => {
             }}>
               <PulsingDot color={nodeError ? '#ef4444' : green} />
               {nodeHealth
-                ? `${hftpPeers.length + 1} node${hftpPeers.length + 1 !== 1 ? 's' : ''} online${hftpConnected ? ' — registry live' : ''}`
+                ? `${hftpPeers.length + 1 + constellationNodes.filter(n => n.online).length} node${hftpPeers.length + constellationNodes.filter(n => n.online).length !== 0 ? 's' : ''} online${hftpConnected ? ' — registry live' : ''}`
                 : nodeError ? 'Checking network...' : 'Connecting...'}
             </p>
 
@@ -426,6 +447,63 @@ const ProofPage = () => {
                 </div>
               </div>
             </motion.div>
+
+            {/* Constellation nodes (Polaris, Vega, Altair) */}
+            {constellationNodes.map((node, i) => (
+              <motion.div
+                key={node.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.05 * (i + 1) }}
+                style={{
+                  background: cardBg, border: `1px solid ${cardBorder}`,
+                  borderRadius: '16px', padding: '28px',
+                  backdropFilter: 'blur(12px)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                  <PulsingDot color={node.online ? '#6366f1' : '#ef4444'} size={12} />
+                  <span style={{ fontSize: '18px', fontWeight: '700', color: textPrimary }}>
+                    {node.name}
+                  </span>
+                  <span style={{
+                    marginLeft: 'auto', padding: '4px 10px', borderRadius: '6px',
+                    background: node.online ? 'rgba(99,102,241,0.15)' : 'rgba(239,68,68,0.15)',
+                    color: node.online ? '#6366f1' : '#ef4444',
+                    fontSize: '11px', fontWeight: '700', letterSpacing: '0.05em',
+                  }}>
+                    {node.role.toUpperCase()}
+                  </span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Region</p>
+                    <p style={{ fontSize: '15px', color: textPrimary, fontWeight: '600' }}>sjc (San Jose)</p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Uptime</p>
+                    <p style={{ fontSize: '15px', color: textPrimary, fontWeight: '600' }}>
+                      {node.online ? formatUptime(Math.floor(node.uptime)) : '--'}
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Validations</p>
+                    <p style={{ fontSize: '15px', color: textPrimary, fontWeight: '600' }}>
+                      {node.pcr ? node.pcr.pcr.total : '--'}
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      {node.pcr ? 'Staked' : 'Status'}
+                    </p>
+                    <p style={{ fontSize: '15px', color: textPrimary, fontWeight: '600' }}>
+                      {node.pcr ? `${node.pcr.staking.totalBonded} bonded` : node.online ? 'Active' : 'Offline'}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
 
             {/* HFTP live nodes */}
             {hftpPeers.map((peer, i) => {
