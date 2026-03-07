@@ -161,15 +161,23 @@ async function prerender() {
       const html = await page.content();
 
       // Determine output path
+      // Write BOTH /network.html (for direct serve) and /network/index.html
+      // (for trailing-slash requests). This avoids 308 redirects.
       let outPath;
       if (route === '/') {
         outPath = join(DIST, 'index.html');
       } else {
-        // /network -> /network/index.html (clean URLs)
-        outPath = join(DIST, route, 'index.html');
+        outPath = join(DIST, route + '.html');
       }
 
       await mkdir(dirname(outPath), { recursive: true });
+
+      // Also write /route/index.html for trailing-slash requests
+      if (route !== '/') {
+        const dirPath = join(DIST, route, 'index.html');
+        await mkdir(dirname(dirPath), { recursive: true });
+        await writeFile(dirPath, html, 'utf-8');
+      }
       await writeFile(outPath, html, 'utf-8');
 
       const sizeKB = (Buffer.byteLength(html) / 1024).toFixed(1);
