@@ -35,9 +35,9 @@ const MagicContext = createContext(null)
 export function MagicProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(!window.__PRERENDER)
 
-  const magicInstance = getMagic()
+  const magicInstance = window.__PRERENDER ? null : getMagic()
 
   // Initialize and check for existing login
   useEffect(() => {
