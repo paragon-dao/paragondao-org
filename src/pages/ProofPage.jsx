@@ -124,6 +124,8 @@ const ProofPage = () => {
   const [hftpConnected, setHftpConnected] = useState(false)
   const [hftpAggregate, setHftpAggregate] = useState(null)
   const [constellationNodes, setConstellationNodes] = useState([])
+  const [networkActivity, setNetworkActivity] = useState([])
+  const [networkAggregates, setNetworkAggregates] = useState(null)
 
   // Theme colors
   const textPrimary = isDark ? '#fff' : '#1e293b'
@@ -149,24 +151,50 @@ const ProofPage = () => {
       .catch(() => {})
   }, [])
 
-  // Fetch constellation node status (Polaris, Vega, Altair)
+  // Fetch constellation node status + activity (refreshes every 30s)
   useEffect(() => {
-    const nodes = [
+    const constellationDefs = [
       { id: 'polaris', name: 'Polaris', role: 'Bootstrap', url: 'https://paragon-polaris.fly.dev' },
       { id: 'vega', name: 'Vega', role: 'Validator', url: 'https://paragon-vega.fly.dev' },
       { id: 'altair', name: 'Altair', role: 'Validator', url: 'https://paragon-altair.fly.dev' },
     ]
-    Promise.all(nodes.map(async (node) => {
-      try {
-        const [status, pcr] = await Promise.all([
-          fetch(`${node.url}/api/status`).then(r => r.json()),
-          fetch(`${node.url}/api/pcr/stats`).then(r => r.json()).catch(() => null),
-        ])
-        return { ...node, online: true, uptime: status.uptime, pcr }
-      } catch {
-        return { ...node, online: false, uptime: 0, pcr: null }
-      }
-    })).then(setConstellationNodes)
+    const fetchAll = () => {
+      // Fetch node status
+      Promise.all(constellationDefs.map(async (node) => {
+        try {
+          const [status, pcr] = await Promise.all([
+            fetch(`${node.url}/api/status`).then(r => r.json()),
+            fetch(`${node.url}/api/pcr/stats`).then(r => r.json()).catch(() => null),
+          ])
+          return { ...node, online: true, uptime: status.uptime, pcr }
+        } catch {
+          return { ...node, online: false, uptime: 0, pcr: null }
+        }
+      })).then(setConstellationNodes)
+
+      // Fetch activity feed from Polaris (bootstrap runs the registry)
+      fetch('https://paragon-polaris.fly.dev/api/pcr/activity?limit=20')
+        .then(r => r.json())
+        .then(data => setNetworkActivity(data.events || []))
+        .catch(() => {})
+
+      // Compute network aggregates from Polaris stats
+      fetch('https://paragon-polaris.fly.dev/api/pcr/stats')
+        .then(r => r.json())
+        .then(stats => setNetworkAggregates({
+          totalValidations: stats.pcr.total,
+          acceptRate: stats.pcr.acceptRate,
+          totalFees: stats.fees.totalDistributed,
+          totalRewards: stats.totalRewardsIssued,
+          totalBonded: stats.staking.totalBonded,
+          validatorCount: stats.staking.validatorCount,
+          missionFund: stats.fees.totalToMission,
+        }))
+        .catch(() => {})
+    }
+    fetchAll()
+    const interval = setInterval(fetchAll, 30_000)
+    return () => clearInterval(interval)
   }, [])
 
   // Connect to HFTP registry for live node list
@@ -320,7 +348,13 @@ const ProofPage = () => {
             }}>
               <PulsingDot color={nodeError ? '#ef4444' : green} />
               {nodeHealth
-                ? `${hftpPeers.length + 1 + constellationNodes.filter(n => n.online).length} node${hftpPeers.length + constellationNodes.filter(n => n.online).length !== 0 ? 's' : ''} online${hftpConnected ? ' — registry live' : ''}`
+                ? (() => {
+                    const constellationIds = ['polaris', 'vega', 'altair']
+                    const uniqueHftp = hftpPeers.filter(p => !constellationIds.includes(p.nodeId)).length
+                    const onlineConstellation = constellationNodes.filter(n => n.online).length
+                    const total = 1 + onlineConstellation + uniqueHftp // 1 = bagle-api
+                    return `${total} node${total !== 1 ? 's' : ''} online${hftpConnected ? ' — registry live' : ''}`
+                  })()
                 : nodeError ? 'Checking network...' : 'Connecting...'}
             </p>
 
@@ -505,8 +539,8 @@ const ProofPage = () => {
               </motion.div>
             ))}
 
-            {/* HFTP live nodes */}
-            {hftpPeers.map((peer, i) => {
+            {/* HFTP live nodes (excluding constellation nodes to avoid duplicates) */}
+            {hftpPeers.filter(p => !['polaris', 'vega', 'altair'].includes(p.nodeId)).map((peer, i) => {
               const typeColors = {
                 server: { dot: '#3b82f6', label: 'SERVER', labelBg: 'rgba(59,130,246,0.15)', labelColor: '#3b82f6' },
                 haven: { dot: '#10b981', label: 'HAVEN', labelBg: 'rgba(16,185,129,0.15)', labelColor: '#10b981' },
@@ -621,6 +655,110 @@ const ProofPage = () => {
               </a>
             </motion.div>
           </div>
+
+          {/* ── Network Aggregate Stats ── */}
+          {networkAggregates && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                gap: '16px', marginBottom: '40px',
+              }}
+            >
+              {[
+                { label: 'Validations', value: networkAggregates.totalValidations, color: green },
+                { label: 'Accept Rate', value: `${(networkAggregates.acceptRate * 100).toFixed(0)}%`, color: '#3b82f6' },
+                { label: 'Fees Distributed', value: networkAggregates.totalFees.toFixed(2), color: '#8b5cf6' },
+                { label: 'Rewards Issued', value: networkAggregates.totalRewards.toFixed(2), color: '#f59e0b' },
+                { label: 'Total Bonded', value: networkAggregates.totalBonded.toLocaleString(), color: '#6366f1' },
+                { label: 'Mission Fund', value: networkAggregates.missionFund.toFixed(2), color: '#ec4899' },
+              ].map((stat, i) => (
+                <div key={i} style={{
+                  background: cardBg, border: `1px solid ${cardBorder}`,
+                  borderRadius: '12px', padding: '20px', textAlign: 'center',
+                  backdropFilter: 'blur(12px)',
+                }}>
+                  <p style={{ fontSize: '11px', color: textSecondary, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
+                    {stat.label}
+                  </p>
+                  <p style={{ fontSize: '24px', fontWeight: '700', color: stat.color, fontVariantNumeric: 'tabular-nums' }}>
+                    {typeof stat.value === 'number' ? <AnimatedNumber value={stat.value} decimals={stat.value % 1 !== 0 ? 2 : 0} /> : stat.value}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* ── Live Activity Feed ── */}
+          {networkActivity.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              style={{
+                background: termBg, borderRadius: '12px',
+                border: '1px solid rgba(255,255,255,0.1)',
+                overflow: 'hidden', marginBottom: '40px',
+              }}
+            >
+              <div style={{
+                padding: '12px 16px',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                display: 'flex', alignItems: 'center', gap: '8px',
+              }}>
+                <PulsingDot color={green} size={8} />
+                <span style={{ fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.8)', letterSpacing: '0.05em' }}>
+                  LIVE VALIDATION FEED
+                </span>
+                <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>
+                  refreshes every 30s
+                </span>
+              </div>
+              <div style={{ padding: '12px 16px', maxHeight: '240px', overflowY: 'auto' }}>
+                {networkActivity.map((event, i) => {
+                  const time = new Date(event.timestamp)
+                  const timeStr = time.toLocaleTimeString()
+                  const ownerShort = event.ownerId.replace('network-health-', '')
+                  return (
+                    <div key={i} style={{
+                      padding: '6px 0',
+                      borderBottom: i < networkActivity.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                      fontFamily: 'monospace', fontSize: '12px', lineHeight: '1.6',
+                    }}>
+                      <span style={{ color: 'rgba(255,255,255,0.4)' }}>{timeStr}</span>
+                      {' '}
+                      <span style={{ color: event.accepted ? '#10b981' : '#ef4444' }}>
+                        {event.accepted ? '✓' : '✗'}
+                      </span>
+                      {' '}
+                      <span style={{ color: 'rgba(255,255,255,0.7)' }}>
+                        {ownerShort} submitted snapshot
+                      </span>
+                      {' → '}
+                      <span style={{ color: '#6366f1' }}>
+                        [{event.committee.join(', ')}]
+                      </span>
+                      {' voted → '}
+                      <span style={{ color: '#3b82f6' }}>
+                        r={event.orderParameter.toFixed(4)}
+                      </span>
+                      {event.reward != null && (
+                        <>
+                          {' → '}
+                          <span style={{ color: '#f59e0b' }}>
+                            +{event.reward.toFixed(2)} reward
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </motion.div>
+          )}
 
           {/* Curl command */}
           <div style={{
