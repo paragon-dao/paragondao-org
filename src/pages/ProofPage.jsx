@@ -127,8 +127,8 @@ const ProofPage = () => {
   // Theme colors
   const textPrimary = isDark ? '#fff' : '#1e293b'
   const textSecondary = isDark ? 'rgba(255,255,255,0.6)' : '#64748b'
-  const cardBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.85)'
-  const cardBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'
+  const cardBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.85)'
+  const cardBorder = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
   const green = '#10b981'
   const termBg = isDark ? 'rgba(0,0,0,0.4)' : 'rgba(15,23,42,0.95)'
 
@@ -247,7 +247,14 @@ const ProofPage = () => {
   ]
 
   return (
-    <>
+    <div style={{
+      minHeight: '100vh',
+      position: 'relative',
+      background: isDark
+        ? 'linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)'
+        : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+      transition: 'background 0.3s ease',
+    }}>
       <SEO
         title="The Network — ParagonDAO"
         description="The first health network where adding people makes it cheaper to run. 512 bytes per health snapshot. See it. Verify it. Run it."
@@ -1830,7 +1837,7 @@ const ProofPage = () => {
       </main>
 
       <Footer />
-    </>
+    </div>
   )
 }
 
