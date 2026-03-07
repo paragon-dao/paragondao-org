@@ -622,10 +622,10 @@ const ProofPage = () => {
                     { layer: 'L1: Relay Topology', purpose: 'Regional relay nodes — phones connect to nearest relay, not registry', status: 'Production', tests: '7 integration tests', color: green },
                     { layer: 'L1: GLE Encoder', purpose: 'Biosignal → 128 coefficients (512 bytes)', status: 'Production', tests: '88.97% breathing, 97.65% EEG', color: green },
                     { layer: 'L1: BAGLE API', purpose: 'Remote encode endpoint', status: 'Production (Fly.io)', tests: '36ms encode', color: green },
-                    { layer: 'L2: P2P Transport', purpose: 'Node-to-node data exchange (libp2p)', status: 'Built, not wired', tests: 'Unit tests exist', color: '#f59e0b' },
+                    { layer: 'L2: P2P Transport', purpose: 'Shard-aware message routing + TTL forwarding', status: 'Implemented', tests: '20 passing', color: green },
                     { layer: 'L3: Sharding', purpose: '1000-shard DJB2 routing + replication', status: 'Implemented', tests: '12 passing', color: green },
                     { layer: 'L4: PCR Consensus', purpose: 'Kuramoto coherence → BFT vote → fee accounting', status: 'Implemented', tests: '33 passing', color: green },
-                    { layer: 'L5: Token Economics', purpose: 'Health check rewards + 10% protocol fee', status: 'Fee hooks built', tests: 'Integrated in L4', color: '#f59e0b' },
+                    { layer: 'L5: Token Economics', purpose: 'Fee distribution, health rewards, validator staking', status: 'Implemented', tests: '49 passing', color: green },
                   ].map((row, i) => (
                     <tr key={row.layer} style={{ borderBottom: i < 7 ? `1px solid ${cardBorder}` : 'none' }}>
                       <td style={{ padding: '14px 20px', fontWeight: '700', color: textPrimary, fontSize: '14px', whiteSpace: 'nowrap' }}>{row.layer}</td>
@@ -1240,7 +1240,8 @@ const ProofPage = () => {
                 { status: 'LIVE', label: 'HFTP registry', desc: 'Node discovery and peer tracking — connected nodes appear on this page in real time', color: green },
                 { status: 'LIVE', label: 'Protocol specifications', desc: 'Full algorithm specs, wire protocol, and SDK published on GitHub', color: green },
                 { status: 'LIVE', label: 'PCR consensus engine', desc: 'Kuramoto oscillator + BFT voting — 33 tests passing, integrated fee accounting', color: green },
-                { status: 'LIVE', label: 'Shard routing', desc: 'DJB2 deterministic assignment across 1000 shards with replication — 12 tests passing', color: green },
+                { status: 'LIVE', label: 'Shard routing + P2P transport', desc: 'DJB2 shard assignment, shard-aware message routing, TTL forwarding — 32 tests passing', color: green },
+                { status: 'LIVE', label: 'Token economics', desc: 'Fee distribution (40/40/20 split), health rewards with frequency ramp, validator staking with slashing — 49 tests passing', color: green },
                 { status: 'BUILDING', label: 'Breathing check-in app', desc: 'The 30-second phone experience described above — in active development', color: '#f59e0b' },
                 { status: 'BUILDING', label: 'Public node deployment', desc: 'Node software currently in early access — open deployment coming soon', color: '#f59e0b' },
               ].map((item, i) => (
