@@ -622,10 +622,10 @@ const ProofPage = () => {
                     { layer: 'L1: Relay Topology', purpose: 'Regional relay nodes — phones connect to nearest relay, not registry', status: 'Production', tests: '7 integration tests', color: green },
                     { layer: 'L1: GLE Encoder', purpose: 'Biosignal → 128 coefficients (512 bytes)', status: 'Production', tests: '88.97% breathing, 97.65% EEG', color: green },
                     { layer: 'L1: BAGLE API', purpose: 'Remote encode endpoint', status: 'Production (Fly.io)', tests: '36ms encode', color: green },
-                    { layer: 'L2: P2P Transport', purpose: 'Shard-aware message routing + TTL forwarding', status: 'Implemented', tests: '20 passing', color: green },
-                    { layer: 'L3: Sharding', purpose: '1000-shard DJB2 routing + replication', status: 'Implemented', tests: '12 passing', color: green },
-                    { layer: 'L4: PCR Consensus', purpose: 'Kuramoto coherence → BFT vote → fee accounting', status: 'Implemented', tests: '33 passing', color: green },
-                    { layer: 'L5: Token Economics', purpose: 'Fee distribution, health rewards, validator staking', status: 'Implemented', tests: '49 passing', color: green },
+                    { layer: 'L2: P2P Transport', purpose: 'Shard-aware message routing + TTL forwarding', status: 'Production', tests: '20 passing', color: green },
+                    { layer: 'L3: Sharding', purpose: '1000-shard DJB2 routing + replication', status: 'Production', tests: '12 passing', color: green },
+                    { layer: 'L4: PCR Consensus', purpose: 'Kuramoto coherence → BFT vote → fee accounting', status: 'Production', tests: '33 passing', color: green },
+                    { layer: 'L5: Token Economics', purpose: 'Fee distribution, health rewards, validator staking', status: 'Production', tests: '49 passing', color: green },
                   ].map((row, i) => (
                     <tr key={row.layer} style={{ borderBottom: i < 7 ? `1px solid ${cardBorder}` : 'none' }}>
                       <td style={{ padding: '14px 20px', fontWeight: '700', color: textPrimary, fontSize: '14px', whiteSpace: 'nowrap' }}>{row.layer}</td>
@@ -1239,11 +1239,12 @@ const ProofPage = () => {
                 { status: 'LIVE', label: 'GLE encoder API', desc: 'Encode biosignals via the live BAGLE endpoint — verify with curl right now', color: green },
                 { status: 'LIVE', label: 'HFTP registry', desc: 'Node discovery and peer tracking — connected nodes appear on this page in real time', color: green },
                 { status: 'LIVE', label: 'Protocol specifications', desc: 'Full algorithm specs, wire protocol, and SDK published on GitHub', color: green },
-                { status: 'LIVE', label: 'PCR consensus engine', desc: 'Kuramoto oscillator + BFT voting — 33 tests passing, integrated fee accounting', color: green },
-                { status: 'LIVE', label: 'Shard routing + P2P transport', desc: 'DJB2 shard assignment, shard-aware message routing, TTL forwarding — 32 tests passing', color: green },
-                { status: 'LIVE', label: 'Token economics', desc: 'Fee distribution (40/40/20 split), health rewards with frequency ramp, validator staking with slashing — 49 tests passing', color: green },
+                { status: 'LIVE', label: 'Polaris — bootstrap node', desc: 'paragon-polaris.fly.dev — the network\'s north star. First node standing.', color: green },
+                { status: 'LIVE', label: 'Vega — validator node', desc: 'paragon-vega.fly.dev — first validator. PCR consensus active.', color: green },
+                { status: 'LIVE', label: 'Altair — validator node', desc: 'paragon-altair.fly.dev — second validator. The Summer Triangle is complete.', color: green },
+                { status: 'LIVE', label: 'PCR consensus in production', desc: 'Health snapshots validated by 3-node committee: Kuramoto coherence (r=0.999) + BFT voting + fee distribution', color: green },
+                { status: 'LIVE', label: 'Token economics active', desc: 'Fee distribution (40% validators / 40% treasury / 20% mission fund), health rewards, validator staking with slashing', color: green },
                 { status: 'BUILDING', label: 'Breathing check-in app', desc: 'The 30-second phone experience described above — in active development', color: '#f59e0b' },
-                { status: 'BUILDING', label: 'Public node deployment', desc: 'Node software currently in early access — open deployment coming soon', color: '#f59e0b' },
               ].map((item, i) => (
                 <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <span style={{
@@ -1265,6 +1266,72 @@ const ProofPage = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </motion.div>
+
+          {/* Constellation naming convention */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{
+              marginTop: '32px', padding: '28px',
+              borderRadius: '16px',
+              background: isDark ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.04)',
+              border: `1px solid rgba(99,102,241,0.15)`,
+              maxWidth: '700px', margin: '32px auto 0',
+            }}
+          >
+            <h4 style={{
+              fontSize: '16px', fontWeight: '700', color: textPrimary,
+              marginBottom: '12px',
+            }}>
+              The Constellation Convention
+            </h4>
+            <p style={{ fontSize: '14px', color: textSecondary, lineHeight: 1.7, margin: '0 0 16px' }}>
+              Every core infrastructure node is named after a star. Polaris, Vega, Altair &mdash;
+              the first three form the <strong style={{ color: textPrimary }}>Summer Triangle</strong>,
+              visible from every inhabited continent.
+            </p>
+            <p style={{ fontSize: '14px', color: textSecondary, lineHeight: 1.7, margin: '0 0 16px' }}>
+              The <strong style={{ color: textPrimary }}>Yale Bright Star Catalogue</strong> contains 9,096 stars visible to the naked eye &mdash;
+              every one a potential core node name. Partners and subnets extend the pattern:
+              <span style={{ fontFamily: 'monospace', color: '#6366f1', fontSize: '13px' }}> Polaris-1</span>,
+              <span style={{ fontFamily: 'monospace', color: '#6366f1', fontSize: '13px' }}> Vega-2</span>,
+              <span style={{ fontFamily: 'monospace', color: '#6366f1', fontSize: '13px' }}> Sirius-5</span>.
+            </p>
+            <p style={{ fontSize: '14px', color: textSecondary, lineHeight: 1.7, margin: '0 0 16px' }}>
+              Why stars? Every civilization on Earth &mdash; Vietnamese, Polynesian, Navajo, Greek, Yoruba &mdash;
+              navigated by them. They belong to no single culture. These nodes are navigation points
+              in a health network, just as stars were navigation points for every civilization before us.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px' }}>
+              {[
+                { name: 'Polaris', role: 'Bootstrap', live: true },
+                { name: 'Vega', role: 'Validator', live: true },
+                { name: 'Altair', role: 'Validator', live: true },
+                { name: 'Sirius', role: 'Future', live: false },
+                { name: 'Deneb', role: 'Future', live: false },
+                { name: 'Rigel', role: 'Future', live: false },
+                { name: 'Antares', role: 'Future', live: false },
+                { name: 'Canopus', role: 'Future', live: false },
+              ].map(star => (
+                <span key={star.name} style={{
+                  padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '600',
+                  fontFamily: 'monospace',
+                  background: star.live ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.05)',
+                  color: star.live ? green : textSecondary,
+                  border: `1px solid ${star.live ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.08)'}`,
+                }}>
+                  {star.name}
+                </span>
+              ))}
+              <span style={{
+                padding: '4px 12px', borderRadius: '8px', fontSize: '12px',
+                color: textSecondary, fontStyle: 'italic',
+              }}>
+                &hellip; 9,088 more
+              </span>
             </div>
           </motion.div>
         </Section>
