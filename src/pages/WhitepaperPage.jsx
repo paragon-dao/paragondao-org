@@ -100,6 +100,23 @@ const WhitepaperPage = () => {
           <line x1="5" y1="19" x2="19" y2="19" stroke="white" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       )
+    },
+    {
+      id: 'prn-implementation',
+      title: 'PRN Implementation Specification',
+      subtitle: 'Public Technical Disclosure',
+      description: 'Complete implementation details for scaling Phase-Coherent Resonance Networks — resonance routing, harmonic state encoding, cross-shard coordination, and the HFTP wire protocol',
+      version: 'Version 1.0 — March 2026',
+      abstract: 'This companion specification discloses the complete implementation details required to scale a PRN network from proof-of-concept to production: resonance-modulated transaction processing, content-addressed wave propagation for gossip routing, phase-scored cross-shard coordination via two-phase commit, hierarchical privacy-preserving aggregation through relay pre-computation, semantic shard assignment via k-means clustering, harmonic state encoding with frequency-domain state evolution, and the HFTP wire protocol for coefficient exchange. All algorithms are specified with exact formulas, numeric parameters, and data structures sufficient for independent implementation.',
+      link: '/docs/PRN_IMPLEMENTATION_SPECIFICATION.html',
+      gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%)',
+      icon: (
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M14 2V8H20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M9 15L11 17L15 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
     }
   ]
 

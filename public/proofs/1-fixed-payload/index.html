@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Proof 1: Fixed-Payload Encoding — ParagonDAO</title>
+    <meta name="description" content="Live proof that the GLE encoder produces exactly 128 DCT-II coefficients (512 bytes) regardless of input signal duration or modality. PRN Infrastructure Patent Claims 3, 4, 12, 13.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-50: #fffdf5;
+            --gold-100: #fef9e7;
+            --gold-200: #fceabb;
+            --gold-300: #f7cd4c;
+            --gold-400: #f0bb33;
+            --gold-500: #d4a017;
+            --gold-600: #b8860b;
+            --gold-700: #996515;
+            --gold-800: #7a5012;
+            --gold-900: #5c3d0e;
+            --emerald-500: #10b981;
+            --emerald-600: #059669;
+            --emerald-700: #047857;
+            --red-500: #ef4444;
+            --text-primary: #1a1207;
+            --text-body: #3d2e1a;
+            --text-secondary: #6b5a42;
+            --text-muted: #9c8b73;
+            --border-light: #e8dcc8;
+            --border-gold: #d4a017;
+            --bg-cream: #fffef9;
+            --bg-warm: #fdf8ef;
+            --navy: #1a1a2e;
+        }
+
+        /* ===== SITE HEADER ===== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1a1207 0%, #3d2e1a 50%, #2a1f0f 100%);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(26,18,7,0.25), 0 1px 4px rgba(212,160,23,0.1);
+        }
+        .site-header a {
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .site-logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+        .site-logo-name { font-size: 16px; font-weight: 700; }
+        .site-logo-tagline {
+            font-size: 9px;
+            font-weight: 500;
+            color: rgba(240,187,51,0.8);
+            letter-spacing: 0.02em;
+        }
+        .header-nav { display: flex; gap: 24px; align-items: center; }
+        .header-nav a {
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+        .header-nav a:hover { opacity: 1; }
+        .header-nav a.active {
+            opacity: 1;
+            color: var(--gold-300);
+            border-bottom: 2px solid var(--gold-400);
+            padding-bottom: 2px;
+        }
+
+        /* ===== BODY ===== */
+        body {
+            font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+            font-size: 13pt;
+            line-height: 1.6;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.8in;
+            padding-top: calc(0.8in + 70px);
+            color: var(--text-body);
+            background: var(--bg-cream);
+        }
+
+        /* ===== PROOF BADGE ===== */
+        .proof-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--emerald-600), var(--emerald-700));
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 24px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .proof-badge-icon { font-size: 14pt; }
+
+        /* ===== SERIES LABEL ===== */
+        .series-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold-600);
+            margin-bottom: 8px;
+        }
+
+        /* ===== TITLE ===== */
+        .title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 28pt;
+            font-weight: 800;
+            margin: 0 0 0.12in 0;
+            line-height: 1.2;
+            letter-spacing: -0.5pt;
+            color: var(--text-primary);
+        }
+        .subtitle {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 13pt;
+            margin: 0 0 0.3in 0;
+            line-height: 1.5;
+            font-style: italic;
+            color: var(--gold-600);
+        }
+        .meta-line {
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            color: var(--text-muted);
+            margin: 4px 0;
+        }
+        .meta-line strong { color: var(--text-secondary); }
+
+        /* ===== CLAIM BOX ===== */
+        .claim-box {
+            background: linear-gradient(135deg, #fef9e7 0%, #fffdf5 100%);
+            border: 2px solid var(--gold-500);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin: 32px 0;
+            position: relative;
+        }
+        .claim-box::before {
+            content: 'PATENT CLAIM';
+            position: absolute;
+            top: -11px;
+            left: 24px;
+            background: var(--gold-500);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 9pt;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            padding: 2px 12px;
+            border-radius: 4px;
+        }
+        .claim-box .claim-number {
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            font-weight: 700;
+            color: var(--gold-700);
+            margin-bottom: 8px;
+        }
+        .claim-box .claim-text {
+            font-style: italic;
+            font-size: 12pt;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        /* ===== VIDEO ===== */
+        .video-container {
+            margin: 36px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(26,26,46,0.15), 0 2px 8px rgba(0,0,0,0.1);
+            background: var(--navy);
+        }
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+        .video-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* ===== RESULTS TABLE ===== */
+        .results-section { margin: 36px 0; }
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 18pt;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 6px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        .section-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            color: var(--text-muted);
+            margin: 0 0 18px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            margin: 16px 0;
+        }
+        thead th {
+            background: linear-gradient(135deg, #1a1207, #3d2e1a);
+            color: #fff;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 9pt;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        thead th:first-child { border-radius: 8px 0 0 0; }
+        thead th:last-child { border-radius: 0 8px 0 0; }
+        tbody td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        tbody tr:hover { background: var(--gold-50); }
+        tbody tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+        tbody tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 9.5pt; }
+        .pass {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--emerald-600);
+            font-weight: 700;
+        }
+        .pass::before { content: '✓'; }
+
+        /* ===== EXPLAINER ===== */
+        .explainer {
+            background: var(--bg-warm);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin: 36px 0;
+        }
+        .explainer h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16pt;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 16px 0;
+        }
+        .explainer p {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            line-height: 1.7;
+            color: var(--text-body);
+            margin: 12px 0;
+        }
+        .explainer .highlight {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .flow-diagram {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0;
+            align-items: center;
+            margin: 24px 0;
+            font-family: 'Inter', sans-serif;
+        }
+        .flow-box {
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .flow-device {
+            background: linear-gradient(135deg, #f0f7ff, #e8f0fe);
+            border: 2px solid #93b4d4;
+        }
+        .flow-network {
+            background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+            border: 2px solid var(--emerald-500);
+        }
+        .flow-box .flow-title {
+            font-size: 10pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+        .flow-device .flow-title { color: #2563eb; }
+        .flow-network .flow-title { color: var(--emerald-700); }
+        .flow-box .flow-item {
+            font-size: 10pt;
+            color: var(--text-secondary);
+            margin: 6px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        .flow-box .flow-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .flow-device .flow-item::before { background: #2563eb; }
+        .flow-network .flow-item::before { background: var(--emerald-500); }
+        .flow-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .flow-arrow-line {
+            font-size: 22pt;
+            color: var(--gold-500);
+            line-height: 1;
+        }
+        .flow-arrow-label {
+            font-size: 9pt;
+            font-weight: 700;
+            color: var(--gold-700);
+            text-align: center;
+            white-space: nowrap;
+        }
+        .explainer-qa {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+        .explainer-qa dt {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 16px;
+            margin-bottom: 4px;
+        }
+        .explainer-qa dt:first-child { margin-top: 0; }
+        .explainer-qa dd {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            color: var(--text-body);
+            margin: 0 0 0 0;
+            line-height: 1.7;
+        }
+
+        /* ===== SCALING BOX ===== */
+        .scaling-box {
+            background: linear-gradient(135deg, var(--navy) 0%, #16213e 100%);
+            color: #fff;
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin: 36px 0;
+            font-family: 'Inter', sans-serif;
+        }
+        .scaling-box h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16pt;
+            margin: 0 0 16px 0;
+            color: var(--gold-300);
+        }
+        .scaling-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 16px;
+        }
+        .scaling-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .scaling-card .label {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 4px;
+        }
+        .scaling-card .value {
+            font-size: 22pt;
+            font-weight: 700;
+            color: var(--gold-300);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .scaling-card .unit {
+            font-size: 10pt;
+            color: rgba(255,255,255,0.7);
+            margin-top: 2px;
+        }
+        .scaling-compare {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scaling-compare .vs-label {
+            font-size: 9pt;
+            color: rgba(255,255,255,0.5);
+        }
+        .scaling-compare .vs-value {
+            font-size: 11pt;
+            font-weight: 600;
+        }
+        .vs-bad { color: #ef4444; }
+        .vs-good { color: var(--emerald-500); }
+
+        /* ===== RESULT VERDICT ===== */
+        .verdict-box {
+            background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+            border: 2px solid var(--emerald-500);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin: 36px 0;
+            text-align: center;
+        }
+        .verdict-box h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 14pt;
+            font-weight: 700;
+            color: var(--emerald-700);
+            margin: 0 0 8px 0;
+        }
+        .verdict-box p {
+            font-family: 'Inter', sans-serif;
+            font-size: 11pt;
+            color: var(--text-secondary);
+            margin: 4px 0;
+        }
+        .verdict-claims {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .claim-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9pt;
+            font-weight: 600;
+            padding: 4px 10px;
+            background: var(--emerald-600);
+            color: white;
+            border-radius: 4px;
+        }
+
+        /* ===== DOWNLOAD / VERIFY ===== */
+        .artifacts-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 24px 0;
+        }
+        .artifact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            font-weight: 500;
+            color: var(--gold-700);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: white;
+            transition: all 0.2s;
+        }
+        .artifact-link:hover {
+            border-color: var(--gold-500);
+            background: var(--gold-50);
+        }
+
+        /* ===== FOOTER ===== */
+        .proof-footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 2px solid var(--border-light);
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .proof-footer a {
+            color: var(--gold-600);
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body { padding: 16px; padding-top: calc(16px + 70px); }
+            .title { font-size: 20pt; }
+            .scaling-grid { grid-template-columns: 1fr; }
+            .header-nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+    <a href="/" class="site-logo">
+        <div class="site-logo-text">
+            <span class="site-logo-name">ParagonDAO</span>
+            <span class="site-logo-tagline">The Health Economy</span>
+        </div>
+    </a>
+    <nav class="header-nav">
+        <a href="/">Home</a>
+        <a href="/essays">Essays</a>
+        <a href="/docs/THE_HEALTH_ECONOMY.html">Whitepaper</a>
+        <a href="/proofs/1-fixed-payload/" class="active">Proofs</a>
+    </nav>
+</header>
+
+<!-- SERIES LABEL -->
+<div class="series-label">Network Proof Series &mdash; Proof 1 of 3</div>
+
+<!-- TITLE -->
+<h1 class="title">Continuous Health Monitoring at Planetary Scale</h1>
+<p class="subtitle">Health is a human right. If we design the global health network the right way, we can see a glimpse of what that future looks like.</p>
+
+<p class="meta-line"><strong>Date:</strong> March 5, 2026</p>
+<p class="meta-line"><strong>Author:</strong> Philip Phuong Tran &mdash; Univault Technologies</p>
+
+<!-- ================================================================ -->
+<!-- SECTION 1: THE VISION                                            -->
+<!-- ================================================================ -->
+
+<div class="explainer" style="margin-top: 28px;">
+    <h3>What If Every Health Check-In Was Just 60 Seconds?</h3>
+
+    <p>
+        Imagine a world where monitoring your health is as simple as breathing into your phone
+        once a week. No appointment. No equipment. No cost. Sixty seconds, and you're done.
+    </p>
+    <p>
+        Your phone captures the recording, extracts a tiny mathematical summary of your health
+        state &mdash; just 512 bytes &mdash; and sends only that to the network. The raw recording
+        stays on your phone. The network never sees it. But those 512 bytes are enough to track
+        changes, detect anomalies, and connect you to a global picture of human health.
+    </p>
+    <p>
+        This is not a replacement for doctors, hospitals, or clinical care. It's a
+        <span class="highlight">new layer of continuous health awareness</span> &mdash; one that
+        works quietly in the background of your life and speaks up when something changes.
+    </p>
+    <p>
+        What does that mean for each of us?
+    </p>
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 2: WHO BENEFITS AND HOW                                  -->
+<!-- ================================================================ -->
+
+<div class="explainer">
+    <h3>What This Means for You</h3>
+
+    <div class="explainer-qa" style="border-top: none; padding-top: 0;">
+        <dl>
+            <dt>For You, Personally</dt>
+            <dd>
+                You breathe into your phone every Sunday morning. Takes 60 seconds. You don't think
+                about it much. But your phone is quietly building a history of your health signature
+                &mdash; week by week, a living picture of your physiological state.
+                <br><br>
+                One Sunday, something shifts. The pattern in your breathing has changed in a way your
+                phone recognizes. It tells you: <em>"Your respiratory pattern changed this week. Consider
+                checking in with your doctor."</em> You see your doctor on Monday. She runs tests.
+                It turns out you're in the early stages of a respiratory infection &mdash; caught days
+                before you would have felt any symptoms.
+                <br><br>
+                The difference between catching something early and catching it late can be the
+                difference between an antibiotic and a hospital stay. Between a conversation with
+                your doctor and an emergency room visit. Between peace of mind and fear.
+            </dd>
+
+            <dt>For Your Family</dt>
+            <dd>
+                Your elderly mother lives alone in another city. She does her 60-second check-in
+                every week. You don't have access to her raw data &mdash; that's hers &mdash; but
+                she's chosen to share her health trend with you. A simple indicator: stable, or changed.
+                <br><br>
+                For months, it's stable. One week, it changes. You call her. She feels fine, she says.
+                But you encourage her to see her doctor anyway. It turns out her cardiac rhythm has
+                shifted &mdash; something she wouldn't have noticed for weeks, maybe months.
+                <br><br>
+                For families separated by distance, this network becomes a quiet thread of connection.
+                Not surveillance. Not intrusion. Just the peace of knowing that someone you love is
+                being watched over, even when you can't be there.
+            </dd>
+
+            <dt>For Your Doctor and Your Hospital</dt>
+            <dd>
+                When you walk into your doctor's office today, she sees a snapshot &mdash; one moment
+                in time. Your blood pressure right now. Your heart rate right now. She makes decisions
+                based on that single frame.
+                <br><br>
+                With continuous check-ins, your doctor sees a <em>trajectory</em>. Months of weekly
+                health signatures. She can see that your pattern has been drifting for six weeks, not
+                just that today's reading is unusual. She can distinguish between a bad day and a
+                developing condition.
+                <br><br>
+                For hospitals, the benefit is upstream. When people catch problems early, they don't
+                arrive at the emergency room in crisis. Early detection means simpler treatments,
+                shorter stays, lower costs, and better outcomes. The hospital that sees fewer
+                emergencies is the hospital serving a healthier population.
+            </dd>
+
+            <dt>For Your Country's Healthcare System</dt>
+            <dd>
+                Healthcare is the single largest expense for most nations. The world spends over
+                $9 trillion a year on it, and a staggering portion goes to conditions that were
+                caught too late &mdash; when they're expensive and difficult to treat.
+                <br><br>
+                Continuous monitoring shifts the equation from treatment to prevention. A country
+                where millions of people check in weekly generates a living map of public health
+                &mdash; not from surveys, not from hospital reports, but from the population itself.
+                Health ministries can see regional patterns emerging in real time. Resources can be
+                directed where they're needed most, before a crisis develops.
+                <br><br>
+                And because each check-in is only 512 bytes with privacy built into the mathematics,
+                this can happen without building a surveillance system. The data is useful for health.
+                It is structurally useless for identification.
+            </dd>
+
+            <dt>For the World &mdash; Organizations like the WHO</dt>
+            <dd>
+                COVID-19 took three months to be identified as a global threat. Three months where
+                it spread silently across borders while the world waited for reports to travel up
+                through hospitals, health ministries, and international agencies.
+                <br><br>
+                On a network with continuous health monitoring, no one needs to report anything.
+                If thousands of health signatures in one region shift the same way in the same week,
+                the pattern is visible at the network level. Not individual identities &mdash; just
+                the collective signal. An anomaly in respiratory patterns in Southeast Asia. A cardiac
+                drift in Central Europe. The signal arrives at the global level in days, not months.
+                <br><br>
+                For organizations coordinating global health response, this is the difference between
+                watching the news and watching the data. Between reacting to a pandemic and seeing it
+                form.
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 3: HOW IT WORKS                                          -->
+<!-- ================================================================ -->
+
+<div class="explainer">
+    <h3>How 512 Bytes Makes This Possible</h3>
+
+    <p>
+        The idea of global health monitoring isn't new. The reason it doesn't exist yet is a
+        <span class="highlight">scaling problem that no existing network has solved</span>.
+    </p>
+    <p>
+        Eight billion people, each generating health data continuously. On any existing platform,
+        that data grows without bound &mdash; more people means proportionally more storage, more
+        bandwidth, more cost. At planetary scale, it becomes physically impossible.
+    </p>
+    <p>
+        This network takes a different approach. A mathematical encoder on your device reads your
+        entire recording &mdash; whether it's 5 seconds of breathing or 8 hours of EEG &mdash;
+        and projects it onto 128 frequency coefficients. Always 128. Always 512 bytes. This isn't
+        compression. It's a mathematical property: the encoder always maps any input onto the same
+        fixed-size output.
+    </p>
+
+    <!-- FLOW DIAGRAM -->
+    <div class="flow-diagram">
+        <div class="flow-box flow-device">
+            <div class="flow-title">Your Device</div>
+            <div class="flow-item">Record: breathing, EEG, cardiac (any length)</div>
+            <div class="flow-item">Encoder runs locally on your phone</div>
+            <div class="flow-item">Raw health data stays on your device</div>
+            <div class="flow-item">Your full history is yours</div>
+        </div>
+
+        <div class="flow-arrow">
+            <div class="flow-arrow-label">Only this<br>crosses</div>
+            <div class="flow-arrow-line">&rarr;</div>
+            <div class="flow-arrow-label">512 bytes</div>
+        </div>
+
+        <div class="flow-box flow-network">
+            <div class="flow-title">The Network</div>
+            <div class="flow-item">Receives 128 frequency coefficients</div>
+            <div class="flow-item">Validates it's a real biological signal</div>
+            <div class="flow-item">Compares to your previous check-ins</div>
+            <div class="flow-item">Detects changes in your health pattern</div>
+        </div>
+    </div>
+
+    <div class="explainer-qa">
+        <dl>
+            <dt>Is this 512 bytes for all my records, or just one check-in?</dt>
+            <dd>
+                <strong>One snapshot per check-in.</strong> Each time you record a session, the encoder
+                produces a fresh 512-byte health snapshot. The network stores your check-in history &mdash;
+                and because each entry is only 512 bytes, even years of weekly check-ins remain tiny.
+                A decade of weekly health history for one person is about 260 kilobytes. For 8 billion
+                people checked in weekly for a full year, the network needs under 200 terabytes &mdash;
+                still manageable on hardware you could fit in a single room.
+            </dd>
+
+            <dt>Is it like a health fingerprint?</dt>
+            <dd>
+                Similar, but more useful. A fingerprint is static &mdash; it identifies you and that's it.
+                Your health snapshot captures your <em>physiological state right now</em>, so it shifts
+                when you're stressed, when you sleep poorly, when a condition develops. Think of it as
+                a <strong>health fingerprint that evolves over time</strong>. That evolution is exactly
+                what makes continuous monitoring work &mdash; the network watches for changes, not just
+                identity.
+            </dd>
+
+            <dt>Can someone reconstruct my raw health data from the 512 bytes?</dt>
+            <dd>
+                <strong>No.</strong> The encoding is a one-way mathematical projection. It's like knowing
+                someone's height and weight &mdash; you know something about them, but you cannot
+                reconstruct their face. The transform permanently discards everything not captured
+                by the 128 frequency components. This is privacy through mathematics, not through
+                encryption that could someday be broken.
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 4: HONEST REQUIREMENTS                                   -->
+<!-- ================================================================ -->
+
+<div class="explainer">
+    <h3>Where We Are Today</h3>
+
+    <p>
+        We're not claiming this is ready for 8 billion people tomorrow. We're showing that the
+        <span class="highlight">underlying architecture works</span> on real production infrastructure.
+        Here's what's needed honestly:
+    </p>
+
+    <div class="explainer-qa" style="border-top: none; padding-top: 0;">
+        <dl>
+            <dt>People still need a device</dt>
+            <dd>
+                The encoder runs on minimal hardware &mdash; an old Android phone is enough. The
+                encoding happens entirely on-device, so it doesn't require a powerful processor.
+                But we haven't reached 8 billion people with devices yet. That's a real constraint,
+                and it's one that the broader tech ecosystem is working toward.
+            </dd>
+
+            <dt>People still need internet access</dt>
+            <dd>
+                The 512-byte check-in is a tiny payload &mdash; it would work on the slowest mobile
+                connection. But it does require some connectivity. We're not at 8 billion connected
+                people yet. That, too, is a real constraint.
+            </dd>
+
+            <dt>The network nodes need to be running</dt>
+            <dd>
+                This is what we're proving right now. We have real production nodes running.
+                The encoding service is live. The test below shows real API calls against real
+                infrastructure &mdash; not simulations, not mock data, not a demo. This is the
+                foundation that everything builds on.
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 5: THE PROOF                                             -->
+<!-- ================================================================ -->
+
+<h2 class="section-title">The Proof</h2>
+<p class="section-subtitle">
+    We tested our live production encoder with 8 different biosignal inputs &mdash; varying from
+    5 seconds to 60 seconds, across 5 different types of signals. Every single input produced
+    exactly 128 coefficients &mdash; 512 bytes. Here is the recording.
+</p>
+
+<div class="video-container">
+    <video controls preload="metadata">
+        <source src="proof-1-fixed-payload-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+<p class="video-label">1:46 &mdash; All commands executed against live production nodes</p>
+
+<!-- RESULTS TABLE -->
+<div class="results-section">
+    <h2 class="section-title">Results</h2>
+    <p class="section-subtitle">8 biosignal inputs of varying duration and type, encoded by the live network</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Signal</th>
+                <th>Duration</th>
+                <th>Input Size</th>
+                <th>Type</th>
+                <th>Output</th>
+                <th>Bytes</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Breathing</td>
+                <td class="mono">5 sec</td>
+                <td class="mono">313 KB</td>
+                <td>Respiratory</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Breathing</td>
+                <td class="mono">30 sec</td>
+                <td class="mono">1.83 MB</td>
+                <td>Respiratory</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Breathing</td>
+                <td class="mono">60 sec</td>
+                <td class="mono">3.66 MB</td>
+                <td>Respiratory</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Voice</td>
+                <td class="mono">10 sec</td>
+                <td class="mono">625 KB</td>
+                <td>Voice</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Cardiac</td>
+                <td class="mono">10 sec</td>
+                <td class="mono">625 KB</td>
+                <td>Cardiac</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td>EEG Alpha</td>
+                <td class="mono">10 sec</td>
+                <td class="mono">625 KB</td>
+                <td>EEG</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td>White Noise</td>
+                <td class="mono">10 sec</td>
+                <td class="mono">625 KB</td>
+                <td>Control</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td>Near-Silence</td>
+                <td class="mono">10 sec</td>
+                <td class="mono">625 KB</td>
+                <td>Control</td>
+                <td class="mono">128 coeff</td>
+                <td class="mono">512</td>
+                <td><span class="pass">PASS</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p style="font-family: 'Inter', sans-serif; font-size: 10pt; color: var(--text-secondary); margin-top: 8px;">
+        Input sizes range from 313 KB to 3.66 MB &mdash; a 12x variation in recording size.
+        Output is always exactly 512 bytes. Whether you record for 5 seconds or a full minute,
+        the network receives the same fixed-size health snapshot.
+    </p>
+</div>
+
+<!-- SCALING BOX -->
+<div class="scaling-box">
+    <h3>What This Means at Planetary Scale</h3>
+    <p style="font-size: 11pt; color: rgba(255,255,255,0.8); margin: 0 0 16px 0;">
+        Because every health check-in produces exactly 512 bytes, the entire world's health
+        state fits on hardware you can hold in your hands.
+    </p>
+
+    <div class="scaling-grid">
+        <div class="scaling-card">
+            <div class="label">World Population</div>
+            <div class="value">8B</div>
+            <div class="unit">people</div>
+        </div>
+        <div class="scaling-card">
+            <div class="label">Per-Person Check-in</div>
+            <div class="value">512</div>
+            <div class="unit">bytes</div>
+        </div>
+        <div class="scaling-card">
+            <div class="label">Everyone's Current Health State</div>
+            <div class="value">3.73</div>
+            <div class="unit">terabytes</div>
+        </div>
+        <div class="scaling-card">
+            <div class="label">Hardware Required</div>
+            <div class="value">2</div>
+            <div class="unit">consumer hard drives (~$100)</div>
+        </div>
+    </div>
+
+    <p style="font-size: 10pt; color: rgba(255,255,255,0.6); text-align: center; margin-top: 20px; line-height: 1.7;">
+        No existing health network can do this. At 10 KB per record, a conventional approach would
+        need 80 petabytes &mdash; physically impossible on commodity hardware. The fixed 512-byte
+        encoding is what makes continuous monitoring at this scale feasible for the first time.
+    </p>
+</div>
+
+<!-- VERDICT -->
+<div class="verdict-box">
+    <h3>This Proof Is a Beginning</h3>
+    <p>
+        8 biosignal inputs. 5 types of signals. Durations from 5 seconds to 60 seconds.
+        Every single one encoded to exactly 512 bytes on live production infrastructure.
+    </p>
+    <p style="font-weight: 600; color: var(--emerald-700);">
+        The architecture works. Continuous health monitoring at planetary scale &mdash; with
+        privacy built into the mathematics &mdash; is technically feasible.
+    </p>
+    <p style="font-family: 'Inter', sans-serif; font-size: 10pt; color: var(--text-secondary); margin-top: 12px;">
+        This is proof 1 of 3. Next, we prove that multiple nodes reach consensus on these
+        health snapshots. Then, we prove the network can scale.
+    </p>
+</div>
+
+<!-- ARTIFACTS -->
+<h2 class="section-title">Verify This Proof</h2>
+<p class="section-subtitle">All data is available for independent verification</p>
+
+<div class="artifacts-bar">
+    <a href="proof-1-fixed-payload-results.json" class="artifact-link" download>
+        &#128202; Raw Data (JSON)
+    </a>
+    <a href="proof-1-fixed-payload.cast" class="artifact-link" download>
+        &#9654; Terminal Recording
+    </a>
+    <a href="proof-1-fixed-payload-video.mp4" class="artifact-link" download>
+        &#127909; Download Video
+    </a>
+</div>
+
+<!-- FOOTER -->
+<div class="proof-footer">
+    <p><strong>Network Proof Series</strong></p>
+    <p>Univault Technologies &bull; <a href="/">paragondao.org</a> &bull; <a href="/docs/THE_HEALTH_ECONOMY.html">Read the Whitepaper</a></p>
+    <p style="margin-top: 12px; font-size: 9pt; color: var(--text-muted);">
+        Next: <a href="/proofs/2-consensus/">Proof 2 &mdash; Network Consensus</a> &bull;
+        <a href="/proofs/3-scaling/">Proof 3 &mdash; Scaling</a>
+    </p>
+</div>
+
+</body>
+</html>

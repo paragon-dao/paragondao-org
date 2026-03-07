@@ -1,0 +1,17 @@
+{"proof": "Layer 1 — Fixed-Payload Encoding", "date": "2026-03-05T20:25:13Z", "api": "https://bagle-api.fly.dev", "results": [
+  {"label": "breath-5s", "modality": "breathing", "input_duration_s": 5.000000, "input_bytes": 320080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 3.0, "pass": true}
+,
+  {"label": "breath-30s", "modality": "breathing", "input_duration_s": 30.000000, "input_bytes": 1920080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 3.44, "pass": true}
+,
+  {"label": "breath-60s", "modality": "breathing", "input_duration_s": 60.000000, "input_bytes": 3840080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 3.47, "pass": true}
+,
+  {"label": "voice-10s", "modality": "breathing", "input_duration_s": 10.000000, "input_bytes": 640080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 3.81, "pass": true}
+,
+  {"label": "cardiac-10s", "modality": "breathing", "input_duration_s": 10.000000, "input_bytes": 640080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 3.38, "pass": true}
+,
+  {"label": "eeg-10s", "modality": "eeg", "input_duration_s": 10.000000, "input_bytes": 640080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 48.81, "pass": true}
+,
+  {"label": "noise-10s", "modality": "breathing", "input_duration_s": 10.000000, "input_bytes": 640080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 3.14, "pass": true}
+,
+  {"label": "silence-10s", "modality": "breathing", "input_duration_s": 10.000000, "input_bytes": 640080, "output_dim": 128, "output_coefficients": 128, "output_bytes": 512, "latency_ms": 3.22, "pass": true}
+]}

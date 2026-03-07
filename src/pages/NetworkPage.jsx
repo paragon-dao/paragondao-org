@@ -350,6 +350,50 @@ const NetworkPage = () => {
             </div>
           </motion.div>
 
+          {/* Technical Documentation */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55 }}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '16px',
+              marginBottom: '48px'
+            }}
+          >
+            {[
+              { title: 'PRN Whitepaper', desc: 'Architecture and consensus design', href: '/docs/PRN_INFRASTRUCTURE_WHITEPAPER.html' },
+              { title: 'Implementation Spec', desc: 'Full algorithms, formulas, and wire protocol', href: '/docs/PRN_IMPLEMENTATION_SPECIFICATION.html' },
+              { title: 'HFTP Protocol', desc: 'Harmonic Frequency Transfer Protocol', href: '/docs/HFTP_PROTOCOL_WHITEPAPER.html' },
+            ].map((doc, i) => (
+              <a key={i} href={doc.href} target="_blank" rel="noopener noreferrer" style={{
+                background: isDark ? 'rgba(30,30,50,0.8)' : 'rgba(255,255,255,0.6)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '14px',
+                padding: '20px',
+                border: `1px solid ${isDark ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.3)'}`,
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                transition: 'all 0.2s ease'
+              }}>
+                <div style={{
+                  width: '36px', height: '36px', borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="white" strokeWidth="2" strokeLinecap="round"/><path d="M14 2V8H20" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: '14px', fontWeight: '700', color: textPrimary }}>{doc.title}</div>
+                  <div style={{ fontSize: '12px', color: textSecondary }}>{doc.desc}</div>
+                </div>
+              </a>
+            ))}
+          </motion.div>
+
           {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

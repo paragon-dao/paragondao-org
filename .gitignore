@@ -13,6 +13,7 @@ lerna-debug.log*
 dist/
 build/
 .vite/
+.wrangler/
 
 # Environment variables - IMPORTANT: Never commit these!
 .env

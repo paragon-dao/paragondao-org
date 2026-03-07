@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { useState, useEffect } from 'react'
 import './App.css'
 import HomePage from './pages/HomePage'
-import HealthPage from './pages/HealthPage'
+// HealthPage removed from production build — GLE encoder must not ship in public bundle
+// Health features will be served from a separate authenticated app
 import ModelsPage from './pages/ModelsPage'
 import NetworkPage from './pages/ProofPage'
 import WhitepaperPage from './pages/WhitepaperPage'
@@ -26,6 +27,7 @@ import ForgeModelDetailPage from './pages/ForgeModelDetailPage'
 import AppsPage from './pages/AppsPage'
 import AppDetailPage from './pages/AppDetailPage'
 import AdminPage from './pages/AdminPage'
+import DocsPage from './pages/DocsPage'
 import InviteGate from './components/InviteGate'
 import { MagicProvider, useMagic } from './providers/MagicProvider'
 import { ThemeProvider } from './providers/ThemeProvider'
@@ -148,6 +150,7 @@ function AppRoutes() {
         <Route path="/verify/:modelId" element={<VerifyModelPage />} />
         <Route path="/proof" element={<Navigate to="/network" replace />} />
         <Route path="/proof-pipeline" element={<ProofPipelinePage />} />
+        <Route path="/docs" element={<DocsPage />} />
         <Route path="/apps" element={<AppsPage />} />
         <Route path="/apps/:appId" element={<AppDetailPage />} />
         <Route path="/exchange" element={<ExchangePage />} />
@@ -166,17 +169,12 @@ function AppRoutes() {
           </ProtectedRoute>
         } />
 
-        {/* Protected Routes — require auth */}
-        <Route path="/health" element={
-          <ProtectedRoute>
-            <HealthPage />
-          </ProtectedRoute>
-        } />
-        {/* Legacy/dev routes — redirect to home */}
-        <Route path="/auth" element={<Navigate to="/health" replace />} />
+        {/* Health route — redirects to home (health features served separately) */}
+        <Route path="/health" element={<Navigate to="/" replace />} />
+        <Route path="/auth" element={<Navigate to="/" replace />} />
         <Route path="/play" element={<Navigate to="/" replace />} />
         <Route path="/explorer" element={<Navigate to="/" replace />} />
-        <Route path="/dashboard" element={<Navigate to="/health" replace />} />
+        <Route path="/dashboard" element={<Navigate to="/" replace />} />
 
         {/* Catch all - redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

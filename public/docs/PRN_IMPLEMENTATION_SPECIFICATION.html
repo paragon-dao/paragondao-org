@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRN Implementation Specification &mdash; Univault Technologies</title>
+    <!-- KaTeX for beautiful math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true},{left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+    <style>
+        /* ===== CSS RESET & BASE ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #1a1a2e;
+            --navy-light: #2d2d4a;
+            --gold: #c9a84c;
+            --gold-light: #d4bc76;
+            --gold-pale: #f5eed9;
+            --bg: #fafaf8;
+            --bg-alt: #f3f2ee;
+            --text: #2c2c2c;
+            --text-light: #555;
+            --text-lighter: #777;
+            --border: #ddd;
+            --border-light: #e8e8e4;
+            --white: #ffffff;
+            --code-bg: #1e1e2e;
+            --code-text: #cdd6f4;
+            --insight-bg: #fdf8ed;
+            --insight-border: #c9a84c;
+            --warning-bg: #fff8f0;
+            --warning-border: #e8850a;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.85;
+            max-width: 52rem;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            @page { size: letter; margin: 0.85in 0.85in 1in 0.85in; }
+            body { font-size: 10.5pt; line-height: 1.6; max-width: 100%; padding: 0; background: white; }
+            .title-page { padding: 1.5in 0 0.5in 0; min-height: auto; }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
+            h2, h3 { page-break-after: avoid; }
+            table, blockquote, .key-insight, .pipeline-diagram { page-break-inside: avoid; }
+            a { color: var(--navy) !important; text-decoration: none !important; }
+            .section-content { padding: 0 0.5in; }
+        }
+
+        /* ===== TITLE PAGE ===== */
+        .title-page {
+            text-align: center;
+            padding: 2.5in 1.5rem 1.5in 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .title-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3in;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .title-brand {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 2.5rem;
+            font-weight: 600;
+        }
+
+        .title-main {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.15;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .title-sub {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-bottom: 2.5rem;
+            max-width: 32em;
+            text-align: center;
+        }
+
+        .title-divider {
+            width: 4rem;
+            height: 2px;
+            background: var(--gold);
+            margin: 0 auto 2rem auto;
+        }
+
+        .title-authors {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .title-affiliation {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 0.25rem;
+        }
+
+        .title-status {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-lighter);
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== SECTION STRUCTURE ===== */
+        .section-content {
+            padding: 0 3.5rem;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h2 {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin: 3.5rem 0 1.5rem 0;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid var(--gold);
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        h2:first-child, .abstract-section h2 { margin-top: 0; }
+
+        h3 {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 2.5rem 0 1rem 0;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        h4 {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 1.02rem;
+            font-weight: 600;
+            color: var(--navy-light);
+            margin: 2.25rem 0 0.85rem 0;
+            line-height: 1.4;
+            text-align: center;
+            letter-spacing: 0.01em;
+        }
+
+        h4::after {
+            content: '';
+            display: block;
+            width: 2.5rem;
+            height: 1.5px;
+            background: var(--gold);
+            margin: 0.4rem auto 0;
+        }
+
+        p {
+            margin-bottom: 1.15rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        strong { color: var(--navy); font-weight: 700; }
+        em { font-style: italic; }
+
+        a {
+            color: var(--gold);
+            text-decoration: underline;
+            text-decoration-color: rgba(201,168,76,0.3);
+            text-underline-offset: 2px;
+            transition: color 0.2s;
+        }
+        a:hover { color: var(--navy); }
+
+        /* ===== ABSTRACT ===== */
+        .abstract-section {
+            background: var(--bg-alt);
+            border-radius: 8px;
+            padding: 2rem 2rem;
+            margin: 2.5rem 0;
+            border: 1px solid var(--border-light);
+        }
+
+        .abstract-section h2 {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+
+        .abstract-section p { font-size: 0.95rem; line-height: 1.7; }
+
+        .keywords {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.88rem;
+            color: var(--text-light);
+        }
+
+        .keywords strong { color: var(--text-light); font-weight: 600; }
+
+        /* ===== HORIZONTAL RULE ===== */
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 3rem 0;
+        }
+
+        /* ===== BLOCKQUOTES ===== */
+        blockquote {
+            border-left: 4px solid var(--gold);
+            background: linear-gradient(135deg, var(--gold-pale) 0%, var(--bg) 100%);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-style: italic;
+        }
+
+        blockquote p { margin-bottom: 0; color: var(--navy-light); text-align: left; }
+        blockquote p strong { font-style: normal; }
+
+        /* ===== TABLES ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.92rem; line-height: 1.5; }
+
+        thead { background: var(--navy); color: var(--white); }
+
+        thead th {
+            font-family: Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+        tbody tr:nth-child(even) { background: var(--bg-alt); }
+        tbody tr:nth-child(odd) { background: var(--white); }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: var(--gold-pale); }
+        tbody td strong { color: var(--navy); }
+
+        /* ===== KEY INSIGHT BOXES ===== */
+        .key-insight {
+            background: var(--insight-bg);
+            border: 1px solid var(--gold-light);
+            border-left: 5px solid var(--gold);
+            border-radius: 0 8px 8px 0;
+            padding: 1.25rem 1.5rem;
+            margin: 1.75rem 0;
+            position: relative;
+        }
+
+        .key-insight::before {
+            content: 'KEY INSIGHT';
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .key-insight p { margin-bottom: 0.5rem; text-align: left; }
+        .key-insight p:last-child { margin-bottom: 0; }
+
+        /* ===== CAUTION BOX ===== */
+        .caution-box {
+            background: var(--warning-bg);
+            border: 1px solid #f0c880;
+            border-left: 5px solid var(--warning-border);
+            border-radius: 0 8px 8px 0;
+            padding: 1.25rem 1.5rem;
+            margin: 1.75rem 0;
+            position: relative;
+        }
+
+        .caution-box::before {
+            content: 'IMPLEMENTATION NOTE';
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--warning-border);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .caution-box p { margin-bottom: 0.5rem; text-align: left; }
+        .caution-box p:last-child { margin-bottom: 0; }
+
+        /* ===== CODE BLOCKS ===== */
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin: 1.25rem 0;
+            border: 1px solid rgba(201,168,76,0.2);
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.88em;
+            background: var(--bg-alt);
+            padding: 0.1em 0.35em;
+            border-radius: 3px;
+            border: 1px solid var(--border-light);
+            color: var(--navy);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            color: var(--code-text);
+            font-size: 1em;
+        }
+
+        /* ===== EQUATIONS ===== */
+        .equation-block {
+            position: relative;
+            background: linear-gradient(135deg, var(--white) 0%, var(--bg-alt) 100%);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1.35rem 2rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .equation-block::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy));
+            border-radius: 8px 8px 0 0;
+        }
+
+        .equation-block .eq-label {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-lighter);
+            font-size: 0.82rem;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .equation-block .katex { font-size: 1.15em; }
+
+        /* ===== LISTS ===== */
+        ul, ol { margin: 1rem 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+
+        /* ===== DISCLOSURE NOTE ===== */
+        .disclosure {
+            font-size: 0.88rem;
+            font-style: italic;
+            color: var(--text-light);
+            background: var(--bg-alt);
+            padding: 0.85rem 1.15rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--border);
+            margin: 1rem 0;
+        }
+
+        /* ===== REFERENCES ===== */
+        .references { font-size: 0.88rem; line-height: 1.65; }
+        .references ol { margin-left: 1.75rem; }
+        .references li { margin-bottom: 0.65rem; padding-left: 0.25rem; color: var(--text-light); }
+
+        /* ===== COLOPHON ===== */
+        .colophon {
+            text-align: center;
+            padding: 2.5rem 1.5rem 3rem;
+            border-top: 2px solid var(--gold);
+            margin-top: 3rem;
+        }
+
+        .colophon-brand { font-family: Helvetica, Arial, sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+        .colophon-contact { font-size: 0.85rem; color: var(--text-light); }
+        .colophon-contact a { color: var(--gold); }
+        .colophon-date { font-family: Helvetica, Arial, sans-serif; font-size: 0.78rem; color: var(--text-lighter); margin-top: 1.25rem; font-style: italic; }
+
+        /* ===== SECTION NUMBERS ===== */
+        .section-num { color: var(--gold); font-weight: 700; }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            position: fixed;
+            top: 1rem;
+            left: 1.5rem;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 0.82rem;
+            color: var(--gold);
+            text-decoration: none;
+            background: rgba(250,250,248,0.92);
+            padding: 0.4rem 0.85rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            z-index: 100;
+            transition: all 0.2s;
+        }
+        .back-link:hover { color: var(--navy); background: var(--gold-pale); }
+
+        @media print { .back-link { display: none; } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            .title-main { font-size: 2rem; }
+            .title-page { padding: 1.5in 1rem 1in 1rem; }
+            .section-content { padding: 0 1.25rem; }
+            h2 { font-size: 1.4rem; }
+            table { font-size: 0.82rem; }
+            thead th, tbody td { padding: 0.6rem 0.65rem; }
+            .equation-block { padding: 1rem 1.25rem; }
+            .equation-block .eq-label { position: static; display: block; transform: none; text-align: right; margin-top: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="/whitepaper" class="back-link">&larr; Whitepapers</a>
+
+<!-- TITLE PAGE -->
+<div class="title-page">
+    <div class="title-brand">Univault Technologies</div>
+    <h1 class="title-main">PRN Implementation Specification</h1>
+    <p class="title-sub">Scaling Phase-Coherent Resonance Networks: Resonance Routing, Hierarchical Aggregation, Cross-Shard Coordination, and Harmonic State Encoding</p>
+    <div class="title-divider"></div>
+    <p class="title-authors">Phuong Tran and Anh Tran</p>
+    <p class="title-affiliation">Univault Technologies, LLC</p>
+    <p class="title-affiliation">research@paragondao.org &nbsp;&middot;&nbsp; paragondao.org</p>
+    <p class="title-status">Version 1.0 &mdash; March 2026</p>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="section-content page-break">
+
+    <!-- ABSTRACT -->
+    <div class="abstract-section no-break">
+        <h2>Abstract</h2>
+        <p>This document is a companion to the Paragon Resonance Network (PRN) whitepaper. Where the whitepaper describes <em>what</em> PRN is &mdash; Phase-Coherent Resonance consensus, the dual-layer Kuramoto&ndash;BFT architecture, and the security model &mdash; this specification describes <em>how</em> it is built. We disclose the complete implementation details required to scale a PRN network from proof-of-concept to production: resonance-modulated transaction processing, content-addressed wave propagation for gossip routing, phase-scored cross-shard coordination via two-phase commit, hierarchical privacy-preserving aggregation through relay pre-computation, semantic shard assignment via k-means clustering, harmonic state encoding with frequency-domain state evolution, and the HFTP wire protocol for coefficient exchange. All algorithms are specified with exact formulas, numeric parameters, data structures, and pseudocode sufficient for independent implementation.</p>
+        <p class="keywords"><strong>Keywords:</strong> Resonance Routing, Cross-Shard Coordination, Wave Propagation, Hierarchical Aggregation, Harmonic State Encoding, Phase-Coupled Oscillators, Semantic Sharding, HFTP Wire Protocol, Defensive Publication</p>
+    </div>
+
+    <div class="disclosure">
+        <strong>Publication Notice.</strong> This document is published as a public technical disclosure to advance open health infrastructure. All techniques described herein are placed into the public record. This document should be cited as: Tran, P. &amp; Tran, A. (2026). &ldquo;PRN Implementation Specification: Scaling Phase-Coherent Resonance Networks.&rdquo; Univault Technologies Technical Disclosure, v1.0.
+    </div>
+
+    <div class="key-insight">
+        <p><strong>Implementation Status.</strong> This specification documents algorithms from the PRN codebase at varying stages of maturity. The majority of systems described (Sections 2&ndash;13, 15&ndash;16) are implemented and tested. Three subsystems are currently <strong>commented out</strong> in the codebase and documented here as design specifications: the Kuramoto sinusoidal coupling module (Section 2.3, Eq.&nbsp;6 — replaced by linear coupling in the active code), the self-healing engine (Section 14.1), and the reputation engine (Section 14.2). Section 1 (resonance-modulated transaction processing) and Section 3.4 (phase-scored peer selection) represent architecture-level design specifications that are defined in the node configuration but not yet exercised in test harnesses. All numeric parameters and formulas for these components are drawn from the codebase as written.</p>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 1 -->
+    <h2><span class="section-num">1.</span> Resonance-Modulated Transaction Processing</h2>
+
+    <h3>1.1 Oscillator-Driven Latency Control</h3>
+
+    <p>In a PRN network, each node operates as a coupled oscillator with a phase value \(\theta \in [0, 1]\). Transaction processing latency is not fixed but <strong>modulated by the node's current phase alignment with the network</strong>. The resonance factor is computed as:</p>
+
+    <div class="equation-block">
+        $$R(\theta) = 0.5 + 0.5 \cdot \cos(\theta \cdot 2\pi)$$
+        <span class="eq-label">(1)</span>
+    </div>
+
+    <p>At perfect resonance (\(\theta = 0\)), \(R = 1.0\) and operations execute at minimum latency. At anti-resonance (\(\theta = 0.5\)), \(R = 0.0\) and operations execute at maximum latency. This creates a natural rhythm in the network where synchronized nodes process transactions faster &mdash; an emergent incentive for phase alignment.</p>
+
+    <h3>1.2 Operation-Specific Delay Formulas</h3>
+
+    <p>Each transaction type has a specific delay formula parameterized by the resonance factor. Let \(R\) denote the resonance factor from Equation&nbsp;(1):</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Delay Formula (ms)</th>
+                    <th>Min Delay</th>
+                    <th>Max Delay</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Vector search</strong></td>
+                    <td>\(\max(2,\; \lfloor 30 \cdot (1 - 0.9R) \rfloor)\)</td>
+                    <td>2 ms</td>
+                    <td>30 ms</td>
+                </tr>
+                <tr>
+                    <td><strong>Vector insert</strong></td>
+                    <td>\(\max(2,\; \lfloor 20 \cdot (1 - 0.9R) \rfloor)\)</td>
+                    <td>2 ms</td>
+                    <td>20 ms</td>
+                </tr>
+                <tr>
+                    <td><strong>Key-value GET</strong></td>
+                    <td>\(\max(1,\; \lfloor 5 \cdot (1 - 0.9R) \rfloor)\)</td>
+                    <td>1 ms</td>
+                    <td>5 ms</td>
+                </tr>
+                <tr>
+                    <td><strong>Key-value PUT</strong></td>
+                    <td>\(\max(1,\; \lfloor 10 \cdot (1 - 0.9R) \rfloor)\)</td>
+                    <td>1 ms</td>
+                    <td>10 ms</td>
+                </tr>
+                <tr>
+                    <td><strong>Cross-shard</strong></td>
+                    <td>\(\max(5,\; \lfloor 50 \cdot (1 - 0.9R) \rfloor)\)</td>
+                    <td>5 ms</td>
+                    <td>50 ms</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>1.3 Resonance-Modulated Success Rates</h3>
+
+    <p>Cross-shard transactions use a two-phase commit protocol where the success probability of each phase is modulated by the resonance factor:</p>
+
+    <div class="equation-block">
+        $$P_{\text{prepare}} = 0.95 + 0.05 \cdot R(\theta)$$
+        <span class="eq-label">(2)</span>
+    </div>
+
+    <div class="equation-block">
+        $$P_{\text{commit}} = 0.98 + 0.02 \cdot R(\theta)$$
+        <span class="eq-label">(3)</span>
+    </div>
+
+    <p>At perfect resonance, both phases succeed with probability 1.0. At anti-resonance, prepare succeeds at 95% and commit at 98%. The processing delay for both phases follows: \(\lfloor 20 \cdot (1 - 0.8R) \rfloor\) milliseconds.</p>
+
+    <div class="key-insight">
+        <p><strong>Design rationale.</strong> Resonance modulation creates an emergent incentive: nodes that synchronize their oscillator phase with the network process transactions faster and more reliably. This replaces explicit staking rewards with a physics-inspired performance gradient. The network self-organizes toward synchronization because synchronized nodes are more useful.</p>
+    </div>
+
+    <h3>1.4 Batch Processing Parameters</h3>
+
+    <p>Each node processes up to <strong>100 transactions per processing interval</strong>. The processing interval is set by the node's PCR synchronization interval. Individual buffered transactions time out after <strong>5,000 ms</strong> (5 seconds). Nodes set a maximum of <strong>1,000 event listeners</strong> to handle concurrent transaction streams.</p>
+
+    <hr>
+
+    <!-- SECTION 2 -->
+    <h2><span class="section-num">2.</span> Content-Addressed Wave Propagation</h2>
+
+    <h3>2.1 Message-to-Wave Mapping</h3>
+
+    <p>PRN uses a novel gossip protocol where message content deterministically maps to wave properties, and the interference pattern between the message's wave and each peer's oscillator state determines propagation. This replaces random gossip with <strong>topology-aware, content-dependent dissemination</strong>.</p>
+
+    <p>Given a message payload \(M\), the wave properties are derived as follows:</p>
+
+    <ol>
+        <li>Compute \(h = \text{SHA-256}(M)\) and extract the first 8 hexadecimal characters as an integer \(n\).</li>
+        <li>Amplitude: \(A = \frac{n \bmod 1000}{1000} \cdot A_{\max}\), where \(A_{\max} = 10.0\). Range: \([0, 10.0)\).</li>
+        <li>Phase: \(\phi = \frac{(n \bmod 360) \cdot \pi}{180}\). Range: \([0, 2\pi)\). This maps the hash deterministically to a point on the unit circle.</li>
+        <li>Frequency: \(f = f_{\text{base}}\), where \(f_{\text{base}} = 1.0\).</li>
+    </ol>
+
+    <p>The resulting wave message is the tuple \(\langle A, f, \phi, M \rangle\).</p>
+
+    <h3>2.2 Interference-Based Peer Selection</h3>
+
+    <p>For each candidate peer node with oscillator state \((\phi_{\text{node}}, f_{\text{node}})\), the interference score is computed as:</p>
+
+    <div class="equation-block">
+        $$I = \cos(\phi_{\text{msg}} - \phi_{\text{node}}) \cdot \left(1 - |1 - \frac{f_{\text{msg}}}{f_{\text{node}}}|\right)$$
+        <span class="eq-label">(4)</span>
+    </div>
+
+    <p>The first factor, \(\cos(\Delta\phi)\), ranges from \(-1\) (destructive interference, exactly anti-phase) to \(+1\) (constructive interference, perfectly in-phase). The second factor is a frequency match term: 1.0 when frequencies are identical, decreasing as they diverge, and going negative when the frequency ratio exceeds 2.0 or drops below 0.</p>
+
+    <p><strong>Retransmission rule:</strong> A message is forwarded only to peers where \(I > 0\) (constructive interference). Peers with destructive interference (\(I \leq 0\)) do not receive the retransmission. This creates content-dependent routing: the same message propagates along different paths depending on the current phase distribution of the network.</p>
+
+    <h3>2.3 Network Self-Organization</h3>
+
+    <p>Phase coherence across the network is measured using the Kuramoto order parameter:</p>
+
+    <div class="equation-block">
+        $$r = \frac{1}{N}\sqrt{\left(\sum_{j=1}^{N} \sin \theta_j\right)^2 + \left(\sum_{j=1}^{N} \cos \theta_j\right)^2}$$
+        <span class="eq-label">(5)</span>
+    </div>
+
+    <p>When \(r\) drops below the target coherence threshold of <strong>0.8</strong>, the network triggers frequency adjustment. Each node's frequency is pulled toward the average of its neighbors via linear coupling:</p>
+
+    <div class="equation-block">
+        $$f_i^{(t+1)} = f_i^{(t)} + K \cdot (\bar{f}_{\text{neighbors}} - f_i^{(t)})$$
+        <span class="eq-label">(6)</span>
+    </div>
+
+    <p>where \(K\) is the coupling strength parameter from the node's PCR configuration, range \([0, 1]\). This is a linear coupling model (contrast with the sinusoidal Kuramoto coupling used in the consensus layer) chosen for computational efficiency in the gossip layer.</p>
+
+    <hr>
+
+    <!-- SECTION 3 -->
+    <h2><span class="section-num">3.</span> Frequency-Based Peer Discovery and Routing</h2>
+
+    <h3>3.1 Oscillator Frequency Space</h3>
+
+    <p>Each PRN node maintains a center frequency clamped to the range <strong>[400, 500]</strong>. This bounded frequency space ensures that all nodes operate within a finite resonance domain. A peer is classified as <strong>resonant</strong> if the absolute difference between its frequency and the querying node's center frequency falls within a configurable tolerance:</p>
+
+    <div class="equation-block">
+        $$\text{isResonant}(p) = |f_p - f_{\text{center}}| \leq \tau$$
+        <span class="eq-label">(7)</span>
+    </div>
+
+    <h3>3.2 Network Stability Scoring</h3>
+
+    <p>The network stability metric is derived from a <strong>60-sample moving average</strong> of peer frequency drift. When a peer's frequency is updated, the drift is computed as \(\delta = |f_{\text{new}} - f_{\text{old}}|\) and fed into the moving average. Stability is then:</p>
+
+    <div class="equation-block">
+        $$S = \begin{cases} 1.0 & \text{if } \bar{\delta} < 0.1 \\ 1 - \bar{\delta} & \text{otherwise} \end{cases}$$
+        <span class="eq-label">(8)</span>
+    </div>
+
+    <p>Note that the stability score is <strong>not clamped</strong> at zero: if the average drift exceeds 1.0, the score becomes negative, signaling to the system that the network is in an unstable state requiring corrective action.</p>
+
+    <h3>3.3 Resonant Peer Caching</h3>
+
+    <p>The list of resonant peers is cached with a <strong>TTL of 1,000 ms</strong> (1 second). The cache is invalidated on any of: (a) a peer frequency update, (b) a center frequency adjustment, (c) a tolerance change, or (d) stale data cleanup removing any peer. Stale peers are evicted after <strong>300,000 ms</strong> (5 minutes) without a frequency update. The PeerId-to-string conversion cache is cleared when it exceeds <strong>10,000 entries</strong> to bound memory usage.</p>
+
+    <h3>3.4 Phase-Scored Peer Selection</h3>
+
+    <p>When selecting a peer for cross-shard communication, the system scores candidates using circular phase distance:</p>
+
+    <div class="equation-block">
+        $$\text{score}(\theta_p, \theta_{\text{self}}) = 1 - \frac{d_{\text{circ}}(\theta_p, \theta_{\text{self}})}{\pi}$$
+        <span class="eq-label">(9)</span>
+    </div>
+
+    <p>where the circular distance is:</p>
+
+    <div class="equation-block">
+        $$d_{\text{circ}}(a, b) = \begin{cases} |a - b| & \text{if } |a - b| \leq \pi \\ 2\pi - |a - b| & \text{if } |a - b| > \pi \end{cases}$$
+        <span class="eq-label">(10)</span>
+    </div>
+
+    <p>Scores range from 0 (exactly anti-phase) to 1.0 (perfectly phase-aligned). The highest-scoring peer in the target shard is selected as the routing destination. Shard membership and phase information are encoded in libp2p protocol strings using the format <code>/shard-{id}/</code> and <code>/phase-{value}/</code>.</p>
+
+    <p><strong>Phase convention note:</strong> The codebase uses two phase representations. The PCR node configuration initializes phase in the range \([0, 1]\) (fractional oscillator cycle). The vector store and peer selection modules use \([0, 2\pi]\) (radians). Conversion is \(\theta_{\text{rad}} = \theta_{\text{frac}} \cdot 2\pi\). Equations 9&ndash;10 above use the radian convention.</p>
+
+    <hr>
+
+    <!-- SECTION 4 -->
+    <h2><span class="section-num">4.</span> Cross-Shard Transaction Coordination</h2>
+
+    <h3>4.1 Two-Phase Commit Protocol</h3>
+
+    <p>Cross-shard transactions use a two-phase commit (2PC) protocol with resonance-enhanced peer routing. The protocol tracks the following state per transaction:</p>
+
+    <pre><code>CrossShardTxStatus {
+  id:             string          // unique transaction identifier
+  originShard:    string          // initiating shard
+  targetShards:   string[]        // destination shards
+  status:         'pending' | 'prepared' | 'committed' | 'aborted'
+  preparedShards: string[]        // shards that completed prepare
+  waitingFor:     string[]        // shards still awaited
+  startTime:      number          // epoch milliseconds
+  completionTime: number          // epoch milliseconds (on finalization)
+}</code></pre>
+
+    <p><strong>Phase 1 (Prepare):</strong> The coordinator creates a transaction status with <code>waitingFor = [...targetShardIds]</code> and forwards the transaction to each target shard. As each shard completes preparation, it sends a <code>SHARD_PREPARED</code> message. The coordinator removes that shard from <code>waitingFor</code> and adds it to <code>preparedShards</code>.</p>
+
+    <p><strong>Phase 2 (Commit/Abort):</strong> When ALL target shards AND the origin shard appear in <code>preparedShards</code>, the transaction is finalized. The coordinator broadcasts the commit decision to all involved shards.</p>
+
+    <h3>4.2 Resonance-Weighted Coordinator Selection</h3>
+
+    <p>When routing a transaction to a target shard, the coordinator selects the optimal peer using a weighted quality score:</p>
+
+    <div class="equation-block">
+        $$Q(p) = 0.6 \cdot R_{\text{freq}}(p) + 0.4 \cdot C_{\text{phase}}(p)$$
+        <span class="eq-label">(11)</span>
+    </div>
+
+    <p>where \(R_{\text{freq}}\) is a binary resonance indicator (1.0 if the peer is frequency-resonant per Equation&nbsp;7, else 0.2) and \(C_{\text{phase}}\) is the peer's phase coherence (continuous, range [0, 1], defaults to 0.5 if unknown). The 60/40 weighting prioritizes frequency resonance while allowing phase coherence to break ties. Non-resonant peers receive a floor score of 0.2 (not zero), ensuring reachability even in degraded conditions. The quality range is [0.12, 0.52] for non-resonant peers (when \(R_{\text{freq}} = 0.2\): \(Q_{\min} = 0.6 \cdot 0.2 + 0.4 \cdot 0 = 0.12\), \(Q_{\max} = 0.6 \cdot 0.2 + 0.4 \cdot 0.8 = 0.52\)) and [0.6, 1.0] for resonant peers.</p>
+
+    <h3>4.3 Timeout and Deadlock Management</h3>
+
+    <p>The system employs a three-layer liveness guarantee:</p>
+
+    <ol>
+        <li><strong>Eager deadlock detection</strong>: Every new cross-shard transaction proposal triggers inline deadlock checking before processing.</li>
+        <li><strong>Periodic sweep</strong>: Every <strong>5,000 ms</strong> (5 seconds), all pending transactions are scanned for timeouts.</li>
+        <li><strong>Hard timeout</strong>: Any pending transaction older than <strong>15,000 ms</strong> (15 seconds) is automatically aborted.</li>
+    </ol>
+
+    <h3>4.4 Wait-For Graph Deadlock Detection</h3>
+
+    <p>Deadlock detection builds a wait-for graph and performs DFS cycle detection:</p>
+
+    <ol>
+        <li>Collect all transactions with <code>status === 'pending'</code>.</li>
+        <li>Build a directed graph: for each pending transaction \(T\), for each shard \(s\) in \(T\).<code>waitingFor</code>, find other pending transactions that have \(s\) in their <code>preparedShards</code>. Add a directed edge \(T \to T'\).</li>
+        <li>Run DFS with a recursion stack. If a node is encountered that is already in the recursion stack, a cycle is detected.</li>
+        <li><strong>Resolution policy</strong>: Sort all deadlocked transactions by <code>startTime</code> ascending. Abort the <strong>newest</strong> transaction (last in sorted order). This preserves the transaction that has been running longest.</li>
+    </ol>
+
+    <h3>4.5 Voting and Finalization</h3>
+
+    <p>Block proposals require a supermajority vote. The system defines three vote types: <code>APPROVE</code>, <code>REJECT</code>, and <code>ABSTAIN</code>. The implementation defines two voting thresholds: the protocol-level threshold is \(\geq 66\%\) (used in the primary <code>processVotes</code> path) and the standalone tally threshold is \(\geq 66.66\%\) (used in the <code>tallyVotes</code> utility). With 100 voters, 66 approvals pass the first threshold but fail the second &mdash; an intentional two-tier acceptance gate where protocol-level voting is slightly more permissive than the standalone tally. Note: classical BFT requires strictly &gt; 2/3 (66.67%) for quorum intersection safety. The 66% protocol-level threshold is a deliberate engineering choice that trades a marginal safety bound reduction for faster finalization in the health data context, where the cost of delayed health updates is weighed against the probability of &gt; 33% Byzantine nodes in a breathing-attested network. A vote is valid only if the voter's ID appears in the shard's member list and the vote carries a non-empty signature. In the current implementation, vote signatures are validated for presence (non-empty check); the transport layer (libp2p Noise with Ed25519) provides cryptographic authentication of the peer identity, ensuring that votes received on an authenticated stream originate from the claimed voter. Leader election is deterministic: nodes are sorted lexicographically by ID, and the first node is the leader.</p>
+
+    <p>Cross-shard transactions are included in block finalization only if their global status is <code>'committed'</code>. Regular (intra-shard) transactions are always included. The consensus adapter emits a <code>transactionsFinalized</code> event after a <strong>50 ms</strong> asynchronous delay to simulate consensus completion.</p>
+
+    <h3>4.6 Cross-Shard Metrics</h3>
+
+    <p>The system tracks the following metrics as a module-level singleton: total transactions, committed transactions, aborted transactions, timed-out transactions (latency exceeding 15,000 ms), deadlocked transactions, running average latency, total latency, and maximum observed latency.</p>
+
+    <hr>
+
+    <!-- SECTION 5 -->
+    <h2><span class="section-num">5.</span> Resonance-Based Block Validation</h2>
+
+    <h3>5.1 Block Structure</h3>
+
+    <p>A PRN block (<code>ResonanceBlock</code>) consists of:</p>
+
+    <pre><code>ResonanceBlock {
+  header: {
+    previousBlockHash:  string
+    merkleRoot:         string
+    timestamp:          number
+    blockHeight:        number
+    networkPhaseState:  PhaseState
+    validatorSet:       string[]
+  }
+  transitions:     Transition[]        // ordered transaction list
+  resonanceProof:  ResonanceProof      // phase coherence evidence
+  hash:            string
+}</code></pre>
+
+    <p>Each <code>Transition</code> carries a <code>harmonicState</code> &mdash; a set of frequency components representing the transaction's harmonic signature. Each transition may also carry a <code>crossShard</code> boolean flag.</p>
+
+    <h3>5.2 Resonance Proof Validation</h3>
+
+    <p>The <code>ResonanceProof</code> contains a <code>phaseCoherenceScore</code>, an array of <code>FrequencyAlignment</code> entries, and an array of <code>HarmonicSignature</code> validator signatures. Validation checks:</p>
+
+    <ul>
+        <li><strong>Minimum resonance threshold:</strong> The average resonance score across all frequency alignments must be \(\geq 0.1\).</li>
+        <li><strong>Resonance deviation:</strong> The absolute difference between the claimed <code>phaseCoherenceScore</code> and the independently computed average resonance must be \(\leq 0.3\).</li>
+    </ul>
+
+    <h3>5.3 Frequency Alignment Calculation</h3>
+
+    <p>For each frequency component in the block's transitions, alignment is computed against the network's phase state. Two components are considered matching if their frequency difference is \(&lt; 0.001\). The alignment score is:</p>
+
+    <div class="equation-block">
+        $$\text{alignment} = 1 - \frac{|\Delta A| + |\Delta \phi|}{2}$$
+        <span class="eq-label">(12)</span>
+    </div>
+
+    <p>where \(\Delta A\) is the amplitude difference and \(\Delta \phi\) is the phase difference between the transition's component and the network's corresponding component.</p>
+
+    <hr>
+
+    <!-- SECTION 6 -->
+    <h2><span class="section-num">6.</span> Harmonic State Encoding</h2>
+
+    <h3>6.1 Data-to-Harmonic Conversion</h3>
+
+    <p>Arbitrary data is converted to harmonic representations (frequency/amplitude/phase triplets) through the following algorithm:</p>
+
+    <ol>
+        <li><strong>Vectorization:</strong> Serialize the data to JSON and compute its string length \(L\). Generate a vector of length \(C\) (the configured component limit) where each element is: \(v_i = \sin(i \cdot 0.1 + L \cdot 0.01) \cdot 0.5 + 0.5\). Note that \(L\) parameterizes the sine function but the vector dimension is determined by the component limit, not the string length.</li>
+        <li><strong>Segmentation:</strong> Divide the vector into <strong>8 equal segments</strong>.</li>
+        <li><strong>Component extraction:</strong> For each segment \(k\) (0-indexed):
+            <ul>
+                <li>Amplitude \(A_k\) = mean of absolute values in the segment. Skip if \(A_k &lt; 0.1\).</li>
+                <li>Frequency offset: \(\delta_k = (v_{\text{first}} \cdot v_{\text{last}}) \bmod 0.2\), where \(v_{\text{first}}\) and \(v_{\text{last}}\) are the first and last values of the segment.</li>
+                <li>Frequency: \(f_k = f_{\text{base}} \cdot (1 + k \cdot 0.2 + \delta_k)\), where \(f_{\text{base}}\) defaults to <strong>450</strong>.</li>
+                <li>Phase: \(\phi_k = \left(\sum_{i} v_i \cdot i\right) \bmod 1.0\), where the sum is over all values in the segment.</li>
+            </ul>
+        </li>
+        <li><strong>Coherence index:</strong> \(C = \sum A_k / N_{\text{components}}\), where \(N_{\text{components}}\) is the number of segments with amplitude \(\geq 0.1\).</li>
+    </ol>
+
+    <h3>6.2 Content Identification</h3>
+
+    <p>A deterministic content hash is computed using a DJB2-variant algorithm: starting with <code>hash = 0</code>, for each character \(c\) in the JSON-serialized data, compute <code>hash = ((hash &lt;&lt; 5) - hash) + charCode(c)</code>. The result is formatted as <code>hid-{hex}</code>.</p>
+
+    <h3>6.3 State Evolution Rules</h3>
+
+    <p>Harmonic states evolve through two operations, each with distinct blending rules:</p>
+
+    <p><strong>Transition application</strong> (applying a new transaction to existing state): For each frequency component in the transition, find a matching component in the existing state (frequency difference \(&lt; 0.001\)). If matched, blend with an <strong>80/20 ratio</strong>:</p>
+
+    <div class="equation-block">
+        $$f' = 0.8 \cdot f_{\text{existing}} + 0.2 \cdot f_{\text{transition}}$$
+        <span class="eq-label">(13)</span>
+    </div>
+
+    <p>In the canonical <code>PhaseState</code> implementation, the harmonics array stores only frequency values, so the 80/20 blend applies to frequency alone. An alternative implementation path (<code>applyTransitionsToState</code> in the block layer) tracks full frequency/amplitude/phase triplets and uses a <strong>50/50 blend</strong> for all three components. Non-matching components are added to the state as new entries in both paths.</p>
+
+    <p><strong>State merge</strong> (merging two states during synchronization): Matching components are blended with a <strong>50/50 ratio</strong>:</p>
+
+    <div class="equation-block">
+        $$f' = 0.5 \cdot f_A + 0.5 \cdot f_B$$
+        <span class="eq-label">(14)</span>
+    </div>
+
+    <p>Non-matching components from either state are added to the merged result.</p>
+
+    <h3>6.4 Harmonic Resonance Scoring</h3>
+
+    <p>The resonance between two harmonic states is computed by matching their frequency components (within 0.001 tolerance) and scoring each match:</p>
+
+    <div class="equation-block">
+        $$\text{score}_k = 1 - \frac{|\Delta A_k| + |\Delta \phi_k|}{2}$$
+        <span class="eq-label">(15)</span>
+    </div>
+
+    <p>The overall resonance is the arithmetic mean of all component scores.</p>
+
+    <h3>6.5 Harmonic Similarity Search</h3>
+
+    <p>The state store supports similarity search via harmonics. Candidate vectors are retrieved by sorting on \(|f_{\text{base}} - f_{\text{target}}|\). For each candidate, a resonance score is computed:</p>
+
+    <div class="equation-block">
+        $$S = \frac{1}{N} \sum_{k} \left(1 - \frac{\Delta\phi_k}{2\pi}\right) \cdot \frac{\min(A_k, A'_k)}{\max(A_k, A'_k)} \cdot (1 - \Delta f_k)$$
+        <span class="eq-label">(16)</span>
+    </div>
+
+    <p>where components are matched if their frequency difference is \(&lt; 10\%\). Candidates with overall resonance below <strong>0.3</strong> are excluded from results.</p>
+
+    <hr>
+
+    <!-- SECTION 7 -->
+    <h2><span class="section-num">7.</span> Phase-Augmented Vector Embeddings</h2>
+
+    <h3>7.1 Extended Vector Storage</h3>
+
+    <p>The PRN vector store extends standard vector databases by adding <strong>phase</strong> and <strong>natural frequency</strong> as first-class attributes on every embedding:</p>
+
+    <pre><code>VectorEmbedding {
+  id:               string
+  vector:           Float32Array     // L2-normalized
+  phase:            number           // range [0, 2*PI]
+  naturalFrequency: number
+  lastUpdated:      number           // epoch ms
+  metadata:         Record&lt;string, any&gt;
+}</code></pre>
+
+    <p>The default index type is <strong>HNSW</strong> (Hierarchical Navigable Small World). The store supports up to <strong>10,000,000 vectors</strong>. The default similarity metric is <strong>cosine similarity</strong>. All vectors are L2-normalized on insertion.</p>
+
+    <h3>7.2 Frequency-Domain Query Filters</h3>
+
+    <p>Queries can filter by phase and frequency using min/max ranges or value/tolerance pairs, enabling frequency-domain filtering alongside traditional vector similarity search. This allows queries such as &ldquo;find the 10 nearest vectors with phase between 1.0 and 2.0 radians and natural frequency within 5 Hz of 450.&rdquo;</p>
+
+    <h3>7.3 Performance Metrics</h3>
+
+    <p>The vector store maintains a sliding window of the last <strong>1,000 query times</strong> and computes percentile statistics (p50, p95, p99) for performance monitoring.</p>
+
+    <hr>
+
+    <!-- SECTION 8 -->
+    <h2><span class="section-num">8.</span> Semantic Shard Assignment</h2>
+
+    <h3>8.1 Shard Count Calculation</h3>
+
+    <p>The number of shards is computed dynamically based on the node count and configuration parameters:</p>
+
+    <div class="equation-block">
+        $$n_{\text{shards}} = \min\!\left(\max\!\left(\left\lceil \frac{N}{n_{\max}} \right\rceil,\; \lfloor n_{\text{target}} \rfloor\right),\; \left\lfloor \frac{N}{n_{\min}} \right\rfloor \lor 1\right)$$
+        <span class="eq-label">(17)</span>
+    </div>
+
+    <p>where \(N\) is the node count, \(n_{\max}\) is the maximum nodes per shard, \(n_{\min}\) is the minimum nodes per shard, and \(n_{\text{target}}\) is the desired shard count.</p>
+
+    <h3>8.2 K-Means Clustering on Semantic Vectors</h3>
+
+    <p>Nodes are assigned to shards via k-means clustering on their semantic vectors:</p>
+
+    <ol>
+        <li><strong>Initialization:</strong> Select initial cluster centers by evenly spacing through the node list (deterministic, not random). Specifically, center \(i\) is the node at index \(\lfloor i \cdot N / k \rfloor\).</li>
+        <li><strong>Assignment:</strong> Each node is assigned to the nearest center using Euclidean distance on Float32Array semantic vectors.</li>
+        <li><strong>Update:</strong> Each center is recomputed as the component-wise mean of its assigned nodes' vectors.</li>
+        <li><strong>Iteration:</strong> Steps 2&ndash;3 repeat for exactly <strong>5 iterations</strong> (hardcoded, no convergence check).</li>
+        <li><strong>Fallback:</strong> Nodes without semantic vectors are assigned round-robin: <code>shardIndex = nodeIndex % shardCount</code>.</li>
+    </ol>
+
+    <h3>8.3 Incremental Resharding</h3>
+
+    <p>On network membership changes, the system computes a change percentage:</p>
+
+    <div class="equation-block">
+        $$\Delta = \frac{N_{\text{new}} + N_{\text{departed}}}{N_{\text{existing}}}$$
+        <span class="eq-label">(18)</span>
+    </div>
+
+    <p>If \(\Delta\) exceeds the configured resharding threshold, a full reshard is triggered with <code>forceShardsCount = existingShardCount + 1</code>. Otherwise, an incremental update is performed: departed nodes are removed, and new nodes are assigned to the shard with the fewest current members (greedy load balancing). The shard assignment version number increments on every update.</p>
+
+    <h3>8.4 Shard Protocol</h3>
+
+    <p>Shard assignments are distributed via a custom libp2p protocol registered at <code>/paragon/shard-coord/1.0.0</code>. The coordinator broadcasts JSON-encoded shard assignments to all connected peers. Peers accept newer assignments based on version number or timestamp comparison.</p>
+
+    <hr>
+
+    <!-- SECTION 9 -->
+    <h2><span class="section-num">9.</span> HFTP Wire Protocol</h2>
+
+    <h3>9.1 Node Types</h3>
+
+    <p>The HFTP network recognizes four node types: <code>server</code> (registry), <code>haven</code> (crisis intervention endpoint), <code>builder</code> (third-party application), and <code>relay</code> (hierarchical aggregation point).</p>
+
+    <h3>9.2 Protocol Constants</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Constant</th>
+                    <th>Value</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>HEARTBEAT_INTERVAL_MS</strong></td><td>15,000</td><td>Heartbeat frequency</td></tr>
+                <tr><td><strong>NODE_TIMEOUT_MS</strong></td><td>45,000</td><td>Eviction threshold (3&times; heartbeat)</td></tr>
+                <tr><td><strong>AGGREGATE_BROADCAST_MS</strong></td><td>30,000</td><td>Aggregate broadcast frequency</td></tr>
+                <tr><td><strong>MAX_COEFFICIENTS</strong></td><td>128</td><td>Max GLE coefficient vector length</td></tr>
+                <tr><td><strong>MAX_NODE_ID_LENGTH</strong></td><td>64</td><td>Max nodeId string length</td></tr>
+                <tr><td><strong>MAX_REGION_LENGTH</strong></td><td>32</td><td>Max region string length</td></tr>
+                <tr><td><strong>MAX_MESSAGE_SIZE</strong></td><td>4,096 bytes</td><td>Wire message size limit</td></tr>
+                <tr><td><strong>MAX_LOCAL_PEER_COUNT</strong></td><td>10,000</td><td>Max peers behind a relay</td></tr>
+                <tr><td><strong>MAX_TIMESTAMP_AGE_MS</strong></td><td>60,000</td><td>Clock drift tolerance</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>9.3 Client-to-Registry Messages</h3>
+
+    <p>Four message types flow from nodes to the registry:</p>
+
+    <pre><code>RegisterMessage  { type: 'register',      nodeId, nodeType, region, timestamp }
+HealthMessage    { type: 'health',        nodeId, coefficients[128], breathingAttested, healthSummary?, timestamp }
+HeartbeatMessage { type: 'heartbeat',     nodeId, timestamp }
+RelayStatusMsg   { type: 'relay-status',  nodeId, localPeerCount, localAggregate, timestamp }</code></pre>
+
+    <p>The <code>coefficients</code> field carries up to 128 DCT-II coefficients (validated as <code>length &leq; MAX_COEFFICIENTS</code>; serialized as JSON; Float64 in memory, Float32 on wire per the codebase convention of 512 bytes at maximum length). This is the <strong>only health data that leaves the device</strong>. The optional <code>healthSummary</code> contains derived values: <code>classification</code> (string), <code>stressIndicator</code> (float [0,1]), and <code>breathingDepth</code> (float [0,1]).</p>
+
+    <h3>9.4 Registry-to-Client Messages</h3>
+
+    <pre><code>WelcomeMessage   { type: 'welcome',    registryId, nodeCount, timestamp }
+PeersMessage     { type: 'peers',      peers: NodeInfo[], timestamp }
+AggregateMessage { type: 'aggregate',  activeAgents, avgStressLevel, avgBreathingDepth, dominantClassification, timestamp }
+ErrorMessage     { type: 'error',      code, message, timestamp }</code></pre>
+
+    <h3>9.5 Connection Handshake</h3>
+
+    <p>The HFTP connection sequence is:</p>
+
+    <ol>
+        <li>Client opens WebSocket to registry URL.</li>
+        <li>On <code>open</code>, client immediately sends a <code>RegisterMessage</code> with its nodeId, nodeType, and region.</li>
+        <li>Registry validates the message, checks for duplicate nodeId across all active WebSocket sessions (rejects with <code>DUPLICATE_NODE</code> error if found), binds the WebSocket session to the nodeId.</li>
+        <li>Registry responds with <code>WelcomeMessage</code>, then broadcasts an updated <code>PeersMessage</code> to all connected nodes.</li>
+        <li>Client starts a heartbeat interval at <code>HEARTBEAT_INTERVAL_MS</code> (15s).</li>
+    </ol>
+
+    <p><strong>Session binding security:</strong> After registration, all subsequent messages on that WebSocket must carry the same <code>nodeId</code>. A mismatch triggers a <code>NODE_ID_MISMATCH</code> error. This prevents impersonation without requiring cryptographic key exchange at the transport layer.</p>
+
+    <h3>9.6 Message Validation</h3>
+
+    <p>All inbound messages pass through a two-stage validation pipeline: (1) JSON parse, (2) structural validation. The validation rules are:</p>
+
+    <ul>
+        <li><strong>nodeId:</strong> string, non-empty, &leq; 64 characters, matches <code>/^[a-zA-Z0-9_-]+$/</code>.</li>
+        <li><strong>nodeType:</strong> must be one of <code>server</code>, <code>haven</code>, <code>builder</code>, <code>relay</code>.</li>
+        <li><strong>coefficients:</strong> array, length &leq; 128, every element must be a finite number.</li>
+        <li><strong>timestamp:</strong> finite positive number, within <strong>60 seconds</strong> of server time. This prevents replay attacks.</li>
+        <li><strong>stressIndicator, breathingDepth:</strong> finite numbers in [0, 1].</li>
+        <li><strong>localPeerCount:</strong> non-negative integer, &leq; 10,000.</li>
+    </ul>
+
+    <h3>9.7 Reconnection</h3>
+
+    <p>Clients implement exponential backoff reconnection: <code>delay = min(baseDelay &times; 2^attempts, 60000)</code>, where <code>baseDelay = 5000 ms</code> and the cap is 60 seconds. The attempt counter resets to 0 on successful connection. Configurable <code>maxReconnectAttempts</code> (0 = unlimited).</p>
+
+    <hr>
+
+    <!-- SECTION 10 -->
+    <h2><span class="section-num">10.</span> Hierarchical Privacy-Preserving Aggregation</h2>
+
+    <h3>10.1 Two-Tier Relay Architecture</h3>
+
+    <p>The HFTP network implements a two-tier topology where relay nodes act as local registries for their connected peers while simultaneously connecting as clients to the central registry:</p>
+
+    <pre><code>[Haven Phones] ──ws──&gt; [Relay Node] ──ws──&gt; [Central Registry]
+[Builder Apps] ──ws──&gt; [Relay Node] ──ws──&gt; [Central Registry]</code></pre>
+
+    <p>Each relay runs a full <code>HFTPRegistry</code> instance locally (with ID <code>relay-{nodeId}</code>) and an <code>HFTPNodeClient</code> upstream. This dual role enables the relay to serve its local peers even if the upstream connection is lost.</p>
+
+    <h3>10.2 Relay Aggregate Pre-Computation</h3>
+
+    <p>Every <strong>10,000 ms</strong> (10 seconds), the relay computes a local aggregate from its connected peers and sends it upstream as a <code>RelayStatusMessage</code>. The aggregate contains:</p>
+
+    <ul>
+        <li><code>localPeerCount</code>: number of peers connected to this relay</li>
+        <li><code>avgStressLevel</code>: average of all local peers' stress indicators</li>
+        <li><code>avgBreathingDepth</code>: average of all local peers' breathing depth values</li>
+        <li><code>dominantClassification</code>: most common classification among local peers</li>
+    </ul>
+
+    <p><strong>The central registry never receives individual health data from relay-connected peers.</strong> It receives only the pre-computed aggregate. This is the core privacy mechanism: individual coefficients stay within the relay's local network.</p>
+
+    <h3>10.3 Weighted Network Aggregate</h3>
+
+    <p>The central registry computes the network-wide aggregate using a weighted average across two data sources:</p>
+
+    <ol>
+        <li><strong>Direct nodes</strong> (nodes connected directly to the registry with health data): each contributes weight = 1.</li>
+        <li><strong>Relay nodes</strong> (with local aggregates): each contributes weight = <code>relayPeerCount</code>.</li>
+    </ol>
+
+    <pre><code>totalSources = directCount + sum(relay.relayPeerCount for each relay with aggregate)
+weightedStress = sum(direct.stressIndicator) + sum(relay.avgStressLevel * relay.relayPeerCount)
+avgStressLevel = weightedStress / totalSources
+dominantClassification = classification with highest count (relay weighted by peerCount)</code></pre>
+
+    <div class="key-insight">
+        <p><strong>Privacy-by-design.</strong> The registry stores coefficients internally for aggregate computation but <strong>strips them when broadcasting peer lists</strong>. The <code>getNodes()</code> method destructures each internal node to exclude <code>coefficients</code>, <code>healthSummary</code>, and <code>localAggregate</code> before returning. No node ever receives another node's raw coefficient data through the registry.</p>
+    </div>
+
+    <h3>10.4 Merged Peer Visibility</h3>
+
+    <p>When global peers are received from upstream, the relay merges them with its local peers for broadcast to local clients:</p>
+
+    <pre><code>globalFiltered = globalPeers.filter(p =&gt; p.nodeId !== selfNodeId)
+allPeers = [...localPeers, ...globalFiltered]</code></pre>
+
+    <p>This gives local peers visibility of the entire network without requiring direct connections to the central registry. The relay filters its own nodeId from the global list to prevent self-reference.</p>
+
+    <h3>10.5 Upstream Disconnection Resilience</h3>
+
+    <p>When the upstream registry becomes unreachable, the relay continues operating: local peers remain connected and can communicate with each other. The upstream client uses the exponential backoff reconnection described in Section&nbsp;9.7. When the connection is restored, the relay re-syncs automatically. The relay's HTTP status endpoint reports <code>'online'</code> or <code>'upstream-disconnected'</code> accordingly.</p>
+
+    <hr>
+
+    <!-- SECTION 11 -->
+    <h2><span class="section-num">11.</span> Breathing Attestation as Participation Proof</h2>
+
+    <p>Each node in the HFTP network carries a <code>breathingAttested</code> boolean that is broadcast to all peers in the peer list. This flag is set to <code>true</code> when a node submits valid health data with the <code>breathingAttested</code> field set to <code>true</code> in its <code>HealthMessage</code>. On fresh registration, the flag defaults to <code>false</code>.</p>
+
+    <p>This constitutes a novel form of <strong>proof of biological participation</strong>: nodes prove they have a living human behind them by submitting breathing-derived GLE coefficients. The attestation status is visible to all peers, creating a network-wide map of which nodes have active human participants versus automated or dormant nodes.</p>
+
+    <hr>
+
+    <!-- SECTION 12 -->
+    <h2><span class="section-num">12.</span> Node Eviction and Lifecycle</h2>
+
+    <p>The registry runs an eviction sweep every \(\frac{\text{NODE\_TIMEOUT\_MS}}{3}\) (i.e., every <strong>15,000 ms</strong> with the default 45-second timeout). Any node whose <code>lastSeen</code> timestamp is older than <code>NODE_TIMEOUT_MS</code> is removed. If any nodes are evicted, an updated peer list is broadcast to all remaining nodes.</p>
+
+    <p>The heartbeat handler silently ignores heartbeats from unknown nodes (no error response), allowing graceful handling of out-of-order messages during reconnection.</p>
+
+    <p>The registry enforces a configurable <code>maxNodes</code> capacity. When at capacity, new registrations from unknown nodeIds are rejected with a <code>REGISTRY_FULL</code> error. Re-registrations from known nodeIds are always accepted.</p>
+
+    <hr>
+
+    <!-- SECTION 13 -->
+    <h2><span class="section-num">13.</span> Network Discovery</h2>
+
+    <p>PRN nodes discover each other through three parallel mechanisms:</p>
+
+    <ul>
+        <li><strong>mDNS/Bonjour:</strong> Local network discovery using service type <code>emergentwave</code> and advertising name <code>ew-node-{nodeId}</code>.</li>
+        <li><strong>UPnP:</strong> UDP broadcast on port <code>nodePort + 1000</code>, with broadcast interval of <strong>30 seconds</strong> and UPnP port mapping TTL of <strong>1,800 seconds</strong>. Message type: <code>ew-node-announce</code>.</li>
+        <li><strong>Bootstrap server:</strong> Cloud discovery via a persistent bootstrap node (e.g., <code>bootstrap.emergentwave.net:9545</code>).</li>
+    </ul>
+
+    <p>The <code>DiscoveryManager</code> aggregates all three mechanisms, synchronizing every <strong>60 seconds</strong>. Discovered peers are registered with the node's API, and multiaddresses are constructed as <code>/ip4/{address}/tcp/{port}</code>.</p>
+
+    <hr>
+
+    <!-- SECTION 14 -->
+    <h2><span class="section-num">14.</span> Self-Healing and Reputation</h2>
+
+    <h3>14.1 Self-Healing Engine</h3>
+
+    <p>The self-healing engine runs diagnostic checks every <strong>300,000 ms</strong> (5 minutes):</p>
+
+    <ul>
+        <li><strong>Connectivity:</strong> If the number of connected peers drops below <strong>3</strong>, trigger peer discovery.</li>
+        <li><strong>Consensus health:</strong> If the Kuramoto order parameter drops below <strong>0.8</strong>, adjust the node's center frequency by <strong>+0.1</strong> to seek better resonance.</li>
+        <li><strong>Reputation anomaly:</strong> If the weighted average reputation across peers drops below <strong>50</strong>, boost self-reputation by <strong>+10</strong>.</li>
+    </ul>
+
+    <h3>14.2 Reputation Engine</h3>
+
+    <p>Peer reputation scores use exponential decay with additive updates. The update formula is:</p>
+
+    <div class="equation-block">
+        $$R_{\text{new}} = \text{clamp}\!\left(0,\; 100,\; R_{\text{current}} \cdot \gamma + \delta\right)$$
+        <span class="eq-label">(19)</span>
+    </div>
+
+    <p>where \(\gamma = 0.95\) is the decay factor and \(\delta\) is the reputation change (positive or negative). Scores are clamped to [0, 100]. The default initial score is 100. Peers with reputation \(\geq 75\) are classified as <strong>trusted</strong>.</p>
+
+    <h3>14.3 Node Reconnection</h3>
+
+    <p>Nodes implement reconnection with exponential backoff: maximum <strong>5 attempts</strong> with delays of [1000, 5000, 15000, 30000, 60000] ms. Reconnection status is checked every <strong>30,000 ms</strong> (30 seconds).</p>
+
+    <hr>
+
+    <!-- SECTION 15 -->
+    <h2><span class="section-num">15.</span> Resource Marketplace</h2>
+
+    <h3>15.1 Resource Types</h3>
+
+    <p>The PRN marketplace supports five resource types: <code>COMPUTATION</code>, <code>STORAGE</code>, <code>BANDWIDTH</code>, <code>AI_TRAINING</code>, and <code>MODEL_PARAMETERS</code>. Each resource offer and request carries metadata specifying hardware requirements (CPU cores, GPU type, GPU memory, storage type, bandwidth, model type).</p>
+
+    <h3>15.2 Matching Algorithm</h3>
+
+    <p>The marketplace uses a greedy first-match algorithm: iterate all pending requests (or active offers), check for resource type match, verify that <code>offer.pricePerUnit &leq; request.maxPricePerUnit</code> and <code>offer.quantity &geq; request.quantity</code>, plus hardware requirements (minimum CPU cores, minimum GPU memory, GPU-required flag, specific model type). The first qualifying match is selected.</p>
+
+    <h3>15.3 Escrow Payment Model</h3>
+
+    <p>On transaction creation, the buyer's funds move from <code>available</code> to <code>reserved</code>. On completion, reserved funds transfer to the seller's <code>balance</code> and <code>available</code>. On failure, reserved funds return to the buyer's <code>available</code>. Wallet addresses follow the format <code>ew-{first 8 chars of nodeId}</code>. Expired offers and requests are cleaned up every <strong>60,000 ms</strong> (60 seconds).</p>
+
+    <hr>
+
+    <!-- SECTION 16 -->
+    <h2><span class="section-num">16.</span> PCR Configuration Reference</h2>
+
+    <p>The complete Phase-Coupled Resonance configuration for a PRN node:</p>
+
+    <pre><code>PCRConfig {
+  frequency:          number    // oscillator frequency (Hz)
+  couplingStrength:    number    // coupling strength, range [0, 1]
+  maxPhaseOffset:      number    // max allowed phase offset before correction
+  discoveryInterval:   number    // peer discovery interval (ms)
+  syncInterval:        number    // phase synchronization interval (ms)
+  tolerance:           number    // phase difference tolerance
+}
+
+PCRNodeConfig {
+  initialPhase:        number    // initial phase value, range [0, 1]
+  pcr:                 PCRConfig // optional PCR-specific config
+}</code></pre>
+
+    <hr>
+
+    <!-- SECTION 17 -->
+    <h2><span class="section-num">17.</span> Message Authentication and Transport Security</h2>
+
+    <p>All inter-node communication is secured at two layers:</p>
+
+    <ul>
+        <li><strong>Transport layer:</strong> WebSocket connections use TLS 1.3 (wss://) for all registry, relay, and client communication. The HFTP server validates the <code>Origin</code> header and enforces the 4,096-byte message size limit before parsing, preventing oversized payload attacks.</li>
+        <li><strong>Session binding:</strong> On initial registration, the server binds each <code>nodeId</code> to its WebSocket session. Subsequent messages from a different session for the same <code>nodeId</code> are rejected with a <code>NODE_ID_MISMATCH</code> error. Duplicate <code>nodeId</code> registrations from new connections are rejected outright, preventing session hijacking.</li>
+        <li><strong>Consensus votes:</strong> Each vote must carry a non-empty <code>signature</code> field and the voter's <code>nodeId</code> must appear in the shard member list. Votes without signatures or from non-members are silently discarded.</li>
+        <li><strong>Timestamp validation:</strong> All incoming messages with timestamps are validated against a <strong>60-second</strong> clock drift window (<code>MAX_TIMESTAMP_AGE_MS</code>). Messages with timestamps in the future or older than 60 seconds are rejected, preventing replay attacks.</li>
+    </ul>
+
+    <p>The libp2p transport layer (used for P2P consensus, shard coordination, and wave propagation) provides encrypted channels via the Noise protocol framework with Ed25519 key pairs. Each node's identity is derived from its cryptographic key pair, and all protocol streams are mutually authenticated.</p>
+
+    <hr>
+
+    <!-- SECTION 18 -->
+    <h2><span class="section-num">18.</span> Crash Recovery and State Persistence</h2>
+
+    <p>PRN nodes are designed for graceful degradation and recovery:</p>
+
+    <ul>
+        <li><strong>Heartbeat-based liveness:</strong> Each node sends heartbeats every 15,000 ms. If a node crashes, the registry detects its absence after 45,000 ms (3&times; heartbeat) and evicts it. Remaining nodes receive an updated peer list automatically.</li>
+        <li><strong>Client reconnection:</strong> The <code>HFTPNodeClient</code> implements exponential backoff reconnection with a base delay of 5,000 ms and a cap of 60,000 ms. On reconnection, the client re-registers with the registry, restoring its presence in the network.</li>
+        <li><strong>Relay resilience:</strong> Relays continue serving local peers during upstream disconnection (Section 10.5). The local registry operates independently, and re-syncs automatically on reconnection.</li>
+        <li><strong>Shard state:</strong> Shard assignments carry version numbers and timestamps. On rejoining, a node accepts the latest version from the coordinator, ensuring consistency without requiring full state transfer.</li>
+        <li><strong>Transaction recovery:</strong> Pending cross-shard transactions are swept every 5,000 ms. Any transaction older than 15,000 ms is automatically aborted, preventing indefinite resource locks from crashed coordinators. The deadlock detector runs on every new transaction proposal, catching cycles caused by partial failures.</li>
+        <li><strong>Harmonic state checkpointing:</strong> Each harmonic state carries a version counter and content hash (<code>hid-{hex}</code>). On recovery, nodes can verify state integrity by recomputing the deterministic hash from the stored data. The 50/50 merge blend (Eq. 14) enables state reconciliation between divergent replicas.</li>
+    </ul>
+
+    <hr>
+
+    <!-- SECTION 19 -->
+    <h2><span class="section-num">19.</span> Sybil Resistance via Coefficient Entropy Analysis</h2>
+
+    <p>The PRN network employs multiple layers of Sybil resistance derived from its biosignal-native architecture:</p>
+
+    <ul>
+        <li><strong>Breathing attestation:</strong> Each node's <code>breathingAttested</code> flag (Section 11) provides a binary proof of biological participation. Nodes that submit GLE coefficients derived from real breathing patterns receive attestation; automated or synthetic nodes do not. The attestation status is visible network-wide.</li>
+        <li><strong>Coefficient validation:</strong> The registry validates that coefficient arrays contain up to 128 values (enforced as <code>length &leq; MAX_COEFFICIENTS</code>), all of which must be finite numbers (no NaN, no Infinity). This prevents trivial Sybil attacks using random or degenerate coefficient vectors.</li>
+        <li><strong>Entropy analysis:</strong> GLE coefficients derived from genuine biosignals exhibit characteristic statistical properties — non-uniform amplitude distributions, frequency-domain structure from the DCT-II transform, and temporal consistency across updates. Synthetic coefficients (random, constant, or algorithmically generated) lack this structure. The <code>harmonicResonance</code> scoring function (Eq. 16) naturally penalizes artificial coefficient patterns because they fail to produce meaningful frequency-component matches with legitimate nodes.</li>
+        <li><strong>Session binding:</strong> One nodeId per WebSocket session, enforced at the transport layer. Creating multiple identities requires multiple authenticated connections, each carrying distinct coefficient streams.</li>
+        <li><strong>Relay weighting:</strong> The weighted aggregate computation (Section 10.3) weights each relay by its <code>relayPeerCount</code>. A Sybil attacker running many fake nodes behind a single relay would need to produce diverse, biologically plausible coefficient streams for each — a task that requires solving the GLE encoding problem, which is precisely what the GLE patent protects.</li>
+    </ul>
+
+    <div class="key-insight">
+        <p><strong>The GLE choke point.</strong> Ultimately, Sybil resistance in a PRN network reduces to the difficulty of producing valid GLE coefficients. The General Learning Encoder transforms raw biosignals into a 128-dimensional coefficient space using patented encoding techniques. Generating coefficients that pass entropy analysis, produce meaningful harmonic resonance with legitimate nodes, and maintain temporal consistency across heartbeat intervals requires either a real human with real sensors or a successful attack on the GLE encoding itself.</p>
+    </div>
+
+    <hr>
+
+    <!-- REFERENCES -->
+    <h2><span class="section-num">20.</span> References</h2>
+
+    <div class="references">
+        <ol>
+            <li>Tran, P. &amp; Tran, A. (2026). &ldquo;Paragon Resonance Network: A Compliance-First Distributed Infrastructure for Health AI.&rdquo; Univault Technologies Whitepaper, v1.0. <code>paragondao.org/docs/PRN_INFRASTRUCTURE_WHITEPAPER.html</code></li>
+            <li>Kuramoto, Y. (1975). &ldquo;Self-entrainment of a population of coupled non-linear oscillators.&rdquo; <em>International Symposium on Mathematical Problems in Theoretical Physics</em>, Lecture Notes in Physics, Vol. 39, pp. 420&ndash;422.</li>
+            <li>Castro, M. &amp; Liskov, B. (1999). &ldquo;Practical Byzantine Fault Tolerance.&rdquo; <em>OSDI 1999</em>.</li>
+            <li>Bernstein, D. J. (1991). DJB2 hash function. Originally described in a <em>comp.lang.c</em> Usenet post, December 1991.</li>
+            <li>Malkov, Y. A. &amp; Yashunin, D. A. (2020). &ldquo;Efficient and Robust Approximate Nearest Neighbor Using Hierarchical Navigable Small World Graphs.&rdquo; <em>IEEE TPAMI</em>, 42(4), pp. 824&ndash;836.</li>
+            <li>Gray, J. &amp; Lamport, L. (2006). &ldquo;Consensus on Transaction Commit.&rdquo; <em>ACM TODS</em>, 31(1), pp. 133&ndash;160.</li>
+            <li>Lloyd, S. P. (1982). &ldquo;Least Squares Quantization in PCM.&rdquo; <em>IEEE Transactions on Information Theory</em>, 28(2), pp. 129&ndash;137. (k-means algorithm.)</li>
+            <li>Ahmed, N., Natarajan, T., &amp; Rao, K. R. (1974). &ldquo;Discrete Cosine Transform.&rdquo; <em>IEEE Transactions on Computers</em>, C-23(1), pp. 90&ndash;93.</li>
+        </ol>
+    </div>
+
+</div>
+
+<!-- COLOPHON -->
+<div class="colophon">
+    <p class="colophon-brand">Univault Technologies, LLC</p>
+    <p class="colophon-contact"><a href="mailto:research@paragondao.org">research@paragondao.org</a> &nbsp;&middot;&nbsp; <a href="https://paragondao.org">paragondao.org</a></p>
+    <p class="colophon-date">Version 1.0 &mdash; March 2026 &nbsp;&middot;&nbsp; Public Technical Disclosure<br>&copy; 2026 Univault Technologies, LLC. The text of this document is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" style="color: var(--gold);">CC BY 4.0</a>. The algorithms, methods, and techniques described herein are publicly disclosed and are not subject to copyright protection. This publication establishes the public availability of these techniques as of the date above.</p>
+</div>
+
+</body>
+</html>

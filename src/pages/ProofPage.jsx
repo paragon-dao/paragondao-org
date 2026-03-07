@@ -300,17 +300,27 @@ const ProofPage = () => {
               fontSize: 'clamp(40px, 7vw, 72px)',
               fontWeight: '800', letterSpacing: '-0.03em',
               color: textPrimary, lineHeight: 1.05,
-              marginBottom: '32px',
+              marginBottom: '24px',
             }}>
               THE NETWORK IS LIVE
             </h1>
 
             <p style={{
-              fontSize: 'clamp(16px, 2.5vw, 20px)',
+              fontSize: 'clamp(17px, 2.5vw, 22px)',
+              color: textPrimary, maxWidth: '700px', margin: '0 auto 16px',
+              lineHeight: 1.5, fontWeight: '500',
+            }}>
+              3.6 billion people have no access to continuous health monitoring.
+              Not because the technology doesn&rsquo;t exist &mdash; because the infrastructure was never built for them.
+            </p>
+
+            <p style={{
+              fontSize: 'clamp(15px, 2vw, 18px)',
               color: textSecondary, maxWidth: '640px', margin: '0 auto 48px',
               lineHeight: 1.6,
             }}>
-              The first health network where adding people makes it cheaper to run, not more expensive.
+              This is the first health network where adding people makes it cheaper to run, not more expensive.
+              A phone. 30 seconds. 512 bytes. That&rsquo;s all it takes.
             </p>
 
             <motion.a
@@ -505,13 +515,13 @@ const ProofPage = () => {
                 </svg>
               </div>
               <p style={{ fontSize: '16px', fontWeight: '600', color: textPrimary, marginBottom: '8px' }}>
-                Deploy a second node
+                Run a node
               </p>
               <p style={{ fontSize: '13px', color: textSecondary, marginBottom: '20px' }}>
-                The network gets stronger with every node
+                Early access &mdash; node software launching soon
               </p>
               <a
-                href="https://github.com/univault-org/paragon-node"
+                href="https://github.com/paragon-dao/hftp-spec"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -522,7 +532,7 @@ const ProofPage = () => {
                   textDecoration: 'none', transition: 'all 0.2s ease',
                 }}
               >
-                View on GitHub
+                Read the Protocol Spec
               </a>
             </motion.div>
           </div>
@@ -680,6 +690,164 @@ const ProofPage = () => {
                 gets <em>cheaper</em> as it grows instead of more expensive.
               </p>
             </div>
+          </motion.div>
+        </Section>
+
+        {/* ═══ PCR CONSENSUS ═══ */}
+        <Section>
+          <h2 style={{
+            fontSize: '14px', fontWeight: '600',
+            letterSpacing: '0.1em', textTransform: 'uppercase',
+            color: '#8b5cf6', marginBottom: '12px',
+          }}>
+            Consensus Mechanism
+          </h2>
+          <h3 style={{
+            fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700',
+            color: textPrimary, marginBottom: '16px', letterSpacing: '-0.02em',
+          }}>
+            Proof of Coherent Resonance
+          </h3>
+          <p style={{
+            fontSize: '17px', color: textSecondary, marginBottom: '48px', maxWidth: '700px',
+            lineHeight: 1.7,
+          }}>
+            Most blockchains prove you did math. This one proves you&rsquo;re alive.
+            PCR combines Kuramoto oscillator synchronization with Byzantine fault tolerance &mdash;
+            the first consensus mechanism designed for biological data.
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '20px', marginBottom: '32px',
+          }}>
+            {/* How it works */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              style={{
+                background: cardBg, border: `1px solid ${cardBorder}`,
+                borderRadius: '16px', padding: '28px',
+                backdropFilter: 'blur(12px)',
+              }}
+            >
+              <div style={{
+                width: '44px', height: '44px', borderRadius: '12px',
+                background: 'rgba(139,92,246,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '16px',
+              }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <circle cx="12" cy="12" r="8" strokeDasharray="4 4"/>
+                  <circle cx="12" cy="12" r="11" strokeDasharray="2 3" opacity="0.5"/>
+                </svg>
+              </div>
+              <h4 style={{ fontSize: '16px', fontWeight: '700', color: textPrimary, marginBottom: '12px' }}>
+                Kuramoto Synchronization
+              </h4>
+              <p style={{ fontSize: '14px', color: textSecondary, lineHeight: 1.65, margin: 0 }}>
+                Nodes synchronize like fireflies &mdash; each adjusting its phase based on neighbors.
+                When a health snapshot arrives, validators independently assess coherence.
+                If their oscillators converge (coupling strength K &ge; 2.0), the data is coherent.
+                Fake or corrupted data breaks synchronization. The network detects it in milliseconds.
+              </p>
+            </motion.div>
+
+            {/* BFT layer */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              style={{
+                background: cardBg, border: `1px solid ${cardBorder}`,
+                borderRadius: '16px', padding: '28px',
+                backdropFilter: 'blur(12px)',
+              }}
+            >
+              <div style={{
+                width: '44px', height: '44px', borderRadius: '12px',
+                background: 'rgba(16,185,129,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '16px',
+              }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <h4 style={{ fontSize: '16px', fontWeight: '700', color: textPrimary, marginBottom: '12px' }}>
+                Byzantine Fault Tolerance
+              </h4>
+              <p style={{ fontSize: '14px', color: textSecondary, lineHeight: 1.65, margin: 0 }}>
+                Kuramoto catches bad data. BFT catches bad actors.
+                The network tolerates up to 1/3 malicious validators &mdash; the mathematical maximum for any consensus protocol.
+                A 66% supermajority must agree before any health snapshot is committed.
+                Your data doesn&rsquo;t just get stored &mdash; it gets validated.
+              </p>
+            </motion.div>
+
+            {/* Why it matters */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              style={{
+                background: cardBg, border: `1px solid ${cardBorder}`,
+                borderRadius: '16px', padding: '28px',
+                backdropFilter: 'blur(12px)',
+              }}
+            >
+              <div style={{
+                width: '44px', height: '44px', borderRadius: '12px',
+                background: 'rgba(245,158,11,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '16px',
+              }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <h4 style={{ fontSize: '16px', fontWeight: '700', color: textPrimary, marginBottom: '12px' }}>
+                Why This Is New
+              </h4>
+              <p style={{ fontSize: '14px', color: textSecondary, lineHeight: 1.65, margin: 0 }}>
+                Bitcoin proves computation. Ethereum proves state transitions. PCR proves biological coherence.
+                No existing consensus mechanism was designed for health data.
+                We built one from the physics of coupled oscillators &mdash;
+                the same math that describes neurons firing in sync, heartbeats synchronizing, and circadian rhythms aligning.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* PCR callout */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{
+              padding: '24px 28px',
+              borderLeft: '3px solid #8b5cf6',
+              background: isDark ? 'rgba(139,92,246,0.06)' : 'rgba(139,92,246,0.04)',
+              borderRadius: '0 12px 12px 0',
+            }}
+          >
+            <p style={{
+              fontSize: '15px', lineHeight: 1.7,
+              color: textPrimary, margin: 0,
+            }}>
+              <strong>The technical detail:</strong> PCR uses a Kuramoto coupling function to measure phase coherence
+              across validator nodes. When the order parameter r &ge; 0.8, the committee has converged &mdash;
+              the biosignal is coherent. This is combined with a standard BFT voting round (66% threshold)
+              to produce a finalized health proof. The full algorithm is published in our{' '}
+              <a href="/docs/PRN_IMPLEMENTATION_SPECIFICATION.html" target="_blank" rel="noopener noreferrer"
+                style={{ color: '#8b5cf6', textDecoration: 'underline' }}>
+                Implementation Specification
+              </a>.
+            </p>
           </motion.div>
         </Section>
 
@@ -1038,6 +1206,57 @@ const ProofPage = () => {
               ))}
             </div>
           </motion.div>
+
+          {/* Where we are today */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{
+              marginTop: '32px', padding: '28px',
+              borderRadius: '16px',
+              background: isDark ? 'rgba(16,185,129,0.06)' : 'rgba(16,185,129,0.04)',
+              border: `1px solid rgba(16,185,129,0.15)`,
+              maxWidth: '700px', margin: '32px auto 0',
+            }}
+          >
+            <h4 style={{
+              fontSize: '16px', fontWeight: '700', color: textPrimary,
+              marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px',
+            }}>
+              <PulsingDot color={green} size={8} />
+              Where we are today
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {[
+                { status: 'LIVE', label: 'GLE encoder API', desc: 'Encode biosignals via the live BAGLE endpoint — verify with curl right now', color: green },
+                { status: 'LIVE', label: 'HFTP registry', desc: 'Node discovery and peer tracking — connected nodes appear on this page in real time', color: green },
+                { status: 'LIVE', label: 'Protocol specifications', desc: 'Full algorithm specs, wire protocol, and SDK published on GitHub', color: green },
+                { status: 'BUILDING', label: 'Breathing check-in app', desc: 'The 30-second phone experience described above — in active development', color: '#f59e0b' },
+                { status: 'BUILDING', label: 'Public node deployment', desc: 'Node software currently in early access — open deployment coming soon', color: '#f59e0b' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{
+                    fontSize: '10px', fontWeight: '800', letterSpacing: '0.05em',
+                    padding: '3px 8px', borderRadius: '4px',
+                    background: item.color === green ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)',
+                    color: item.color, minWidth: '68px', textAlign: 'center',
+                    marginTop: '2px',
+                  }}>
+                    {item.status}
+                  </span>
+                  <div>
+                    <p style={{ fontSize: '14px', fontWeight: '600', color: textPrimary, margin: '0 0 2px' }}>
+                      {item.label}
+                    </p>
+                    <p style={{ fontSize: '13px', color: textSecondary, margin: 0, lineHeight: 1.5 }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </Section>
 
         {/* ═══ SECTION 5: SCALING BREAKTHROUGH ═══ */}
@@ -1306,89 +1525,8 @@ const ProofPage = () => {
           </div>
         </Section>
 
-        {/* ═══ SECTION 7: DEPLOY YOUR OWN NODE ═══ */}
+        {/* ═══ PROOF ARTIFACTS ═══ */}
         <Section>
-          <div style={{
-            background: termBg, borderRadius: '16px',
-            border: '1px solid rgba(255,255,255,0.1)',
-            padding: '48px 32px', textAlign: 'center',
-          }}>
-            <h2 style={{
-              fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: '700',
-              color: '#fff', marginBottom: '12px',
-            }}>
-              Deploy your own node
-            </h2>
-            <p style={{
-              fontSize: '15px', color: 'rgba(255,255,255,0.5)',
-              marginBottom: '36px',
-            }}>
-              Three commands. Your node joins the network.
-            </p>
-
-            <pre style={{
-              textAlign: 'left', margin: '0 auto 36px',
-              maxWidth: '560px',
-              fontFamily: "'SF Mono', 'Fira Code', 'Consolas', monospace",
-              fontSize: '14px', lineHeight: 2,
-              color: '#10b981',
-            }}>
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}># Clone the repository</span>{'\n'}
-              <span style={{ color: 'rgba(255,255,255,0.4)' }}>$</span> git clone https://github.com/univault-org/paragon-node.git{'\n'}
-              {'\n'}
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}># Start your node</span>{'\n'}
-              <span style={{ color: 'rgba(255,255,255,0.4)' }}>$</span> cd paragon-node && docker compose up{'\n'}
-              {'\n'}
-              <span style={{ color: 'rgba(255,255,255,0.3)' }}># Your node is now part of the network</span>
-            </pre>
-
-            <div style={{
-              display: 'flex', justifyContent: 'center',
-              gap: '16px', flexWrap: 'wrap',
-            }}>
-              <motion.a
-                href="https://github.com/univault-org/paragon-node"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  padding: '14px 28px', borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #10b981, #059669)',
-                  color: '#fff', fontWeight: '600', fontSize: '15px',
-                  textDecoration: 'none', border: 'none',
-                  boxShadow: '0 4px 20px rgba(16,185,129,0.3)',
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-                Deploy a Node
-              </motion.a>
-              <motion.a
-                href="https://github.com/univault-org/paragon-node/tree/main/src"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  padding: '14px 28px', borderRadius: '10px',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: '#fff', fontWeight: '600', fontSize: '15px',
-                  textDecoration: 'none',
-                }}
-              >
-                Read the Code
-              </motion.a>
-            </div>
-          </div>
-        </Section>
-
-        {/* ═══ SECTION 8: PROOF ARTIFACTS ═══ */}
-        <Section style={{ paddingBottom: '120px' }}>
           <h2 style={{
             fontSize: '14px', fontWeight: '600',
             letterSpacing: '0.1em', textTransform: 'uppercase',
@@ -1434,10 +1572,9 @@ const ProofPage = () => {
                 ),
               },
               {
-                title: 'Proof Script',
-                desc: 'View the test script on GitHub',
-                href: 'https://github.com/univault-org/paragon-node',
-                external: true,
+                title: 'Implementation Spec',
+                desc: 'Full algorithms, formulas, and wire protocol',
+                href: '/docs/PRN_IMPLEMENTATION_SPECIFICATION.html',
                 icon: (
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M16 18l6-6-6-6"/>
@@ -1449,8 +1586,6 @@ const ProofPage = () => {
               <motion.a
                 key={item.title}
                 href={item.href}
-                target={item.external ? '_blank' : undefined}
-                rel={item.external ? 'noopener noreferrer' : undefined}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1482,6 +1617,213 @@ const ProofPage = () => {
                 </div>
               </motion.a>
             ))}
+          </div>
+        </Section>
+
+        {/* ═══ TECHNICAL DOCUMENTATION ═══ */}
+        <Section>
+          <h2 style={{
+            fontSize: '14px', fontWeight: '600',
+            letterSpacing: '0.1em', textTransform: 'uppercase',
+            color: textSecondary, marginBottom: '12px',
+          }}>
+            Technical Documentation
+          </h2>
+          <h3 style={{
+            fontSize: 'clamp(24px, 3.5vw, 32px)', fontWeight: '700',
+            color: textPrimary, marginBottom: '32px', letterSpacing: '-0.02em',
+          }}>
+            Read the specifications
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '16px',
+          }}>
+            {[
+              { title: 'PRN Whitepaper', desc: 'Architecture and consensus design', href: '/docs/PRN_INFRASTRUCTURE_WHITEPAPER.html' },
+              { title: 'Implementation Spec', desc: 'Full algorithms, formulas, and wire protocol — public technical disclosure', href: '/docs/PRN_IMPLEMENTATION_SPECIFICATION.html' },
+              { title: 'HFTP Protocol', desc: 'Harmonic Frequency Transfer Protocol whitepaper', href: '/docs/HFTP_PROTOCOL_WHITEPAPER.html' },
+            ].map((doc, i) => (
+              <motion.a
+                key={doc.title}
+                href={doc.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '16px',
+                  padding: '20px', borderRadius: '12px',
+                  background: cardBg, border: `1px solid ${cardBorder}`,
+                  backdropFilter: 'blur(12px)',
+                  textDecoration: 'none', transition: 'border-color 0.2s ease',
+                }}
+              >
+                <div style={{
+                  width: '40px', height: '40px', borderRadius: '10px',
+                  background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0, color: textSecondary,
+                }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
+                <div>
+                  <p style={{ fontSize: '15px', fontWeight: '600', color: textPrimary, marginBottom: '2px' }}>
+                    {doc.title}
+                  </p>
+                  <p style={{ fontSize: '13px', color: textSecondary, margin: 0 }}>
+                    {doc.desc}
+                  </p>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </Section>
+
+        {/* ═══ JOIN THE NETWORK (final section — page ends on energy) ═══ */}
+        <Section style={{ paddingBottom: '120px' }}>
+          <div style={{
+            background: termBg, borderRadius: '16px',
+            border: '1px solid rgba(255,255,255,0.1)',
+            padding: '48px 32px', textAlign: 'center',
+          }}>
+            <h2 style={{
+              fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: '700',
+              color: '#fff', marginBottom: '12px',
+            }}>
+              Join the network
+            </h2>
+            <p style={{
+              fontSize: '16px', color: 'rgba(255,255,255,0.6)',
+              maxWidth: '560px', margin: '0 auto 12px',
+              lineHeight: 1.6,
+            }}>
+              Health infrastructure that runs on phones, costs nothing to join,
+              and gets stronger with every person.
+            </p>
+            <p style={{
+              fontSize: '14px', color: 'rgba(255,255,255,0.4)',
+              maxWidth: '520px', margin: '0 auto 36px',
+              lineHeight: 1.6,
+            }}>
+              Builders: read the protocol specs and verify the live API.
+              Everyone else: the app is coming &mdash; follow us to get early access.
+            </p>
+
+            <pre style={{
+              textAlign: 'left', margin: '0 auto 36px',
+              maxWidth: '560px',
+              fontFamily: "'SF Mono', 'Fira Code', 'Consolas', monospace",
+              fontSize: '14px', lineHeight: 2,
+              color: '#10b981',
+            }}>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}># Verify the live node</span>{'\n'}
+              <span style={{ color: 'rgba(255,255,255,0.4)' }}>$</span> curl https://bagle-api.fly.dev/health | python3 -m json.tool{'\n'}
+              {'\n'}
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}># Explore the protocol spec</span>{'\n'}
+              <span style={{ color: 'rgba(255,255,255,0.4)' }}>$</span> git clone https://github.com/paragon-dao/hftp-spec.git
+            </pre>
+
+            <div style={{
+              display: 'flex', justifyContent: 'center',
+              gap: '16px', flexWrap: 'wrap', marginBottom: '32px',
+            }}>
+              <motion.a
+                href="https://github.com/paragon-dao/hftp-spec"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  padding: '14px 28px', borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #10b981, #059669)',
+                  color: '#fff', fontWeight: '600', fontSize: '15px',
+                  textDecoration: 'none', border: 'none',
+                  boxShadow: '0 4px 20px rgba(16,185,129,0.3)',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                Protocol Spec
+              </motion.a>
+              <motion.a
+                href="/docs/PRN_IMPLEMENTATION_SPECIFICATION.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  padding: '14px 28px', borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: '#fff', fontWeight: '600', fontSize: '15px',
+                  textDecoration: 'none',
+                }}
+              >
+                Implementation Spec
+              </motion.a>
+              <motion.a
+                href="/docs"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  padding: '14px 28px', borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: '#fff', fontWeight: '600', fontSize: '15px',
+                  textDecoration: 'none',
+                }}
+              >
+                API Docs
+              </motion.a>
+            </div>
+
+            {/* Non-technical CTA */}
+            <div style={{
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              paddingTop: '28px',
+              maxWidth: '480px', margin: '0 auto',
+            }}>
+              <p style={{
+                fontSize: '14px', color: 'rgba(255,255,255,0.5)',
+                marginBottom: '16px',
+              }}>
+                Not a developer? Follow us on GitHub to get notified when the app launches.
+              </p>
+              <motion.a
+                href="https://github.com/paragon-dao"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  padding: '12px 24px', borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: 'rgba(255,255,255,0.7)', fontWeight: '500', fontSize: '14px',
+                  textDecoration: 'none',
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" opacity="0.7">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                Follow ParagonDAO on GitHub
+              </motion.a>
+            </div>
           </div>
         </Section>
 
