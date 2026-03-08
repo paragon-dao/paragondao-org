@@ -9,6 +9,51 @@ import Background from '../components/Background'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { HFTPClient } from '../agent/hftp-client'
+// Lazy load globe only when user scrolls near it
+function LazyGlobe(props) {
+  const [shouldLoad, setShouldLoad] = React.useState(false)
+  const triggerRef = React.useRef(null)
+
+  React.useEffect(() => {
+    if (!triggerRef.current) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setShouldLoad(true); obs.disconnect() } },
+      { rootMargin: '200px' } // start loading 200px before visible
+    )
+    obs.observe(triggerRef.current)
+    return () => obs.disconnect()
+  }, [])
+
+  if (!shouldLoad) {
+    return <div ref={triggerRef} style={{ height: 'clamp(320px, 50vw, 500px)' }} />
+  }
+
+  const NetworkGlobe = React.lazy(() => import('../components/NetworkGlobe'))
+  return (
+    <React.Suspense fallback={
+      <div style={{
+        width: '100%', height: 'clamp(320px, 50vw, 500px)', borderRadius: '16px',
+        background: 'rgba(0,0,0,0.4)',
+        border: '1px solid rgba(99,102,241,0.2)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: '16px',
+      }}>
+        <div style={{
+          width: '80px', height: '80px', borderRadius: '50%',
+          border: '2px solid rgba(99,102,241,0.15)',
+          borderTopColor: '#6366f1',
+          animation: 'globeSpin 1s linear infinite',
+        }} />
+        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', letterSpacing: '0.05em' }}>
+          LOADING NETWORK
+        </span>
+        <style>{`@keyframes globeSpin { to { transform: rotate(360deg) } }`}</style>
+      </div>
+    }>
+      <NetworkGlobe {...props} />
+    </React.Suspense>
+  )
+}
 
 // ─── Animated number counter ────────────────────────────────────────────────
 function AnimatedNumber({ value, decimals = 0, duration = 1.2, prefix = '', suffix = '', style }) {
@@ -126,6 +171,7 @@ const ProofPage = () => {
   const [constellationNodes, setConstellationNodes] = useState([])
   const [networkActivity, setNetworkActivity] = useState([])
   const [networkAggregates, setNetworkAggregates] = useState(null)
+  const [globeFullscreen, setGlobeFullscreen] = useState(false)
 
   // Theme colors
   const textPrimary = isDark ? '#fff' : '#1e293b'
@@ -418,10 +464,22 @@ const ProofPage = () => {
           </h2>
           <h3 style={{
             fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700',
-            color: textPrimary, marginBottom: '48px', letterSpacing: '-0.02em',
+            color: textPrimary, marginBottom: '32px', letterSpacing: '-0.02em',
           }}>
             See it. Verify it. Run it.
           </h3>
+
+          {/* 3D Globe — lazy loaded on scroll */}
+          <div style={{ marginBottom: '48px' }}>
+            <LazyGlobe
+              constellationNodes={constellationNodes}
+              hftpPeers={hftpPeers}
+              nodeHealth={nodeHealth}
+              isDark={isDark}
+              isFullscreen={globeFullscreen}
+              onToggleFullscreen={() => setGlobeFullscreen(f => !f)}
+            />
+          </div>
 
           {/* Node cards */}
           <div style={{
