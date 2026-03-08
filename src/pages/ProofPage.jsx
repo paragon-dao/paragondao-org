@@ -2093,6 +2093,7 @@ const ProofPage = () => {
             <div style={{
               display: 'flex', justifyContent: 'center',
               gap: '16px', flexWrap: 'wrap', marginBottom: '32px',
+              position: 'relative', zIndex: 2,
             }}>
               <motion.a
                 href="https://github.com/paragon-dao/hftp-spec"
@@ -2145,6 +2146,23 @@ const ProofPage = () => {
                 }}
               >
                 API Docs
+              </motion.a>
+              <motion.a
+                href="/docs/POPULATION_HEALTH_SECURITY.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  padding: '14px 28px', borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: '#fff', fontWeight: '600', fontSize: '15px',
+                  textDecoration: 'none',
+                }}
+              >
+                Security Analysis
               </motion.a>
             </div>
 

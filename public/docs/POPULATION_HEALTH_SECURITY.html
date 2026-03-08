@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Health Intelligence as Dual-Use Infrastructure: Security Challenges and Governance at Global Scale</title>
+    <meta name="description" content="An open analysis of the national security implications of real-time population health intelligence networks, and proposed technical and governance frameworks for responsible deployment at planetary scale.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --crimson-50: #fef2f2;
+            --crimson-100: #fee2e2;
+            --crimson-200: #fecaca;
+            --crimson-300: #fca5a5;
+            --crimson-400: #f87171;
+            --crimson-500: #ef4444;
+            --crimson-600: #dc2626;
+            --crimson-700: #b91c1c;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --amber-400: #fbbf24;
+            --amber-500: #f59e0b;
+            --emerald-500: #10b981;
+            --emerald-600: #059669;
+            --text-primary: #0f172a;
+            --text-body: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --border-accent: #dc2626;
+            --bg-page: #f8fafc;
+            --bg-warm: #fff;
+        }
+
+        /* ===== SITE HEADER ===== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 50%, var(--slate-900) 100%);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+        .site-header a {
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .site-logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .site-logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+        .site-logo-name { font-size: 16px; font-weight: 700; }
+        .site-logo-tagline {
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--crimson-400);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+        .site-nav { display: flex; gap: 22px; align-items: center; }
+        .site-nav a {
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .site-nav a:hover { opacity: 1; }
+
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-body);
+            background: var(--bg-page);
+            line-height: 1.75;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            margin-top: 62px;
+            background: linear-gradient(170deg, var(--slate-900) 0%, #1a0a0a 40%, var(--slate-900) 100%);
+            padding: 100px 24px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(220,38,38,0.08) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 50%, rgba(239,68,68,0.05) 0%, transparent 60%);
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--crimson-400);
+            border: 1px solid rgba(239,68,68,0.3);
+            background: rgba(239,68,68,0.08);
+            margin-bottom: 28px;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(28px, 4.5vw, 48px);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+        .hero h1 em {
+            font-style: italic;
+            color: var(--crimson-400);
+        }
+        .hero p {
+            font-size: 18px;
+            color: var(--slate-400);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ===== CONTENT ===== */
+        .content { max-width: 780px; margin: 0 auto; padding: 60px 24px 100px; }
+
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 56px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--crimson-600);
+        }
+        h3 {
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 36px 0 12px;
+        }
+        h4 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin: 28px 0 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        p { margin-bottom: 18px; }
+        ul, ol { margin-bottom: 18px; padding-left: 24px; }
+        li { margin-bottom: 8px; }
+
+        /* ===== CALLOUT BOXES ===== */
+        .callout {
+            padding: 24px 28px;
+            border-radius: 8px;
+            margin: 28px 0;
+        }
+        .callout-danger {
+            background: var(--crimson-50);
+            border-left: 4px solid var(--crimson-600);
+        }
+        .callout-danger .callout-title { color: var(--crimson-700); }
+        .callout-info {
+            background: var(--slate-100);
+            border-left: 4px solid var(--slate-500);
+        }
+        .callout-info .callout-title { color: var(--slate-700); }
+        .callout-success {
+            background: #ecfdf5;
+            border-left: 4px solid var(--emerald-600);
+        }
+        .callout-success .callout-title { color: #065f46; }
+        .callout-title {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .callout p:last-child { margin-bottom: 0; }
+
+        /* ===== TABLES ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 15px;
+        }
+        th {
+            background: var(--slate-800);
+            color: #fff;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        tr:nth-child(even) td { background: var(--slate-50); }
+
+        /* ===== SECTION NUMBERS ===== */
+        .section-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+            background: var(--crimson-600);
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* ===== THREAT MATRIX ===== */
+        .threat-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 16px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .threat-card h4 {
+            margin-top: 0;
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+        .threat-severity {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .severity-critical { background: var(--crimson-100); color: var(--crimson-700); }
+        .severity-high { background: #fef3c7; color: #92400e; }
+        .severity-medium { background: #e0f2fe; color: #075985; }
+
+        /* ===== ARCHITECTURE DIAGRAM ===== */
+        .arch-layer {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            margin: 8px 0;
+        }
+        .arch-label {
+            width: 140px;
+            min-width: 140px;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+        .arch-content {
+            flex: 1;
+            padding: 16px 20px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            font-size: 15px;
+        }
+        .arch-content strong { color: var(--text-primary); }
+
+        /* ===== BLOCKQUOTE ===== */
+        blockquote {
+            border-left: 3px solid var(--crimson-400);
+            padding: 12px 24px;
+            margin: 24px 0;
+            background: var(--slate-50);
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        blockquote p:last-child { margin-bottom: 0; }
+
+        /* ===== FOOTER ===== */
+        .doc-footer {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+            border-top: 2px solid var(--border-light);
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .doc-footer a { color: var(--crimson-600); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .hero { padding: 80px 20px 60px; }
+            .hero h1 { font-size: 26px; }
+            .content { padding: 40px 20px 80px; }
+            h2 { font-size: 24px; }
+            .arch-layer { flex-direction: column; }
+            .arch-label { width: 100%; min-width: 100%; }
+            .site-nav { display: none; }
+            table { font-size: 13px; }
+            th, td { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header">
+    <a href="https://paragondao.org" class="site-logo">
+        <div class="site-logo-text">
+            <span class="site-logo-name">ParagonDAO</span>
+            <span class="site-logo-tagline">Open Security Analysis</span>
+        </div>
+    </a>
+    <nav class="site-nav">
+        <a href="https://paragondao.org/network">Network</a>
+        <a href="https://paragondao.org/docs/THE_HEALTH_ECONOMY">Whitepaper</a>
+        <a href="https://paragondao.org/docs/PRN_IMPLEMENTATION_SPECIFICATION">Specification</a>
+    </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">Open Security Analysis &mdash; March 2026</div>
+        <h1>Population Health Intelligence as <em>Dual-Use Infrastructure</em></h1>
+        <p>An open analysis of the national security implications of real-time population health encoding networks, and proposed technical and governance frameworks for responsible deployment at planetary scale.</p>
+    </div>
+</section>
+
+<!-- ===== CONTENT ===== -->
+<div class="content">
+
+    <div class="callout callout-danger">
+        <div class="callout-title">Why This Document Is Public</div>
+        <p>Security through obscurity does not work. The threat model described in this document will become obvious to any nation-state intelligence agency or sophisticated adversary the moment a population health intelligence network reaches meaningful scale. Publishing it openly means the solutions can be designed, debated, and deployed before the threats materialize &mdash; not after.</p>
+    </div>
+
+    <!-- ===== 1. THE COST OF NOT BUILDING ===== -->
+    <h2><span class="section-number">1</span> The Cost of Not Building</h2>
+
+    <p>The detection infrastructure that failed during COVID-19 &mdash; delayed testing, collapsed contact tracing, weeks-long gaps between community transmission and confirmation &mdash; will fail again. COVID-19 killed over 7 million people and erased $16 trillion in global GDP. The science was ready. The detection infrastructure was not.</p>
+
+    <p>A health encoding network could detect respiratory distress patterns in days instead of months. A 512-byte encoding from a smartphone in rural Vietnam would trigger the same verification pipeline as one from a hospital in Boston. That capability is the premise &mdash; and the problem.</p>
+
+    <p><strong>That infrastructure does not exist today. We are designing it &mdash; starting with the security and governance architecture, because those must be right before the detection capability scales.</strong> Population health intelligence infrastructure will have side effects. This document names them &mdash; specifically and concretely.</p>
+
+    <!-- ===== 2. THE PREMISE ===== -->
+    <h2><span class="section-number">2</span> The Premise</h2>
+
+    <p>The General Learning Encoder (GLE) compresses any biosignal &mdash; EEG, breathing patterns, metabolomics, voice biomarkers &mdash; into exactly 512 bytes. 128 floating-point coefficients. Same format, every modality, every time.</p>
+
+    <p>This makes decentralized health infrastructure possible for the first time. A snapshot of the entire planet's health fingerprint fits in 4 terabytes. A Raspberry Pi can be a full node. This efficiency is what makes decentralized, privacy-preserving architecture feasible &mdash; but it also means the barrier to operating health intelligence infrastructure drops to near zero, which is precisely why the governance design described in this document must precede scale. The <a href="https://paragondao.org/network">Paragon Resonance Network</a> is running today with three validator nodes.</p>
+
+    <p>But the same property that enables decentralized health &mdash; small, uniform, classifiable health encodings &mdash; creates a new category of risk that has no legal precedent, no regulatory framework, and no established governance model.</p>
+
+    <p><strong>If you can classify a population's health state in real time, you have created a dual-use health intelligence infrastructure.</strong></p>
+
+    <div class="callout callout-info">
+        <div class="callout-title">Where We Actually Stand</div>
+        <p>The Paragon Resonance Network is currently operated by a single US entity (Univault Technologies LLC, Utah). The initial code, protocol design, and node software all originate from one team. "Decentralization" is a future aspiration, not a current reality. Until the governance structure is established and operating independently, this is a US-originated health intelligence protocol that aspires to be decentralized. We name the risks at scale now &mdash; before scale &mdash; because the governance design must precede the growth.</p>
+    </div>
+
+    <!-- ===== 3. THE THREAT MODEL ===== -->
+    <h2><span class="section-number">3</span> The Threat Model</h2>
+
+    <p>GLE coefficients are lossy &mdash; the raw biosignal cannot be recovered. But the encoding preserves clinically meaningful features by design: a vector that classifies respiratory distress necessarily reveals whether the source has respiratory distress. You cannot reconstruct the person. You can classify their health state. That is the encoder's purpose, and it is also the privacy boundary. Formal cryptanalysis of this boundary is an open research priority (see Section 13). But individual privacy is not the threat we are addressing here.</p>
+
+    <p><strong>The threat is aggregate intelligence.</strong></p>
+
+    <div class="threat-card">
+        <h4>Threat 1: Regional Health Intelligence <span class="threat-severity severity-critical">Critical</span></h4>
+        <p>An adversary with access to aggregate network data can determine which geographic regions show abnormal health patterns. "Southeast Asia shows 23% elevated respiratory distress signals this week" is actionable intelligence &mdash; for pandemic response, but also for military planning and economic manipulation.</p>
+    </div>
+
+    <div class="threat-card">
+        <h4>Threat 2: Economic Front-Running <span class="threat-severity severity-high">High</span></h4>
+        <p>Population health signals predict healthcare demand. An actor with access to aggregate health trends before they become public can short pharmaceutical stocks, trade insurance futures, or position in healthcare equities with information advantage that would make insider trading look quaint.</p>
+    </div>
+
+    <div class="threat-card">
+        <h4>Threat 3: Bioweapon Confirmation <span class="threat-severity severity-critical">Critical</span></h4>
+        <p>A network designed to detect health anomalies in real time is also a network that confirms whether a biological attack succeeded. The same dashboard that shows "anomalous respiratory patterns detected in Region X" to a public health officer confirms to an adversary whether a biological attack achieved its intended effect.</p>
+    </div>
+
+    <div class="threat-card">
+        <h4>Threat 4: Population Vulnerability Mapping <span class="threat-severity severity-high">High</span></h4>
+        <p>Longitudinal health data reveals which populations are physiologically weakened &mdash; by chronic disease, by pollution, by inadequate nutrition. This is public health data when used for aid allocation. It is targeting data when used by an adversary.</p>
+    </div>
+
+    <div class="threat-card">
+        <h4>Threat 5: Coercion via Health Data <span class="threat-severity severity-medium">Medium</span></h4>
+        <p>Even without identifying individuals, aggregate health data about specific communities (ethnic groups, political regions, refugee populations) can be used for discriminatory policy, targeted disinformation, or coercive diplomacy &mdash; for example, leveraging knowledge of a population's declining health in negotiations.</p>
+    </div>
+
+    <!-- ===== 4. WHY EXISTING LAW DOES NOT COVER THIS ===== -->
+    <h2><span class="section-number">4</span> Why Existing Law Does Not Cover This</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Framework</th>
+                <th>What It Covers</th>
+                <th>What It Misses</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>HIPAA</strong> (US, 1996)</td>
+                <td>Individual health records at covered entities</td>
+                <td>Non-invertible encodings with no PII. Population aggregates. Non-US data.</td>
+            </tr>
+            <tr>
+                <td><strong>GDPR</strong> (EU, 2018)</td>
+                <td>"Personal data" broadly defined; health data is special category</td>
+                <td>GLE coefficients may or may not qualify as personal data (classifiable but non-invertible). No framework for population-level aggregate analysis.</td>
+            </tr>
+            <tr>
+                <td><strong>China PIPL</strong> (2021)</td>
+                <td>Personal information; data localization</td>
+                <td>A global health network is architecturally incompatible with mandatory data localization.</td>
+            </tr>
+            <tr>
+                <td><strong>WHO IHR</strong> (2005)</td>
+                <td>Disease reporting by governments to WHO</td>
+                <td>Continuous automated monitoring by a decentralized protocol. Real-time signals vs. periodic reports.</td>
+            </tr>
+            <tr>
+                <td><strong>BWC</strong> (Biological Weapons Convention, 1972)</td>
+                <td>Development and stockpiling of biological weapons</td>
+                <td>Intelligence infrastructure that could detect OR confirm biological attacks. Dual-use monitoring.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="callout callout-info">
+        <div class="callout-title">The Gap</div>
+        <p>No existing legal framework addresses real-time, population-level health signal aggregation from non-invertible encodings produced by a decentralized protocol. The closest analogue &mdash; wastewater monitoring &mdash; is governed by a patchwork of local regulations and voluntary participation, not international law.</p>
+    </div>
+
+    <!-- ===== 5. HISTORICAL PRECEDENTS ===== -->
+    <h2><span class="section-number">5</span> Historical Precedents for Dual-Use Infrastructure</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Precedent</th>
+                <th>Dual-Use Tension</th>
+                <th>Governance Response</th>
+                <th>Lesson</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>GPS</strong></td>
+                <td>US military navigation &rarr; global civilian infrastructure</td>
+                <td>Selective availability, then full civilian access (2000)</td>
+                <td>Unilateral control produces sovereign alternatives (GLONASS, BeiDou, Galileo). Fragmentation is the default without governance design.</td>
+            </tr>
+            <tr>
+                <td><strong>Nuclear / IAEA</strong></td>
+                <td>Energy &harr; weapons</td>
+                <td>Treaty-based governance, independent inspectors, UN Security Council referral</td>
+                <td>Most successful dual-use framework &mdash; but required a demonstrated catastrophe to motivate and decades to build.</td>
+            </tr>
+            <tr>
+                <td><strong>Wastewater Monitoring</strong></td>
+                <td>Population health signals &harr; bioweapon detection</td>
+                <td>Patchwork of local regulations, voluntary participation</td>
+                <td>Closest parallel to GLE. Technology deployed before governance existed. Still catching up.</td>
+            </tr>
+            <tr>
+                <td><strong>Internet (ICANN/IETF)</strong></td>
+                <td>Global commerce &harr; global monitoring</td>
+                <td>Multi-stakeholder governance, rough consensus</td>
+                <td>Worked for 20 years, now fragmenting under geopolitical pressure (Great Firewall, RuNet).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ===== 6. THE CORE TENSION ===== -->
+    <h2><span class="section-number">6</span> The Core Architectural Tension</h2>
+
+    <blockquote>
+        <p>The same property that makes population health intelligence valuable for public health &mdash; the ability to detect regional health anomalies in real time &mdash; is exactly what makes it valuable for adversarial intelligence.</p>
+    </blockquote>
+
+    <p>This is not a bug to fix. It is a fundamental tension that must be managed through architecture and governance. Any solution must preserve the public health value (pandemic early warning, outbreak detection, global health equity) while making adversarial use (military intelligence, economic front-running, attack confirmation) technically difficult and socially accountable.</p>
+
+    <p>The question is not whether to build this infrastructure. The question is who controls the aggregate view, under what constraints, and with what accountability.</p>
+
+    <!-- ===== 7. PROPOSED TECHNICAL ARCHITECTURE ===== -->
+    <h2><span class="section-number">7</span> Proposed Technical Architecture</h2>
+
+    <p>We propose a five-layer defense architecture. Each layer addresses a different attack surface.</p>
+
+    <div style="margin: 32px 0;">
+        <div class="arch-layer">
+            <div class="arch-label" style="background: var(--emerald-600);">Layer 1<br>Individual</div>
+            <div class="arch-content">
+                <strong>On-device encoding, lossy compression.</strong> Raw biosignals never leave the user's device. GLE encoding discards the phase and temporal information required for waveform reconstruction. The raw signal cannot be recovered. However, health-relevant features are preserved by design &mdash; that is the encoder's function. Formal cryptanalysis quantifying the inference boundary is an open research priority.
+            </div>
+        </div>
+        <div class="arch-layer">
+            <div class="arch-label" style="background: #0284c7;">Layer 2<br>Local Aggregate</div>
+            <div class="arch-content">
+                <strong>Differential privacy on all aggregate queries.</strong> Every query against local node data adds calibrated mathematical noise (Laplacian or Gaussian mechanism). Individual contributions cannot be determined from aggregate results. Privacy budget (epsilon) tracked per query to prevent cumulative information leakage.
+            </div>
+        </div>
+        <div class="arch-layer">
+            <div class="arch-label" style="background: #7c3aed;">Layer 3<br>Regional</div>
+            <div class="arch-content">
+                <strong>Federated aggregation with jurisdictional boundaries.</strong> Regional nodes compute aggregates for their jurisdiction only. No single node holds a global view. Cross-region queries require explicit multi-party computation &mdash; no node can unilaterally see another region's health patterns.
+            </div>
+        </div>
+        <div class="arch-layer">
+            <div class="arch-label" style="background: var(--crimson-600);">Layer 4<br>Global</div>
+            <div class="arch-content">
+                <strong>Threshold cryptography for population-level queries.</strong> Any query that spans multiple regions requires M-of-N node operators from at least K different jurisdictions to jointly compute the answer using secure multi-party computation (MPC). No single nation, company, or operator can unilaterally access global health patterns. The cryptographic threshold is a technical guarantee, not a policy promise.
+            </div>
+        </div>
+        <div class="arch-layer">
+            <div class="arch-label" style="background: var(--slate-800);">Layer 5<br>Governance</div>
+            <div class="arch-content">
+                <strong>Multi-stakeholder oversight with transparency requirements.</strong> All aggregate queries are logged. Query logs are public (query structure, not results). An independent technical committee audits the differential privacy parameters. Governance spans nations, institutions, and civil society &mdash; no single stakeholder class controls the system.
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 8. DIFFERENTIAL PRIVACY ===== -->
+    <h2><span class="section-number">8</span> Differential Privacy: The Mathematical Foundation</h2>
+
+    <p>Differential privacy (Dwork, 2006; deployed by Apple, Google, US Census Bureau) provides a formal guarantee: the output of any aggregate query is statistically indistinguishable whether or not any single individual's data is included. For a health encoding network, this means:</p>
+
+    <ul>
+        <li>You <strong>can</strong> detect "respiratory distress is elevated in Southeast Asia" (population-level signal survives the noise)</li>
+        <li>You <strong>cannot</strong> determine whether any specific person or small community contributed to that signal</li>
+        <li>The privacy guarantee is <strong>mathematical</strong>, not policy-based &mdash; it holds regardless of the adversary's computational power</li>
+    </ul>
+
+    <h3>Privacy Budget Management</h3>
+    <p>Each query against the data consumes a portion of the privacy budget (epsilon). This is cumulative &mdash; enough queries against the same dataset can erode privacy guarantees. The protocol must enforce:</p>
+    <ul>
+        <li>Per-epoch privacy budgets that reset on a defined schedule</li>
+        <li>Query rate limiting tied to the privacy budget, not just throughput</li>
+        <li>Public reporting of cumulative epsilon expenditure</li>
+    </ul>
+
+    <!-- ===== 9. SECURE MULTI-PARTY COMPUTATION ===== -->
+    <h2><span class="section-number">9</span> Threshold Cryptography and Secure Multi-Party Computation</h2>
+
+    <p>For a health encoding network, MPC ensures that regional node operators can jointly compute aggregate health indices without any operator seeing another region's data. The computation is correct but private &mdash; no participant learns more than the output. Threshold requirements (e.g., 5-of-7 operators from at least 3 countries) prevent any single actor from unilaterally computing population-level intelligence.</p>
+
+    <p>MPC is deployed in production (Sharemind, Estonia, since 2015). The primary constraint is performance. For a network generating one aggregate per epoch, this is acceptable. For nonlinear computation (classification, anomaly detection), feasibility depends on the specific functions computed &mdash; this requires benchmarking with concrete MPC protocols (see Section 13).</p>
+
+    <h3>Jurisdictional Diversity Requirement</h3>
+    <p>The threshold scheme must require operators from multiple legal jurisdictions. This ensures that no single government can compel all threshold participants to cooperate, because at least some participants are outside its legal reach. This is a technical enforcement of political decentralization.</p>
+
+    <!-- ===== 10. GEOGRAPHIC METADATA ===== -->
+    <h2><span class="section-number">10</span> The Geographic Metadata Problem</h2>
+
+    <p>This is the hardest design decision in the entire system.</p>
+
+    <p>Health encodings without geographic context have limited public health value. "Someone somewhere has respiratory distress" is not actionable. "Respiratory distress is elevated in Bangkok this week" is actionable. But geographic metadata is also exactly what transforms health data into intelligence data.</p>
+
+    <h3>Proposed Approach: Hierarchical Geographic Resolution</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Query Level</th>
+                <th>Geographic Resolution</th>
+                <th>Access Requirement</th>
+                <th>Use Case</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Public</td>
+                <td>Continental</td>
+                <td>Open API</td>
+                <td>Global health trends</td>
+            </tr>
+            <tr>
+                <td>Institutional</td>
+                <td>Country-level</td>
+                <td>Verified public health agency</td>
+                <td>National health monitoring</td>
+            </tr>
+            <tr>
+                <td>Authorized</td>
+                <td>Province/State</td>
+                <td>MPC threshold (M-of-N)</td>
+                <td>Regional outbreak detection</td>
+            </tr>
+            <tr>
+                <td>Emergency</td>
+                <td>City-level</td>
+                <td>Supermajority MPC + public audit log</td>
+                <td>Active outbreak response</td>
+            </tr>
+            <tr>
+                <td>Never</td>
+                <td>Neighborhood/individual</td>
+                <td>Architecturally infeasible below minimum population threshold</td>
+                <td>N/A &mdash; queries refused when bucket size &lt; N</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The resolution hierarchy ensures that finer geographic precision requires progressively stronger authorization, more parties, and more transparency. The finest level (neighborhood/individual) is made architecturally infeasible through the combination of differential privacy noise floors and minimum population bucket sizes. Queries are refused when the target population falls below a defined threshold N. Note: if an adversary has auxiliary information (e.g., knowledge that only one user exists in a particular area), no amount of differential privacy noise prevents inference about that individual. The minimum bucket size N must be set conservatively and is an open research question (see Section 13).</p>
+
+    <!-- ===== 11. GOVERNANCE MODEL ===== -->
+    <h2><span class="section-number">11</span> Governance Framework</h2>
+
+    <p>Technical safeguards are necessary but not sufficient. Governance must address what cryptography cannot: who sets the parameters, who audits compliance, and who adjudicates disputes.</p>
+
+    <h3>Proposed Multi-Stakeholder Structure</h3>
+
+    <h4>Technical Committee</h4>
+    <ul>
+        <li>Sets and audits differential privacy parameters (epsilon budgets, noise calibration)</li>
+        <li>Reviews MPC threshold requirements</li>
+        <li>Publishes quarterly transparency reports on aggregate query patterns</li>
+        <li>Membership: cryptographers, differential privacy researchers, security engineers</li>
+    </ul>
+
+    <h4>Public Health Advisory Board</h4>
+    <ul>
+        <li>Defines legitimate public health use cases for aggregate data</li>
+        <li>Reviews and approves institutional access requests</li>
+        <li>Advises on geographic resolution requirements for outbreak response</li>
+        <li>Membership: epidemiologists, WHO representatives, national health agencies</li>
+    </ul>
+
+    <h4>Civil Society Oversight</h4>
+    <ul>
+        <li>Monitors for discriminatory impact of health intelligence systems</li>
+        <li>Reviews access logs and query patterns for misuse indicators</li>
+        <li>Advocates for communities disproportionately affected by health intelligence systems</li>
+        <li>Membership: digital rights organizations, public interest advocates, community representatives</li>
+    </ul>
+
+    <h4>Node Operator Council</h4>
+    <ul>
+        <li>Manages MPC threshold parameters and jurisdictional diversity requirements</li>
+        <li>Coordinates emergency access protocols</li>
+        <li>Enforces operator code of conduct</li>
+        <li>Membership: elected from active node operators, minimum jurisdictional representation</li>
+    </ul>
+
+    <h3>Enforcement Mechanisms</h3>
+    <p>Multi-stakeholder governance without enforcement power is an advisory committee, not a governance body. The system must have concrete enforcement capabilities:</p>
+    <ul>
+        <li><strong>Node operator expulsion:</strong> Operators who violate the protocol or code of conduct can be removed from the MPC threshold set via council vote, effectively excluding them from aggregate computation</li>
+        <li><strong>Key revocation:</strong> Cryptographic keys for MPC participation can be revoked, making protocol violation technically enforceable, not just socially enforceable</li>
+        <li><strong>Economic penalties:</strong> Staked collateral (required for node operation) can be slashed for protocol violations, creating financial accountability</li>
+        <li><strong>Public disclosure:</strong> All enforcement actions are published, creating reputational accountability</li>
+    </ul>
+    <p>We note that enforcement against nation-state actors requires mechanisms beyond what any protocol can provide. The IAEA's enforcement works because it has UN Security Council referral capability. Nothing proposed here has comparable power. This is an honest limitation of any decentralized governance system operating without treaty backing.</p>
+
+    <!-- ===== 12. EMERGENCY ACCESS ===== -->
+    <h2><span class="section-number">12</span> Emergency Access Protocol</h2>
+
+    <p>Pandemics do not wait for governance processes. The system must have a defined, transparent, auditable emergency access path that provides faster-than-normal access to higher-resolution data during genuine public health emergencies.</p>
+
+    <h3>Multi-Path Emergency Trigger</h3>
+    <p>WHO PHEIC declarations are political acts subject to member state pressure &mdash; the COVID-19 PHEIC was delayed by weeks. Relying on a single political process as the sole emergency trigger is a governance vulnerability. We propose three independent trigger paths, each with different access scopes:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Trigger Path</th>
+                <th>Who Activates</th>
+                <th>Access Scope</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Path A: International</strong></td>
+                <td>WHO PHEIC declaration</td>
+                <td>Global, city-level resolution</td>
+                <td>90 days, renewable</td>
+            </tr>
+            <tr>
+                <td><strong>Path B: Regional</strong></td>
+                <td>National/regional health authority (CDC, ECDC, etc.)</td>
+                <td>Own jurisdiction only, city-level</td>
+                <td>30 days, renewable</td>
+            </tr>
+            <tr>
+                <td><strong>Path C: Network</strong></td>
+                <td>Supermajority (75%+) of node operators across 5+ jurisdictions</td>
+                <td>Specified regions, province-level</td>
+                <td>14 days, renewable</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Emergency Protocol (All Paths)</h3>
+    <ol>
+        <li><strong>Emergency is declared</strong> via one of the three trigger paths above</li>
+        <li><strong>Technical Committee verifies the trigger</strong> and defines the scope (geographic area, data types, resolution level)</li>
+        <li><strong>Supermajority MPC threshold is invoked</strong> &mdash; at least 7-of-9 operators from at least 5 jurisdictions must participate in query computation</li>
+        <li><strong>All emergency queries are logged in an immutable public audit trail</strong></li>
+        <li><strong>Emergency access expires automatically</strong> per the trigger path's duration unless renewed through the same process</li>
+        <li><strong>Post-emergency review</strong>: Civil Society Oversight publishes a full audit of all emergency data access within 90 days of expiration</li>
+    </ol>
+
+    <div class="callout callout-success">
+        <div class="callout-title">Design Principle</div>
+        <p>Emergency access must be <strong>fast but never silent</strong>. Every emergency query produces a public record. Speed and transparency are not in tension &mdash; the audit trail is automatic, not retrospective.</p>
+    </div>
+
+    <!-- ===== 13. WHAT WE DO NOT YET KNOW ===== -->
+    <h2><span class="section-number">13</span> Open Questions</h2>
+
+    <p>This document proposes a framework. It does not claim to have solved every problem. The following questions remain open and require broader expertise than any single team possesses:</p>
+
+    <ol>
+        <li><strong>What is the correct epsilon (privacy budget) for population health data?</strong> Too tight and the data loses public health value. Too loose and adversarial inference becomes possible. This requires empirical testing with real health data under IRB oversight.</li>
+
+        <li><strong>How do you enforce jurisdictional diversity when nation-states can operate nodes pseudonymously?</strong> Technical identity verification of node operators creates its own privacy risk. This is an unsolved tension.</li>
+
+        <li><strong>What happens when a nation-state legally compels all domestic node operators to share data?</strong> Jurisdictional diversity helps only if some operators are unreachable. What if they are not?</li>
+
+        <li><strong>Is differential privacy sufficient for health encodings, or do GLE coefficients leak more information through composition than standard numerical data?</strong> The frequency-domain structure of GLE coefficients may have properties that interact with differential privacy mechanisms in unexpected ways. This requires formal analysis.</li>
+
+        <li><strong>What is the end-to-end privacy guarantee when all five architectural layers compose?</strong> Each layer has its own privacy mechanism. Differential privacy composes with degradation. MPC composes with DP in non-trivial ways. The system-level privacy guarantee may be significantly weaker than any individual layer's guarantee. This requires formal composition analysis.</li>
+
+        <li><strong>What aggregation functions will be computed via MPC, and are they feasible?</strong> If the aggregation is a simple sum, MPC is straightforward. If it involves classification, anomaly detection, or nonlinear computation, MPC costs may be prohibitive. The functions must be specified concretely and benchmarked with a real MPC protocol (SPDZ, ABY3, or similar).</li>
+
+        <li><strong>How do you govern a system that spans jurisdictions with fundamentally different values regarding health intelligence?</strong> The EU's privacy-maximalist approach and China's state-monitoring approach cannot both be satisfied. Is fragmentation inevitable?</li>
+
+        <li><strong>What is the minimum population size below which aggregate queries should be refused entirely?</strong> A query about "all users in Vatican City" is an individual-level query. The minimum bucket size determines the floor of geographic resolution.</li>
+
+        <li><strong>Who governs the governors?</strong> Every governance structure eventually faces the question of self-amendment. How do you prevent the governance framework itself from being captured?</li>
+
+        <li><strong>Who is liable for false negatives?</strong> If the system fails to detect an outbreak because the differential privacy noise threshold was set too high, who bears responsibility? If a government relies on network data biased by uneven adoption, who is accountable for resulting policy failures?</li>
+
+        <li><strong>Who is liable for misuse of emergency data?</strong> If a government uses emergency access data for purposes beyond public health, what is the legal recourse? These liability questions have no clear answers under existing law and must be addressed in the governance charter.</li>
+    </ol>
+
+    <!-- ===== 14. GEOPOLITICAL REALITY ===== -->
+    <!-- ===== 14. ADOPTION BIAS ===== -->
+    <h2><span class="section-number">14</span> The Adoption Bias Problem</h2>
+
+    <p>The document assumes a network that reaches "meaningful scale." But which populations will opt in?</p>
+
+    <p>If adoption is concentrated in wealthy democracies with smartphone penetration and digital health literacy, the network produces a biased global health picture. If the system detects "no respiratory distress signals from Sub-Saharan Africa," is that because there is no respiratory distress, or because there are no nodes there?</p>
+
+    <p>Selection bias in voluntary health intelligence systems is well-documented. The network must:</p>
+    <ul>
+        <li>Report coverage density alongside health signals &mdash; every aggregate must include sample size and geographic coverage percentage</li>
+        <li>Define minimum coverage thresholds below which aggregate signals are flagged as "insufficient data" rather than "healthy"</li>
+        <li>Actively invest in adoption in underrepresented regions, not passively wait for participation</li>
+        <li>Never represent absence of data as absence of disease</li>
+    </ul>
+
+    <!-- ===== 16. EXPORT CONTROLS ===== -->
+    <h2><span class="section-number">15</span> Export Controls and Dual-Use Classification</h2>
+
+    <p>Population health intelligence technology may fall under the Wassenaar Arrangement's dual-use technology controls. Technology with population-monitoring capability is exactly the category that Wassenaar covers. The 2013-2017 Wassenaar renegotiation around "intrusion software" nearly killed legitimate security research. A population health intelligence system could face similar regulatory challenges.</p>
+
+    <h3>Open Regulatory Questions</h3>
+    <ul>
+        <li>Does GLE encoding software qualify as dual-use technology under Wassenaar Category 5?</li>
+        <li>Does the aggregate query system constitute controlled technology under BIS (Bureau of Industry and Security) classification?</li>
+        <li>If the software or algorithms are export-controlled, does open-source distribution create legal exposure?</li>
+        <li>What are the licensing implications for node operators in different jurisdictions?</li>
+    </ul>
+
+    <div class="callout callout-danger">
+        <div class="callout-title">Action Required</div>
+        <p>We are seeking consultation with trade compliance counsel regarding Wassenaar Arrangement applicability and BIS classification. This analysis must be completed before the protocol specification is published. If export controls apply, the open-source distribution model may require modification.</p>
+    </div>
+
+    <!-- ===== 17. CALL FOR COLLABORATION ===== -->
+    <h2><span class="section-number">16</span> Call for Collaboration</h2>
+
+    <p>We are publishing this analysis because we believe the challenges described here exceed what any single team, company, or even country can solve alone. We are actively seeking collaboration from:</p>
+
+    <ul>
+        <li><strong>Differential privacy researchers</strong> &mdash; to formally analyze GLE coefficients under DP mechanisms and determine appropriate epsilon budgets</li>
+        <li><strong>MPC/threshold cryptography engineers</strong> &mdash; to prototype and benchmark the multi-party computation layer</li>
+        <li><strong>International health law scholars</strong> &mdash; to map the regulatory landscape and identify governance precedents</li>
+        <li><strong>National security analysts</strong> &mdash; to stress-test the threat model and identify gaps we have missed</li>
+        <li><strong>Public health agencies</strong> &mdash; to define the minimum data resolution required for effective outbreak detection</li>
+        <li><strong>Digital rights organizations</strong> &mdash; to evaluate the civil liberties implications and propose safeguards</li>
+        <li><strong>Node operators and protocol engineers</strong> &mdash; to evaluate the feasibility and performance implications of the proposed architecture</li>
+        <li><strong>Trade compliance counsel</strong> &mdash; to determine Wassenaar Arrangement applicability and BIS classification for population health encoding technology</li>
+        <li><strong>Geopolitical analysts</strong> &mdash; to model state behavior scenarios and design governance for adversarial geopolitical conditions</li>
+    </ul>
+
+    <div class="callout callout-danger">
+        <div class="callout-title">An Invitation, Not an Announcement</div>
+        <p>This document describes a problem and proposes a direction. It is not a specification. The specification should be written collaboratively with the communities it affects. We are looking for partners, critics, and co-authors &mdash; not approval.</p>
+    </div>
+
+    <!-- ===== 18. TIMELINE ===== -->
+    <h2><span class="section-number">17</span> Proposed Development Path</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Phase</th>
+                <th>Milestone</th>
+                <th>Dependency</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Current</td>
+                <td>3-node network running consensus on synthetic data</td>
+                <td>Complete</td>
+            </tr>
+            <tr>
+                <td>Next</td>
+                <td>Differential privacy layer on local node aggregates</td>
+                <td>Epsilon calibration research</td>
+            </tr>
+            <tr>
+                <td>Phase 2</td>
+                <td>Federated regional nodes with jurisdictional boundaries</td>
+                <td>Node operator onboarding</td>
+            </tr>
+            <tr>
+                <td>Phase 3</td>
+                <td>MPC threshold queries across regions</td>
+                <td>MPC protocol selection and benchmarking</td>
+            </tr>
+            <tr>
+                <td>Phase 4</td>
+                <td>Multi-stakeholder governance body formation</td>
+                <td>Institutional partnerships</td>
+            </tr>
+            <tr>
+                <td>Phase 5</td>
+                <td>Emergency access protocol with WHO integration</td>
+                <td>Governance body operational</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Each phase produces a public report. No phase proceeds without the dependency being satisfied. We will not scale the network's aggregate query capabilities ahead of its privacy and governance safeguards.</p>
+
+    <blockquote>
+        <p>The network that solves global health intelligence without enabling global health espionage &mdash; that is the design problem that must be solved before this technology scales. We believe it can only be solved in the open.</p>
+    </blockquote>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="doc-footer">
+    <p><strong>Document version:</strong> 0.1.0-draft (March 2026)</p>
+    <p><strong>Status:</strong> Open draft &mdash; seeking expert review and collaboration</p>
+    <p><strong>Authors:</strong> Philip Phuong Tran, Univault Technologies LLC</p>
+    <p><strong>License:</strong> <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> &mdash; Share, adapt, build upon with attribution.</p>
+    <p style="margin-top: 16px;"><strong>Contact:</strong> <a href="mailto:hello@paragondao.org">hello@paragondao.org</a> | <a href="https://paragondao.org">paragondao.org</a></p>
+    <p style="margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+        &copy; 2026 Univault Technologies LLC. This document is published as an open security analysis under CC BY 4.0.
+        The analysis, threat models, and proposed solutions are provided for public discourse and collaborative development.
+        Nothing in this document constitutes legal advice. The technical proposals have not been independently audited.
+    </p>
+</div>
+
+</body>
+</html>

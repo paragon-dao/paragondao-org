@@ -160,7 +160,7 @@ export const storeApps = [
     signals: ['Raman spectroscopy'],
     useCases: [
       'Clinic-based pathogen screening',
-      'Public health surveillance',
+      'Public health intelligence',
       'Point-of-care diagnostics',
     ],
     keyFeature: 'Saliva-based. Non-invasive. Requires Raman device partnership.',
