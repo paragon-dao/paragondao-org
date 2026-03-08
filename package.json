@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.js",
+    "build": "vite build",
     "build:spa": "vite build",
     "preview": "vite preview",
     "deploy": "pnpm build && wrangler pages deploy dist --project-name=paragondao-org"
