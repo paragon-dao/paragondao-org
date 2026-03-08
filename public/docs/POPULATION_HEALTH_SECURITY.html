@@ -288,6 +288,21 @@
         .severity-critical { background: var(--crimson-100); color: var(--crimson-700); }
         .severity-high { background: #fef3c7; color: #92400e; }
         .severity-medium { background: #e0f2fe; color: #075985; }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .status-done { background: #d1fae5; color: #065f46; }
+        .status-building { background: #fef3c7; color: #92400e; }
+        .status-planned { background: #e0f2fe; color: #075985; }
+        .status-future { background: var(--slate-200); color: var(--slate-600); }
 
         /* ===== ARCHITECTURE DIAGRAM ===== */
         .arch-layer {
@@ -551,31 +566,31 @@
         <div class="arch-layer">
             <div class="arch-label" style="background: var(--emerald-600);">Layer 1<br>Individual</div>
             <div class="arch-content">
-                <strong>On-device encoding, lossy compression.</strong> Raw biosignals never leave the user's device. GLE encoding discards the phase and temporal information required for waveform reconstruction. The raw signal cannot be recovered. However, health-relevant features are preserved by design &mdash; that is the encoder's function. Formal cryptanalysis quantifying the inference boundary is an open research priority.
+                <strong>On-device encoding, lossy compression.</strong> <span class="status-badge status-done">Live</span><br>Raw biosignals never leave the user's device. GLE encoding discards the phase and temporal information required for waveform reconstruction. The raw signal cannot be recovered. However, health-relevant features are preserved by design &mdash; that is the encoder's function. Formal cryptanalysis quantifying the inference boundary is an open research priority.
             </div>
         </div>
         <div class="arch-layer">
             <div class="arch-label" style="background: #0284c7;">Layer 2<br>Local Aggregate</div>
             <div class="arch-content">
-                <strong>Differential privacy on all aggregate queries.</strong> Every query against local node data adds calibrated mathematical noise (Laplacian or Gaussian mechanism). Individual contributions cannot be determined from aggregate results. Privacy budget (epsilon) tracked per query to prevent cumulative information leakage.
+                <strong>Differential privacy on all aggregate queries.</strong> <span class="status-badge status-live">Live</span><br>Every query against local node data adds calibrated mathematical noise (Laplacian or Gaussian mechanism). Individual contributions cannot be determined from aggregate results. Privacy budget (epsilon) tracked per query to prevent cumulative information leakage.
             </div>
         </div>
         <div class="arch-layer">
             <div class="arch-label" style="background: #7c3aed;">Layer 3<br>Regional</div>
             <div class="arch-content">
-                <strong>Federated aggregation with jurisdictional boundaries.</strong> Regional nodes compute aggregates for their jurisdiction only. No single node holds a global view. Cross-region queries require explicit multi-party computation &mdash; no node can unilaterally see another region's health patterns.
+                <strong>Federated aggregation with jurisdictional boundaries.</strong> <span class="status-badge status-planned">10+ Nodes</span><br>Regional nodes compute aggregates for their jurisdiction only. No single node holds a global view. Cross-region queries require explicit multi-party computation &mdash; no node can unilaterally see another region's health patterns.
             </div>
         </div>
         <div class="arch-layer">
             <div class="arch-label" style="background: var(--crimson-600);">Layer 4<br>Global</div>
             <div class="arch-content">
-                <strong>Threshold cryptography for population-level queries.</strong> Any query that spans multiple regions requires M-of-N node operators from at least K different jurisdictions to jointly compute the answer using secure multi-party computation (MPC). No single nation, company, or operator can unilaterally access global health patterns. The cryptographic threshold is a technical guarantee, not a policy promise.
+                <strong>Threshold cryptography for population-level queries.</strong> <span class="status-badge status-future">At Scale</span><br>Any query that spans multiple regions requires M-of-N node operators from at least K different jurisdictions to jointly compute the answer using secure multi-party computation (MPC). No single nation, company, or operator can unilaterally access global health patterns. The cryptographic threshold is a technical guarantee, not a policy promise.
             </div>
         </div>
         <div class="arch-layer">
             <div class="arch-label" style="background: var(--slate-800);">Layer 5<br>Governance</div>
             <div class="arch-content">
-                <strong>Multi-stakeholder oversight with transparency requirements.</strong> All aggregate queries are logged. Query logs are public (query structure, not results). An independent technical committee audits the differential privacy parameters. Governance spans nations, institutions, and civil society &mdash; no single stakeholder class controls the system.
+                <strong>Multi-stakeholder oversight with transparency requirements.</strong> <span class="status-badge status-future">At Scale</span><br>All aggregate queries are logged. Query logs are public (query structure, not results). An independent technical committee audits the differential privacy parameters. Governance spans nations, institutions, and civil society &mdash; no single stakeholder class controls the system.
             </div>
         </div>
     </div>
