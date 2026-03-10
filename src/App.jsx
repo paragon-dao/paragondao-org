@@ -28,6 +28,7 @@ import AppsPage from './pages/AppsPage'
 import AppDetailPage from './pages/AppDetailPage'
 import AdminPage from './pages/AdminPage'
 import DocsPage from './pages/DocsPage'
+import DustDashboardPage from './pages/DustDashboardPage'
 import InviteGate from './components/InviteGate'
 import { MagicProvider, useMagic } from './providers/MagicProvider'
 import { ThemeProvider } from './providers/ThemeProvider'
@@ -151,6 +152,7 @@ function AppRoutes() {
         <Route path="/proof" element={<Navigate to="/network" replace />} />
         <Route path="/proof-pipeline" element={<ProofPipelinePage />} />
         <Route path="/docs" element={<DocsPage />} />
+        <Route path="/great-salt-lake/dust" element={<DustDashboardPage />} />
         <Route path="/apps" element={<AppsPage />} />
         <Route path="/apps/:appId" element={<AppDetailPage />} />
         <Route path="/exchange" element={<ExchangePage />} />

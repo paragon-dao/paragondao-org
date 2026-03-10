@@ -176,6 +176,7 @@ const ProofPage = () => {
   const [networkActivity, setNetworkActivity] = useState([])
   const [networkAggregates, setNetworkAggregates] = useState(null)
   const [globeFullscreen, setGlobeFullscreen] = useState(false)
+  const [envNodes, setEnvNodes] = useState([])
 
   // Theme colors
   const textPrimary = isDark ? '#fff' : '#1e293b'
@@ -267,6 +268,37 @@ const ProofPage = () => {
     }
     connect()
     return () => { if (client) client.disconnect() }
+  }, [])
+
+  // Fetch environmental verification nodes (dust predictor cluster)
+  useEffect(() => {
+    const envNodeDefs = [
+      { id: 'gsl-dust-dfw', url: 'https://gsl-dust-predictor.fly.dev', region: 'dfw', label: 'Dallas' },
+      { id: 'gsl-dust-sjc', url: 'https://gsl-dust-sjc.fly.dev', region: 'sjc', label: 'San Jose' },
+      { id: 'gsl-dust-iad', url: 'https://gsl-dust-iad.fly.dev', region: 'iad', label: 'Virginia' },
+    ]
+    const fetchEnv = async () => {
+      const results = await Promise.all(
+        envNodeDefs.map(async (node) => {
+          try {
+            const [status, network] = await Promise.all([
+              fetch(`${node.url}/api/dust/status`).then(r => r.ok ? r.json() : null).catch(() => null),
+              fetch(`${node.url}/api/dust/network`).then(r => r.ok ? r.json() : null).catch(() => null),
+            ])
+            return {
+              ...node, online: !!status, connected: network?.connected || false,
+              tier: status?.tier, score: status?.score, adi: status?.adi,
+            }
+          } catch {
+            return { ...node, online: false, connected: false }
+          }
+        })
+      )
+      setEnvNodes(results)
+    }
+    fetchEnv()
+    const interval = setInterval(fetchEnv, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   const curlCommand = `curl https://bagle-api.fly.dev/health | python3 -m json.tool`
@@ -719,6 +751,129 @@ const ProofPage = () => {
               </a>
             </motion.div>
           </div>
+
+          {/* ── Environmental Verification Cluster ── */}
+          {envNodes.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              style={{ marginBottom: '40px' }}
+            >
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                marginBottom: '20px',
+              }}>
+                <div style={{
+                  width: '32px', height: '32px', borderRadius: '8px',
+                  background: 'rgba(34,197,94,0.12)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: textPrimary, margin: 0 }}>
+                    Environmental Verification
+                  </h3>
+                  <p style={{ fontSize: '13px', color: textSecondary, margin: 0 }}>
+                    Great Salt Lake dust prediction — 3 independent nodes, same public data
+                  </p>
+                </div>
+              </div>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '16px',
+              }}>
+                {envNodes.map((node, i) => {
+                  const allAgree = envNodes.filter(n => n.online).every(n => n.tier === envNodes[0]?.tier && n.score === envNodes[0]?.score)
+                  const tierColors = { green: '#22c55e', yellow: '#eab308', orange: '#f97316', red: '#ef4444' }
+                  const dotColor = node.online ? (tierColors[node.tier] || '#22c55e') : '#ef4444'
+                  return (
+                    <motion.div
+                      key={node.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.05 * i }}
+                      style={{
+                        background: cardBg, border: `1px solid ${cardBorder}`,
+                        borderRadius: '16px', padding: '24px',
+                        backdropFilter: 'blur(12px)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                        <PulsingDot color={dotColor} size={10} />
+                        <span style={{ fontSize: '15px', fontWeight: '700', color: textPrimary, fontFamily: 'monospace' }}>
+                          {node.id}
+                        </span>
+                        <span style={{
+                          marginLeft: 'auto', padding: '3px 8px', borderRadius: '6px',
+                          background: 'rgba(34,197,94,0.12)', color: '#22c55e',
+                          fontSize: '10px', fontWeight: '700', letterSpacing: '0.05em',
+                        }}>
+                          ENV
+                        </span>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div>
+                          <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Region</p>
+                          <p style={{ fontSize: '15px', color: textPrimary, fontWeight: '600' }}>{node.label}</p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</p>
+                          <p style={{ fontSize: '15px', color: node.online ? '#22c55e' : '#ef4444', fontWeight: '600' }}>
+                            {node.online ? 'Online' : 'Offline'}
+                          </p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Tier</p>
+                          <p style={{ fontSize: '15px', color: tierColors[node.tier] || textPrimary, fontWeight: '600', textTransform: 'uppercase' }}>
+                            {node.tier || '--'}
+                          </p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '11px', color: textSecondary, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>HFTP</p>
+                          <p style={{ fontSize: '15px', color: node.connected ? '#6366f1' : textSecondary, fontWeight: '600' }}>
+                            {node.connected ? 'Connected' : 'Pending'}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+
+              {/* Consensus banner */}
+              {(() => {
+                const online = envNodes.filter(n => n.online)
+                const allAgree = online.length > 1 && online.every(n => n.tier === online[0].tier && n.score === online[0].score)
+                return online.length > 0 && (
+                  <div style={{
+                    marginTop: '16px', padding: '14px 20px', borderRadius: '12px',
+                    background: allAgree
+                      ? (isDark ? 'rgba(34,197,94,0.08)' : 'rgba(34,197,94,0.05)')
+                      : (isDark ? 'rgba(245,158,11,0.08)' : 'rgba(245,158,11,0.05)'),
+                    border: `1px solid ${allAgree ? 'rgba(34,197,94,0.2)' : 'rgba(245,158,11,0.2)'}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px',
+                  }}>
+                    <PulsingDot color={allAgree ? '#22c55e' : '#f59e0b'} size={8} />
+                    <span style={{ fontSize: '14px', fontWeight: '600', color: allAgree ? '#22c55e' : '#f59e0b' }}>
+                      {online.length}/{envNodes.length} nodes in consensus
+                    </span>
+                    <span style={{ fontSize: '13px', color: textSecondary }}>
+                      — each node independently pulls IEM weather + USGS lake data
+                    </span>
+                  </div>
+                )
+              })()}
+            </motion.div>
+          )}
 
           {/* ── Network Aggregate Stats ── */}
           {networkAggregates && (
@@ -1524,6 +1679,7 @@ const ProofPage = () => {
                 { status: 'LIVE', label: 'Altair — validator node', desc: 'paragon-altair.fly.dev — second validator. The Summer Triangle is complete.', color: green },
                 { status: 'LIVE', label: 'PCR consensus in production', desc: 'Health snapshots validated by 3-node committee: Kuramoto coherence (r=0.999) + BFT voting + fee distribution', color: green },
                 { status: 'LIVE', label: 'Token economics active', desc: 'Fee distribution (40% validators / 40% treasury / 20% mission fund), health rewards, validator staking with slashing', color: green },
+                { status: 'LIVE', label: 'Environmental verification cluster', desc: '3 dust predictor nodes (DFW, SJC, IAD) independently computing identical predictions from the same public data', color: green },
                 { status: 'BUILDING', label: 'Breathing check-in app', desc: 'The 30-second phone experience described above — in active development', color: '#f59e0b' },
               ].map((item, i) => (
                 <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
