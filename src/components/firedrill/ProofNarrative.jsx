@@ -162,38 +162,24 @@ const ProofNarrative = () => {
           fontSize: '11px', fontWeight: '700', letterSpacing: '0.1em',
           color: '#10b981', textTransform: 'uppercase', marginBottom: '10px',
         }}>
-          HOW YOUR PRIVACY IS PROTECTED
+          YOUR PRIVACY
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {[
-            {
-              label: 'Encoded on your device',
-              text: 'Your raw breathing audio, voice, or biometric signal never leaves your phone. The encoder runs locally.',
-              color: '#10b981',
-            },
-            {
-              label: 'Only 128 numbers travel the network',
-              text: 'What gets sent is a 128-number fingerprint — not your voice, not your recording, not your identity. Just 512 bytes of frequency data.',
-              color: '#10b981',
-            },
-            {
-              label: 'Irreversible by design',
-              text: 'You cannot reconstruct the original signal from its fingerprint. The encoding is a lossy transform — the raw data is mathematically destroyed. This is provable, not a policy.',
-              color: '#10b981',
-            },
-          ].map((item, i) => (
-            <div key={i} style={{
-              paddingLeft: '12px', borderLeft: `3px solid ${item.color}`,
-            }}>
-              <div style={{ fontSize: '13px', fontWeight: '700', color: textPrimary, marginBottom: '2px' }}>
-                {item.label}
-              </div>
-              <div style={{ fontSize: '12px', color: textSecondary, lineHeight: '1.5' }}>
-                {item.text}
-              </div>
-            </div>
-          ))}
-        </div>
+        <p style={{ fontSize: '13px', color: textPrimary, lineHeight: '1.6', margin: '0 0 10px 0', fontWeight: '600' }}>
+          Stronger than encryption — because there's nothing to decrypt.
+        </p>
+        <p style={{ fontSize: '13px', color: textSecondary, lineHeight: '1.6', margin: '0 0 10px 0' }}>
+          Your breathing audio is encoded into 128 numbers on your device and destroyed.
+          No recording is uploaded. No server holds your voice. Only a 512-byte fingerprint travels the network —
+          it carries health patterns, not your identity.
+        </p>
+        <p style={{ fontSize: '13px', color: textSecondary, lineHeight: '1.6', margin: '0 0 10px 0' }}>
+          The transform is lossy and irreversible — you cannot reconstruct the original from 128 numbers.
+          This isn't a privacy policy. It's math.
+        </p>
+        <p style={{ fontSize: '12px', color: textMuted, lineHeight: '1.5', margin: 0 }}>
+          GDPR, HIPAA, and Apple's Differential Privacy regulate what you do with data you collect.
+          We never collect it. No key to leak, no database to breach, no recording to subpoena.
+        </p>
       </div>
     </motion.div>
   )
