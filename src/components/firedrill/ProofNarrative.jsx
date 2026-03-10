@@ -151,6 +151,50 @@ const ProofNarrative = () => {
           Every body is a frequency. The sentinel proved it. Your body is next.
         </p>
       </div>
+
+      {/* Privacy proof — answers "your body is next" fear */}
+      <div style={{
+        marginTop: '20px', padding: '20px', borderRadius: '14px',
+        background: isDark ? 'rgba(16, 185, 129, 0.04)' : 'rgba(16, 185, 129, 0.02)',
+        border: `1px solid ${isDark ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.08)'}`,
+      }}>
+        <div style={{
+          fontSize: '11px', fontWeight: '700', letterSpacing: '0.1em',
+          color: '#10b981', textTransform: 'uppercase', marginBottom: '10px',
+        }}>
+          HOW YOUR PRIVACY IS PROTECTED
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {[
+            {
+              label: 'Encoded on your device',
+              text: 'Your raw breathing audio, voice, or biometric signal never leaves your phone. The encoder runs locally.',
+              color: '#10b981',
+            },
+            {
+              label: 'Only 128 numbers travel the network',
+              text: 'What gets sent is a 128-number fingerprint — not your voice, not your recording, not your identity. Just 512 bytes of frequency data.',
+              color: '#10b981',
+            },
+            {
+              label: 'Irreversible by design',
+              text: 'You cannot reconstruct the original signal from its fingerprint. The encoding is a lossy transform — the raw data is mathematically destroyed. This is provable, not a policy.',
+              color: '#10b981',
+            },
+          ].map((item, i) => (
+            <div key={i} style={{
+              paddingLeft: '12px', borderLeft: `3px solid ${item.color}`,
+            }}>
+              <div style={{ fontSize: '13px', fontWeight: '700', color: textPrimary, marginBottom: '2px' }}>
+                {item.label}
+              </div>
+              <div style={{ fontSize: '12px', color: textSecondary, lineHeight: '1.5' }}>
+                {item.text}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </motion.div>
   )
 }
