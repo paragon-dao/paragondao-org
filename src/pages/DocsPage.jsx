@@ -109,8 +109,8 @@ export default function DocsPage() {
 
         {/* SDK */}
         <Section title="JavaScript SDK" cardBg={cardBg} border={border}>
-          <CodeBlock bg={codeBg} color={codeText}>{`npm install @paragon-dao/bagle-sdk`}</CodeBlock>
-          <CodeBlock bg={codeBg} color={codeText} style={{ marginTop: 12 }}>{`import { BagleClient } from '@paragon-dao/bagle-sdk';
+          <CodeBlock bg={codeBg} color={codeText}>{`npm install @paragondao/bagle-sdk`}</CodeBlock>
+          <CodeBlock bg={codeBg} color={codeText} style={{ marginTop: 12 }}>{`import { BagleClient } from '@paragondao/bagle-sdk';
 
 const client = new BagleClient();
 
@@ -128,7 +128,7 @@ console.log(sim.similarity); // 0.0 to 1.0`}</CodeBlock>
           <p style={{ fontSize: 14, color: muted, marginBottom: 12 }}>
             For privacy-sensitive apps, encode on-device without any network call:
           </p>
-          <CodeBlock bg={codeBg} color={codeText}>{`import { gleEncodeSignal, cosineSimilarity } from '@paragon-dao/bagle-sdk';
+          <CodeBlock bg={codeBg} color={codeText}>{`import { gleEncodeSignal, cosineSimilarity } from '@paragondao/bagle-sdk';
 
 // Runs locally — DCT-II transform, no API call
 const coefficients = gleEncodeSignal(samples);
